@@ -127,16 +127,6 @@ def drugbank_clasificacion (xml_file, output_file):
             name_elem = elem.find(ns + "name")
             drug_name = name_elem.text if name_elem is not None else ""
 
-            # ID de la FDA
-            fda_id = ""
-            for ext_id in elem.findall(ns + "external-identifiers/" + ns + "external-identifier"):
-                resource = ext_id.find(ns + "resource")
-                identifier = ext_id.find(ns + "identifier")
-                
-                if resource is not None and resource.text == "FDA":
-                    fda_id = identifier.text if identifier is not None else ""
-                    break
-
             # Códigos ATC
             atc_list = []
             for atc in elem.findall(ns + "atc-codes/" + ns + "atc-code"):
@@ -146,16 +136,15 @@ def drugbank_clasificacion (xml_file, output_file):
             
             atc_codes = "|".join(atc_list)
 
-            rows.append([drug_id, drug_name, fda_id, atc_codes,])
+            rows.append([drug_id, drug_name, atc_codes])
             
 
-        elem.clear()
+            elem.clear()
 
     # Creamos el DataFrame con las filas que hemos añadido a rows
     df = pd.DataFrame(rows, columns=[
         "drugbank_id",
         "drug_name",
-        "fda_id",
         "atc_codes"
     ])
     
