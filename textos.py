@@ -46,4 +46,35 @@ def texto_intro (ppio, enzimas, principales, primero=False):
 
                     print(f"El principio activo: {ppio} se metaboliza por las enzimas: {enzimas}, de las cuales se han considerado principales las siguientes: {principales}, en las siguientes descripciones se mostrarán las interacciones solo con dichas enzimas consideradas principales")
                     print()
-                    
+
+
+def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
+    """
+    Se describe la interaccion solo con la enzima concreta que se pasa por parámetro
+
+    Parámetros
+    --------------------
+        ppio_1 -
+        acc_1 -
+        ppio_2 -
+        acc_2 -
+        enzima -
+    Devolución
+    --------------------
+        None
+    """
+
+    #Declaramos cuales son las posibilidades
+    posibilidades = ["inducer", "substrate", "inhibitor"]
+    #Print explicativo
+    print(f"En este caso solo se describen las interacciones de los principios activos con la enzima: {enzima} teniendo en cuenta solo que lleven a cabe algunas de las siguientes acciones: {posibilidades}")
+    print()
+    
+    #De las listas proporcionadas con las acciones UNICAS eliminamos las que no tenemos en cuenta:
+    mias_1 = [x for x in acc_1 if x in posibilidades]
+    mias_2 = [x for x in acc_2 if x in posibilidades]
+
+    #Guardamos una variable con las coincidencias de las acciones (sustrato-sustrato, inhib-inhib, induct-induct)
+    doble = list(set(mias_1) & set(mias_2))
+
+    #Una vez declaramos las variables comprobamos cada uno de los casos para obtener el texto adecuado
