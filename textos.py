@@ -1,6 +1,5 @@
-#----> Consideracion: Devuelve false de normal y devolvera true si no hay enzimas por las que se metaboliza con lo cual un break de manual <-------
-#Cuando no hay enzimas por las que se metaboliza se tendrá en cuenta en si hay interacción o no?
-def texto_intro (ppio, enzimas, principales, primero=False):
+#Cuando no hay enzimas por las que se metaboliza se tendrá en cuenta en si hay interacción o no? --------> SE HA TENIDO EN CUENTA COMO LEVE TAMBIEN
+def texto_intro (ppio, enzimas, principales, texto, primero=False):
     '''
     Texto de introducción de el principio activo concreto
 
@@ -13,48 +12,94 @@ def texto_intro (ppio, enzimas, principales, primero=False):
 
     Devolución
     ---------------
-        None
+        True cuando hay enzima principal, False cuando no y None cuando no es ninguna tenida en cuenta o no se metaboliza por una enzima (según DrugBank)
     '''
+
     if primero:
-        print("En esta web vamos a indicar si existe una interacción LEVE, MEDIA o ALTA basandonos en las enzimas por las que se metabolizan cada uno de los principios activos consultados en la base de datos de DrugBank")
-        print()
-        print("Solo se han tenido en cuenta las siguientes enzimas: [CYP2D6, CYP3A4, CYP3A5, CYP2C19, CYP2C9, CYP1A2] que según DrugBank son las 5 por las que se metabolizan mas principios activos. Teniendo en cuenta tambien la CYP3A5 que es como la CYP3A4 (CAMBIO), sin embargo cuando ambas mencionadas previamente se consideraban principales, la CYP3A5 era eliminada debido a  que la mayoria de la pobalcion no expresa esta enzima.")
-        print()
-        print()
+        if texto:
+            print("En esta web vamos a indicar si existe una interacción LEVE, MEDIA o ALTA basandonos en las enzimas por las que se metabolizan cada uno de los principios activos consultados en la base de datos de DrugBank")
+            print()
+            print("Solo se han tenido en cuenta las siguientes enzimas: [CYP2D6, CYP3A4, CYP3A5, CYP2C19, CYP2C9, CYP1A2] que según DrugBank son las 5 por las que se metabolizan mas principios activos. Teniendo en cuenta tambien la CYP3A5 que es como la CYP3A4 (CAMBIO), sin embargo cuando ambas mencionadas previamente se consideraban principales, la CYP3A5 era eliminada debido a  que la mayoria de la pobalcion no expresa esta enzima.")
+            print()
+            print()
         
-    if len(enzimas) == 0:
-        print(f"El principio activo: {ppio} no se metaboliza por ninguna enzima de las tenidas en cuenta según la base de datos de DrugBank, por tanto la interacción con cuaquier otro principio activo consultado aparecerá categorizada como LEVE")
-        print()
+    if not enzimas:
+        if texto:
+            print(f"El principio activo: {ppio} no se metaboliza por ninguna enzima de las tenidas en cuenta según la base de datos de DrugBank, por tanto la interacción con cuaquier otro principio activo consultado aparecerá categorizada como LEVE")
+            print()
     else:
         
         if len(enzimas) == 1:
-            print(f"El principio activo: {ppio} solo se metaboliza por una enzima de las que se tienen en cuenta, la cual hemos considerado como enzima de metabolización principal del principio activo")
-            #Aunque no tiene porque ser asi porque puede tener otra via principal de metabolizacion de enzimas no tenidas en cuenta, que pasaba con las fichas tecnicas de CIMA (salian otras enzimas de no mencionadas)
-            print()
+            if texto:
+                print(f"El principio activo: {ppio} solo se metaboliza por una enzima de las que se tienen en cuenta, la cual hemos considerado como enzima de metabolización principal del principio activo")
+                #Aunque no tiene porque ser asi porque puede tener otra via principal de metabolizacion de enzimas no tenidas en cuenta, que pasaba con las fichas tecnicas de CIMA (salian otras enzimas de no mencionadas)
+                print()
+            return True
         else:
             
-            if len(principales) == 0:
-                print(f"El principio activo: {ppio} se metaboliza por las siguientes enzimas: {enzimas}, no se ha podido determinar la enzima principal por la que se metaboliza, por tanto las interacciones mostradas a continuacion serán con cada una de ellas")
-                print()
+            if not principales:
+                if texto:
+                    print(f"El principio activo: {ppio} se metaboliza por las siguientes enzimas: {enzimas}, no se ha podido determinar la enzima principal por la que se metaboliza, por tanto las interacciones mostradas a continuacion serán con cada una de ellas")
+                    print()
+                return False
 
             else:
                 if len(principales) == 1:
-                    print(f"El principio activo: {ppio} se metaboliza por las enzimas: {enzimas} de las cuales, se ha considerado principal: {principales}, en las siguientes descripciones se mostrarán las interacciones solo con dicha enzima considerada principal")
-                    print()
-                    
+                    if texto:
+                        print(f"El principio activo: {ppio} se metaboliza por las enzimas: {enzimas} de las cuales, se ha considerado principal: {principales}, en las siguientes descripciones se mostrarán las interacciones solo con dicha enzima considerada principal")
+                        print()
+                    return True
                 else:
-
-                    print(f"El principio activo: {ppio} se metaboliza por las enzimas: {enzimas}, de las cuales se han considerado principales las siguientes: {principales}, en las siguientes descripciones se mostrarán las interacciones solo con dichas enzimas consideradas principales")
-                    print()
-
-
-
-
-
+                    if texto:
+                        print(f"El principio activo: {ppio} se metaboliza por las enzimas: {enzimas}, de las cuales se han considerado principales las siguientes: {principales}, en las siguientes descripciones se mostrarán las interacciones solo con dichas enzimas consideradas principales")
+                        print()
+                    return True
+                    
+    return None
 
 
 
+def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto):
+    """
+    Evalua el nivel de riesgo de la posible interacción
 
+    Parámetros
+    ---------------------
+        ppio_1 -
+        ppio_2 -
+        coincidentes -
+        intro_1 -
+        intro_2 -
+        texto -
+    Devolución
+    ---------------------------
+        string que contiene "Alta","Media","Leve" dependiendo de cual sea su nivel de riesgo
+    """
+    if coincidentes:
+        if intro_1 and intro_2:
+            if texto:
+                print(f"La interacción {ppio_1}-{ppio_2} es considerada Alta")
+                print(f"Como ambos principios son metabolizados por enzimas tenidas en cuenta que tienen alguna enzima considerada principal y estas coinciden entre si en las siguientes: {coincidentes} es considerada como interacción alta")
+                print()
+            return "Alta"
+        else:
+            if texto:
+                print(f"La interacción {ppio_1}-{ppio_2} es considerada Media")
+                print(f"Como no sabemos las enzimas principales de por lo menos uno de los dos principios activos pero coinciden en la metabolización de las siguientes enzimas: {coincidentes} su interacción es considerada Media")
+                print()
+            return "Media"
+
+    else:
+        if texto:
+            print(f"La interacción {ppio_1}-{ppio_2} es considerada Leve")
+            print("Los principios activos no coinciden en ser metabolizados por ninguna enzima de las tenidas en cuenta y por tanto su interacción es categorizada como Leve")
+            print()
+        return "Leve"
+
+
+
+
+#Falta completar
 #SE MUESTRAN SOLO LAS INTERACCIONES EN LA PRIMERA INGESTA, PONER ESO
 def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
     """
@@ -87,22 +132,22 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
     doble = list(set(mias_1) & set(mias_2))
 
     #Una vez declaramos las variables comprobamos cada uno de los casos para obtener el texto adecuado
-    #Aunque se ha comprobado que no hay elementos nulos en las acciones cuando la BBDD queda reducida a solo los que tienen enzimas se comprueba
+    #Aunque se ha comprobado (en jupyter) que no hay elementos nulos en las acciones cuando la BBDD queda reducida a solo los que tienen enzimas se comprueba
     if (acc_1==None) or (acc_2==None):
         print(f"Las acciones de la enzima {enzima} para los principios activos {ppio_1} y {ppio_2} no están registradas en DrugBank, por tanto no se puede describir la interacción que tienen.")
         print()
         
     else:
         #De la lista ninguna es inductor-inhibidor-sustrato
-        if (len(mias_1)==0) or (len(mias_2)==0):
-            print(f"De las acciones que se llevan a cabo con la enzima: {e} en los dos principios activos consulltados: {ppio_1} y {ppio_2} ninguna es de las tenidas en cuenta, por tanto no se puede describir la interacción.")
+        if (not mias_1) or (not mias_2):
+            print(f"De las acciones que se llevan a cabo con la enzima: {enzima} en los dos principios activos consulltados: {ppio_1} y {ppio_2} ninguna es de las tenidas en cuenta, por tanto no se puede describir la interacción.")
             print()
 
         else:
             #Mostrar las posibilidades
             if doble:
                 #Es posible que doble tenga mas de una acción ¿QUE HACES EN ESE CASO?
-                print(f"")
+                print(f"doble")
                 print()
             #Sustrato
             else:
@@ -117,7 +162,7 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
                     #Se supone que con un else deberia valer
                     #sustrato-inhibidor
                     elif "inhibitor" in acc_2:
-                        print(f"")
+                        print(f"p1")
                         print()
     
                 #Inhibidor
@@ -125,12 +170,12 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
                     
                     #inhibidor-indcutor
                     if "inducer" in acc_2:
-                        print(f"")
+                        print(f"p2")
                         print()
                     #Se supone que con un else deberia valer
                     #Inhibidor-sustrato
                     elif "substrate" in acc_2:
-                        print(f"")
+                        print(f"p3")
                         print()
     
                 #Inductor (tambien podría ser solo un else en teoría)
@@ -138,12 +183,12 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
                     
                     #inductor-inhibidor
                     if "inhibitor" in acc_2:
-                        print(f"")
+                        print(f"p4")
                         print()
                     #Se supone que con un else deberia valer
                     #inductor-sustrato
                     elif "substrate" in acc_2:
-                        print(f"")
+                        print(f"p5")
                         print()
 
 
