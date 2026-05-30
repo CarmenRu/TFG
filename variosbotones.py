@@ -1,7 +1,7 @@
 from dash import Dash, html, dcc
 from dash import Input, Output, State
 
-#Fallido por?
+#Para integrar el código que tengo en dash tengo que separar mas las funciones
 
 app = Dash(__name__)
 
@@ -9,21 +9,21 @@ app.layout = html.Div([
 
     # Entradas
     dcc.Input(
-        id="farmaco1",
+        id="ppio1",
         type="text",
         placeholder="Primer fármaco"
     ),
 
     dcc.Input(
-        id="farmaco2",
+        id="ppio2",
         type="text",
         placeholder="Segundo fármaco"
     ),
 
     # Botón principal
     html.Button(
-        "Analizar",
-        id="btn_analizar"
+        "Analizar interacción",
+        id="btn_interaccion"
     ),
 
     html.Hr(),
@@ -35,13 +35,13 @@ app.layout = html.Div([
     ),
 
     html.Button(
-        "Interacciones",
-        id="btn_interacciones"
+        "Descripcion metabolismo",
+        id="btn_enzimas"
     ),
 
     html.Button(
-        "Contraindicaciones",
-        id="btn_contraindicaciones"
+        "Descripcion interacciones",
+        id="btn_acciones"
     ),
 
     html.Hr(),
@@ -61,11 +61,12 @@ app.layout = html.Div([
 @app.callback(
     Output("datos_analisis", "data"),
 
-    Input("btn_analizar", "n_clicks"),
+    Input("btn_interaccion", "n_clicks"),
 
-    State("farmaco1", "value"),
-    State("farmaco2", "value")
+    State("ppio1", "value"),
+    State("ppio2", "value")
 )
+#Analizo la interaccion
 def analizar_farmacos(n_clicks, farmaco1, farmaco2):
 
     if n_clicks is None:
@@ -74,7 +75,7 @@ def analizar_farmacos(n_clicks, farmaco1, farmaco2):
     if not farmaco1 or not farmaco2:
         return {}
 
-    # AEjemplo
+    # Ejemplo
     datos = {
         "efectos": f"Efectos adversos de {farmaco1} y {farmaco2}",
         "interacciones": f"Interacciones entre {farmaco1} y {farmaco2}",
@@ -91,6 +92,7 @@ def analizar_farmacos(n_clicks, farmaco1, farmaco2):
 
     State("datos_analisis", "data")
 )
+#Mostramos los efectos, solo si hay interaccion....funcion
 def mostrar_efectos(n_clicks, datos):
 
     if n_clicks is None:
@@ -105,11 +107,12 @@ def mostrar_efectos(n_clicks, datos):
 @app.callback(
     Output("resultado", "children"),
 
-    Input("btn_interacciones", "n_clicks"),
+    Input("btn_enzimas", "n_clicks"),
 
     State("datos_analisis", "data")
 )
-def mostrar_interacciones(n_clicks, datos):
+#Mostramos la descripcion de enzimas: funcion
+def mostrar_descr_enz(n_clicks, datos):
 
     if n_clicks is None:
         return ""
@@ -123,11 +126,12 @@ def mostrar_interacciones(n_clicks, datos):
 @app.callback(
     Output("resultado", "children"),
 
-    Input("btn_contraindicaciones", "n_clicks"),
+    Input("btn_acciones", "n_clicks"),
 
     State("datos_analisis", "data")
 )
-def mostrar_contraindicaciones(n_clicks, datos):
+#Mostramos la descripcion de las acciones. otra funcion
+def mostrar_descr_acciones(n_clicks, datos):
 
     if n_clicks is None:
         return ""

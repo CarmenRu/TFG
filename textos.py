@@ -1,3 +1,6 @@
+#O poner un texto en cada funcion de texto y ejecutar con el boton?
+
+
 #Cuando no hay enzimas por las que se metaboliza se tendrá en cuenta en si hay interacción o no? --------> SE HA TENIDO EN CUENTA COMO LEVE TAMBIEN
 def texto_intro (ppio, enzimas, principales, texto, primero=False):
     '''
@@ -14,7 +17,7 @@ def texto_intro (ppio, enzimas, principales, texto, primero=False):
     ---------------
         True cuando hay enzima principal, False cuando no y None cuando no es ninguna tenida en cuenta o no se metaboliza por una enzima (según DrugBank)
     '''
-
+    #SE MUESTRAN SOLO LAS INTERACCIONES EN LA PRIMERA INGESTA, PONER ESO
     if primero:
         if texto:
             print("En esta web vamos a indicar si existe una interacción LEVE, MEDIA o ALTA basandonos en las enzimas por las que se metabolizan cada uno de los principios activos consultados en la base de datos de DrugBank")
@@ -59,18 +62,18 @@ def texto_intro (ppio, enzimas, principales, texto, primero=False):
 
 
 
-def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto):
+def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto=False):
     """
     Evalua el nivel de riesgo de la posible interacción
 
     Parámetros
     ---------------------
-        ppio_1 -
-        ppio_2 -
-        coincidentes -
-        intro_1 -
-        intro_2 -
-        texto -
+        ppio_1 - El primer principio activo que se quiere comparar con el segundo
+        ppio_2 - El segundo principio activo que se quiere comparar con el primero
+        coincidentes - lista que contiene las enzimas que coinciden en las listas de enzimas del ppio 1 y 2
+        intro_1 - True si el ppio_1 tiene principales, False si no
+        intro_2 - True si el ppio_2 tiene principales, False si no
+        texto - Si es necesaria la impresión de texto o no (para comparar el ATC no lo es), por defecto a False
     Devolución
     ---------------------------
         string que contiene "Alta","Media","Leve" dependiendo de cual sea su nivel de riesgo
@@ -100,18 +103,17 @@ def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto):
 
 
 #Falta completar
-#SE MUESTRAN SOLO LAS INTERACCIONES EN LA PRIMERA INGESTA, PONER ESO
 def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
     """
     Se describe la interaccion solo con la enzima concreta que se pasa por parámetro
 
     Parámetros
     --------------------
-        ppio_1 -
-        acc_1 -
-        ppio_2 -
-        acc_2 -
-        enzima -
+        ppio_1 - El primer principio activo que se quiere comparar con el segundo
+        acc_1 - Lista de acciones de la enzima coincidente en el ppio 1
+        ppio_2 - El segundo principio activo que se quiere comparar con el primero
+        acc_2 - Lista de acciones de la enzima coincidente en el ppio 2
+        enzima - La enzima coincidente en ambos principios activos
     Devolución
     --------------------
         None
@@ -157,7 +159,7 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
                     
                     #sustrato-inductor
                     if "inducer" in acc_2:
-                        print(f"Con la enzima: {e} el {ppio_1} está actuando como sustrato y {ppio_2} está actuando como inductor, en este caso tendría prevalencia el sustrato")
+                        print(f"Con la enzima: {enzima} el {ppio_1} está actuando como sustrato y {ppio_2} está actuando como inductor, en este caso tendría prevalencia el sustrato")
                         print()
                     #Se supone que con un else deberia valer
                     #sustrato-inhibidor
