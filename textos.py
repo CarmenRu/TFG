@@ -148,12 +148,13 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
         else:
             #Mostrar las posibilidades
             if doble:
-                #Es posible que doble tenga mas de una acción ¿QUE HACES EN ESE CASO?
+                #Es posible que doble tenga mas de una acción ¿QUE HACES EN ESE CASO?, con que se tenga una que coincida pues vale supongo
                 print(f"doble")
                 print()
             #Sustrato
             else:
-
+            
+            #Aqui estoy dando prioridad al sustrato y asi??
             #PONER TEXTO GENERAL Y DICCIONARIO
                 if "substrate" in acc_1:
                     
