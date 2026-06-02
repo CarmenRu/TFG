@@ -118,9 +118,17 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
     --------------------
         None
     """
-
+    #Diccionario con la traducción de cada una de las acciones tenidas en cuenta
+    traduccion = {"substrate":"sustrato",
+              "inhibitor":"inhibidor",
+              "inducer":"inductor"}
     #Declaramos cuales son las posibilidades
-    posibilidades = ["inducer", "substrate", "inhibitor"]
+    posibilidades = [x for x in traduccion]
+    #Diccionario que dicta la prevalencia ante dos acciones de las tenidas en cuenta
+    competicion = {("sustrato","inductor"):"sustrato", ("inductor", "sustrato"):"sustrato",
+           ("sustrato","inhibidor"):"inhibidor",("inhibidor","sustrato"):"inhibidor",
+           ("inductor","inhibidor"):"inhibidor",("inhibidor","inductor"):"inhibidor"}
+    
     #Print explicativo
     print(f"En este caso solo se describen las interacciones de los principios activos con la enzima: {enzima} teniendo en cuenta solo que lleven a cabo algunas de las siguientes acciones: {posibilidades}")
     print()
@@ -132,6 +140,8 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
     #Guardamos una variable con las coincidencias de las acciones (sustrato-sustrato, inhib-inhib, induct-induct)
     #Se supone que ya deben de ser las distintas pero porsiacaso set
     doble = list(set(mias_1) & set(mias_2))
+    #Lo traducimos al español para el print
+    esp = [traduccion[x] for x in doble]
 
     #Una vez declaramos las variables comprobamos cada uno de los casos para obtener el texto adecuado
     #Aunque se ha comprobado (en jupyter) que no hay elementos nulos en las acciones cuando la BBDD queda reducida a solo los que tienen enzimas se comprueba
@@ -146,58 +156,25 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
             print()
 
         else:
-            #Mostrar las posibilidades
-            if doble:
+            if esp:
                 #Es posible que doble tenga mas de una acción ¿QUE HACES EN ESE CASO?, con que se tenga una que coincida pues vale supongo
-                print(f"doble")
+                print(f"Para la enzima: {enzima} los dos principios activos consultados actuan como: {doble} por tanto competirán al mismo nivel, lo que quiere decir que ninguno tendrá prevalencia sobre el otro a la hora de metabolizarse ")
                 print()
-            #Sustrato
+
             else:
-            
-            #Aqui estoy dando prioridad al sustrato y asi??
-            #PONER TEXTO GENERAL Y DICCIONARIO
-                if "substrate" in acc_1:
-                    
-                    #sustrato-inductor
-                    if "inducer" in acc_2:
-                        print(f"Con la enzima: {enzima} el {ppio_1} está actuando como sustrato y {ppio_2} está actuando como inductor, en este caso tendría prevalencia el sustrato")
-                        print()
-                    #Se supone que con un else deberia valer
-                    #sustrato-inhibidor
-                    elif "inhibitor" in acc_2:
-                        print(f"p1")
-                        print()
-    
-                #Inhibidor
-                elif "inhibitor" in acc_1:
-                    
-                    #inhibidor-indcutor
-                    if "inducer" in acc_2:
-                        print(f"p2")
-                        print()
-                    #Se supone que con un else deberia valer
-                    #Inhibidor-sustrato
-                    elif "substrate" in acc_2:
-                        print(f"p3")
-                        print()
-    
-                #Inductor (tambien podría ser solo un else en teoría)
-                elif "inducer" in acc_1:
-                    
-                    #inductor-inhibidor
-                    if "inhibitor" in acc_2:
-                        print(f"p4")
-                        print()
-                    #Se supone que con un else deberia valer
-                    #inductor-sustrato
-                    elif "substrate" in acc_2:
-                        print(f"p5")
-                        print()
+                #Texto genérico
+                if len(mias_1)==1 and len(mias_2)==1:
+                    a1 = traduccion[mias_1[0]]
+                    a2 = traduccion[mias_2[0]]
+                    preval = competicion[(a1,a2)]
+                    print(f"Para la enzima: {enzima} el principio activo: {ppio_1} esta actuando como: {a1}, mientras que el principio activo: {ppio_2} está actuando como: {a2}, en este caso tiene prevalencia de metabolización el {preval}")
+                else:
+                    print(f"Como alguno de los dos principios activos consultados poseen mas de una acción en la base de datos consultada para la enzima: {enzima} no es posible determinar si alguno de los dos tiene prioridad de metabolizacion")
+                    print(f"Para el principio: {ppio_1} las acciones registradas son:{mias_1}")
+                    print(f"Para el principio: {ppio_2} las acciones registradas son:{mias_2}")
 
 
+              
 
-
-
-#Y NO SERÍA POSIBLE UN TEXTO GENERICO?? PARA LA ENZIMA E EL PPIO ACTIVO  1  ESTA ACTUANDO COMO: TRADUCCION DE SU ACTUACION Y EL DOS COMO: TRADD, EN ESTE CASO PREVALECERIA: (consulto diccionario con interacción?)
 
 #Y SI UNO TIENE DOS ACCIONES????? CON QUE XUXA ME QUEDO
