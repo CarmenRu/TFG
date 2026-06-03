@@ -1,3 +1,5 @@
+#Importaciones
+import pandas as pd
 #Cuando no hay enzimas por las que se metaboliza se tendrá en cuenta en si hay interacción o no? --------> SE HA TENIDO EN CUENTA COMO LEVE TAMBIEN
 def texto_intro (ppio, enzimas, principales, texto, primero=False):
     '''
@@ -179,7 +181,7 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
 #Y SI UNO TIENE DOS ACCIONES????? CON QUE XUXA ME QUEDO
 
 
-def texto_efectos (lista_ATC, ATC_ref, efectos_adversos):
+def texto_efectos (lista_ATC, ATC_ref, efectos_adversos, ppio):
     '''
     Imprime una tabla con los top 10 efectos adversos que esten asociados con los codigos ATC de cada uno de los principios (por separado)
 
@@ -188,6 +190,7 @@ def texto_efectos (lista_ATC, ATC_ref, efectos_adversos):
         lista_ATC - Lista con los códigos ATC del principio activo para el que se estén consultando los efectos adversos
         ATC_ref - Los codigos ATC (en caso de haber mas de uno) cogidos como referencia anteriormente para las alternativas
         efectos_adversos - csv que contiene los efectos adversos prdenados por código ATC
+        ppio - Nombre del principio activo del que se van a sacar los efectos adversos asociados
 
     Devolución
     ------------------
@@ -195,5 +198,31 @@ def texto_efectos (lista_ATC, ATC_ref, efectos_adversos):
     '''
     for ref in ATC_ref:
         ATCs = [x.str.startswith(ref, na=False) for x in lista_ATC]
+        cont = 0
+
         for uno in ATCs:
-            efectos_adversos[uno]
+            if cont == 0:
+                df = efectos_adversos[efectos_adversos["Drug_ATC"]==uno]
+            else:
+                nuevo = efectos_adversos[efectos_adversos["Drug_ATC"]==uno]
+                union = pd.concat([df, nuevo], ignore_index=True)
+                df = union
+
+            cont+=1
+        final = (
+            union.groupby('Side_effect', as_index=False)['Freq_media']
+            .mean()
+        ).sort_values(by="Freq_media", ascending=False)
+
+        print(f"Para el principio activo: {ppio} con codigo ATC de referencia: {ref} los posibles efectos adversos mas comunes son:")
+        final.head(10)
+        print()
+        print()
+
+
+
+
+
+
+
+   
