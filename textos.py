@@ -1,6 +1,3 @@
-#O poner un texto en cada funcion de texto y ejecutar con el boton?
-
-
 #Cuando no hay enzimas por las que se metaboliza se tendrá en cuenta en si hay interacción o no? --------> SE HA TENIDO EN CUENTA COMO LEVE TAMBIEN
 def texto_intro (ppio, enzimas, principales, texto, primero=False):
     '''
@@ -74,6 +71,7 @@ def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto=False)
         intro_1 - True si el ppio_1 tiene principales, False si no
         intro_2 - True si el ppio_2 tiene principales, False si no
         texto - Si es necesaria la impresión de texto o no (para comparar el ATC no lo es), por defecto a False
+
     Devolución
     ---------------------------
         string que contiene "Alta","Media","Leve" dependiendo de cual sea su nivel de riesgo
@@ -114,6 +112,7 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
         ppio_2 - El segundo principio activo que se quiere comparar con el primero
         acc_2 - Lista de acciones de la enzima coincidente en el ppio 2
         enzima - La enzima coincidente en ambos principios activos
+
     Devolución
     --------------------
         None
@@ -190,5 +189,11 @@ def texto_efectos (lista_ATC, ATC_ref, efectos_adversos):
         ATC_ref - Los codigos ATC (en caso de haber mas de uno) cogidos como referencia anteriormente para las alternativas
         efectos_adversos - csv que contiene los efectos adversos prdenados por código ATC
 
-
+    Devolución
+    ------------------
+        None
     '''
+    for ref in ATC_ref:
+        ATCs = [x.str.startswith(ref, na=False) for x in lista_ATC]
+        for uno in ATCs:
+            efectos_adversos[uno]
