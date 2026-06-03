@@ -102,7 +102,7 @@ def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto=False)
 
 
 
-#Falta completar
+
 def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
     """
     Se describe la interaccion solo con la enzima concreta que se pasa por parámetro
@@ -178,3 +178,17 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
 
 
 #Y SI UNO TIENE DOS ACCIONES????? CON QUE XUXA ME QUEDO
+
+
+def texto_efectos (lista_ATC, ATC_ref, efectos_adversos):
+    '''
+    Imprime una tabla con los top 10 efectos adversos que esten asociados con los codigos ATC de cada uno de los principios (por separado)
+
+    Parámetros
+    -----------------
+        lista_ATC - Lista con los códigos ATC del principio activo para el que se estén consultando los efectos adversos
+        ATC_ref - Los codigos ATC (en caso de haber mas de uno) cogidos como referencia anteriormente para las alternativas
+        efectos_adversos - csv que contiene los efectos adversos prdenados por código ATC
+
+
+    '''
