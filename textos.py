@@ -196,28 +196,31 @@ def texto_efectos (lista_ATC, ATC_ref, efectos_adversos, ppio):
     ------------------
         None
     '''
-    for ref in ATC_ref:
-        ATCs = [x.str.startswith(ref, na=False) for x in lista_ATC]
-        cont = 0
+    if len(ATC_ref)==0:
+        print(f'No se ha podido encontar ninguna alternativa para el principio: {ppio}')
+    else:
+        for ref in ATC_ref:
+            ATCs = [x.str.startswith(ref, na=False) for x in lista_ATC]
+            cont = 0
 
-        for uno in ATCs:
-            if cont == 0:
-                df = efectos_adversos[efectos_adversos["Drug_ATC"]==uno]
-            else:
-                nuevo = efectos_adversos[efectos_adversos["Drug_ATC"]==uno]
-                union = pd.concat([df, nuevo], ignore_index=True)
-                df = union
+            for uno in ATCs:
+                if cont == 0:
+                    df = efectos_adversos[efectos_adversos["Drug_ATC"]==uno]
+                else:
+                    nuevo = efectos_adversos[efectos_adversos["Drug_ATC"]==uno]
+                    union = pd.concat([df, nuevo], ignore_index=True)
+                    df = union
 
-            cont+=1
-        final = (
-            union.groupby('Side_effect', as_index=False)['Freq_media']
-            .mean()
-        ).sort_values(by="Freq_media", ascending=False)
+                cont+=1
+            final = (
+                union.groupby('Side_effect', as_index=False)['Freq_media']
+                .mean()
+            ).sort_values(by="Freq_media", ascending=False)
 
-        print(f"Para el principio activo: {ppio} con codigo ATC de referencia: {ref} los posibles efectos adversos mas comunes son:")
-        final.head(10)
-        print()
-        print()
+            print(f"Para el principio activo: {ppio} con codigo ATC de referencia: {ref} los posibles efectos adversos mas comunes son:")
+            final.head(10)
+            print()
+            print()
 
 
 
