@@ -1,6 +1,204 @@
 #Importaciones
 import pandas as pd
-#Cuando no hay enzimas por las que se metaboliza se tendrá en cuenta en si hay interacción o no? --------> SE HA TENIDO EN CUENTA COMO LEVE TAMBIEN
+from itertools import product
+
+def principales(df):
+    '''
+    Busca la lista de las enzimas por las que se metaboliza un principio activo y sus principales en todo caso de haber.
+
+    Parametros
+    ------------------
+        df- Solo incluye las filas con el ppio activo concreto que estemos consultando
+    Devolución
+    -----------------------------
+        enz - Lista de enzimas por las que se metaboliza el principio activo
+        ppal - Lista de enzimas principales por las que se metaboliza el fármaco (prioridad=1)
+    '''
+    #df con todas las enzimas por las que se metaboliza (no target)
+    df_enzimas = df[df["Tipo"]=="enzyme" ]
+    # Lista de enzimas unicas por las que se metaboliza el ppio
+    enz = df_enzimas["Gene_name"].unique().tolist()      
+    #Lista de enzimas principales (si tiene) el ppio (categorizadas como 1)
+    ppal = df_enzimas[df_enzimas["Prioridad"]==1]["Gene_name"].unique().tolist()
+
+    return enz, ppal
+
+#LODELSTRIP()LOWER() tambien
+#Igual en vez de true/false para los booleanos deberia devolver los codigos atc y los ppios o algo asi VER A LA VUELTA si
+def interaccion (ppio_1, ppio_2, DDI, texto=False):
+    '''
+    Funcion que determina si existe interacción entre los dos principios activos o no.
+    Ademas si texto, describe: cada principio y sus enzimas, 
+    
+    Parámetros
+    -----------------
+        ppio_1 - El primer principio activo que se quiere comparar con el segundo
+        ppio_2 - El segundo principio activo que se quiere comparar con el primero
+        DDI - Dataframe que contiene los nombres, ATC, enzimas, target, acciones y prioridad
+        texto - Si es necesaria la impresión de texto o no (para comparar el ATC no lo es), por defecto a False
+    Devolucion
+    ------------------
+        Riesgo Leve, Medio y Alto
+    '''
+    
+    #Comprobamos primero que esté en nuestra BBDD
+    if (ppio_1 in DDI["Drug_name"].values) and (ppio_2 in DDI["Drug_name"].values):
+        df_1 = DDI[DDI["Drug_name"] == ppio_1]
+        enz_1, ppal_1 = principales(df_1)
+        
+        df_2 = DDI[DDI["Drug_name"] == ppio_2]
+        enz_2, ppal_2 = principales(df_2)
+    else: 
+        if (ppio_1 in DDI["Drug_name"].values):
+            print(f"{ppio_1} no se ha encontrado en la base de datos, porfavor introduce otro")
+            #Dar posibles opciones??
+        elif (ppio_2 in DDI["Drug_name"].values):
+            print(f"{ppio_2} no se ha encontrado en la base de datos, porfavor introduce otro")
+            #Dar posibles opciones?
+            
+    #Sabiendo que está, si queremos texto o no (descripcion de las enz y los ppios)
+    intro_1 = texto_intro(ppio_1, enz_1, ppal_1,texto, True) 
+    intro_2 = texto_intro(ppio_2, enz_2, ppal_2,texto)
+
+    #Aqui compruebo si hay interaccion o no
+    coincidentes = list(set(ppal_1) & set(ppal_2))
+    #Calculamos el riesgo y si se desea texto imprime el nivel de riesgo que tendrán
+    riesgo = calcular_riesgo(ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto)
+    #Si hay interaccion entre ellas se mostrará en coincidentes, sino, la lista será vacia
+    if coincidentes:
+        #Sacar las acciones y el texto sera para cada enzima por separado
+        if texto:
+            for e in coincidentes:
+                #La fila q contiene la enzima que se quiere ver
+                fila_1 = df_1[df_1["Gene_name"]==e]
+                #Separamos por si tiene | (no da error si no lo tiene)
+                separado_1 = fila_1["Accion"].str.split(r"\|")
+                #Nos quedamos con los distintos
+                acciones_1 = set(separado_1.explode().tolist())
+    
+                #Lo mismo pero con el otro principio consultado
+                fila_2 = df_2[df_2["Gene_name"]==e]
+                separado_2 = fila_2["Accion"].str.split(r"\|")
+                acciones_2 = set(separado_2.explode().tolist())
+
+                #Funcion que contiene el texto
+                texto_acciones(ppio_1,acciones_1,ppio_2,acciones_2,e) #PARA CADA ENZIMA
+
+
+    return riesgo
+
+#TENGO QUE DEVOLVER LOS ATC DE REFERENCIA
+#Si no fuera asi meteria aqui los efectos adversos pero no <3
+def opciones_ATC(DDI, ATC_1, ATC_2, ppio_1, ppio_2):
+    """
+    Busqueda en la base de datos de opciones con el código ATC de los principios activos problema
+
+    Parámetos
+    -------------------------
+        DDI - Dataframe que contiene los nombres, ATC, enzimas, target, acciones y prioridades
+        ATC_1 - Lista con los códigos ATC únicos del ppio_1
+        ATC_2 - Lista con los códigos ATC únicos del ppio_2
+        ppio_1 - El primer principio activo que se quiere comparar con el segundo
+        ppio_2 - El segundo principio activo que se quiere comparar con el primero
+        
+    Devolución
+    ---------------------------
+        #Deberia ser un diccionario HAY QUE CAMBIARLO
+        Lista de tuplas con los dos principios activos de alternativa a cada uno que estan categorizados como interaccion leve
+    """
+    opciones = []
+    #Alternativas 1 y 2
+    alternativas_1 = []
+    alternativas_2 = []
+    
+    #Primer ppio
+    if not ATC_1:
+#       #Poner opcion de introducir codigo ATC?
+        print(f"No ha sido posible buscar alternativas del principio activo: {ppio_1} debido a que no hay datos de cual es su código ATC")
+    else:
+        for ATC in ATC_1:
+            comprobante = False
+            #Cogemos los 5 primeras letras del ATC
+            i=5
+            while comprobante==False :
+                #Si hemos llegado a i=0 es que no hay mas codigos atc que comprobar
+                if i!=0:
+                    #En principio uso las 5 primeras letras del codigo ATC
+                    codigo_referencia = ATC[:i]
+                    #Obtengo los nombres de los principios que sirven como alternativa
+                    principios_1 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
+                    
+                    if principios_1:
+                        #Junto las listas para obtener unas con todas las alternativas del primer principio
+                        alternativas_1 = alternativas_1 + principios_1
+                        #Imprimo las diferentes alternativas
+                        print(f"Para el principio: {ppio_1} con código ATC: {ATC} existen las siguientes alternativas:{principios_1} con código de referencia:{codigo_referencia}")
+                        #Establezco el comprobante a True
+                        comprobante=True
+                    
+                else:
+                    print(f"No ha sido posible encontrar una opción factible para el principio: {ppio_1} con los códigos ATC")
+                    break
+                    
+                #Si no hay principios uso una letra menos de la q estaba usando 
+                i-=1
+            
+    #Segundo ppio
+    if not ATC_2:
+        #Poner opcion de introducir codigo ATC?
+        print(f"No ha sido posible buscar alternativas del principio activo: {ppio_2} debido a que no hay datos de cual es su código ATC")
+    else:
+        for ATC in ATC_2:
+            comprobante = False
+            #Cogemos los 5 primeras letras del ATC
+            i=5
+            while comprobante==False :
+                #Si hemos llegado a i=0 es que no hay mas codigos atc que comprobar
+                if i!=0:
+                    #En principio uso las 5 primeras letras del codigo ATC
+                    codigo_referencia = ATC[:i]
+                    #Obtengo los nombres de los principios que sirven como alternativa
+                    principios_2 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
+                    
+                    if principios_2:
+                        #Junto las listas para obtener unas con todas las alternativas del primer principio
+                        alternativas_2 = alternativas_2 + principios_2
+                        #Imprimo las diferentes alternativas
+                        print(f"Para el principio: {ppio_2} con código ATC: {ATC} existen las siguientes alternativas:{principios_2} con código de referencia:{codigo_referencia}")
+                        #Establezco el comprobante a True
+                        comprobante=True
+                    
+                else:
+                    print(f"No ha sido posible encontrar una opción factible para el principio: {ppio_2} con los códigos ATC")
+                    break
+                    
+                #Si no hay principios uso una letra menos de la q estaba usando 
+                i-=1
+                
+    #Si hay elementos en al menos uno de los dos, comprobamos la interaccion de las combinaciones
+    if alternativas_1 or alternativas_2:
+        #Añado los principios activos
+        alternativas_1 = list(set(alternativas_1 + [ppio_1]))
+        alternativas_2 = list(set(alternativas_2 + [ppio_2]))
+        print()
+        print(alternativas_1)
+        print(alternativas_2)
+        #Combinatoria
+        #Deberia sacar combinatorias de ATC por separado dependiendo de su ATC concreto?? igual poner en un diccionario SI
+        for comb in product(alternativas_1, alternativas_2):
+            interac = interaccion(comb[0], comb[1], DDI)
+            if interac=="Leve":
+                opciones = opciones + [comb]
+        print()
+        print()
+        print(f"Las posibles combinaciones resultantes son:{opciones}")
+
+    else:
+        print("No ha habido ninguna combinacion factible")
+        #Es posible que aqui pueda volver a llamar a la funcion pero con un número menos de i???
+
+    return opciones
+
 def texto_intro (ppio, enzimas, principales, texto, primero=False):
     '''
     Texto de introducción de el principio activo concreto
@@ -16,29 +214,29 @@ def texto_intro (ppio, enzimas, principales, texto, primero=False):
     ---------------
         True cuando hay enzima principal, False cuando no y None cuando no es ninguna tenida en cuenta o no se metaboliza por una enzima (según DrugBank)
     '''
-    #SE MUESTRAN SOLO LAS INTERACCIONES EN LA PRIMERA INGESTA, PONER ESO
+    #Si es la primera vez que ejecuta se muestran explicaciones clave principales
     if primero:
         if texto:
             print("En esta web vamos a indicar si existe una interacción LEVE, MEDIA o ALTA basandonos en las enzimas por las que se metabolizan cada uno de los principios activos consultados en la base de datos de DrugBank")
+            print("Se muestran solo las interacciones en la primera ingesta del principio activo, debido se desconocen los efectos a largo plazo de los principios.")
             print()
             print("Solo se han tenido en cuenta las siguientes enzimas: [CYP2D6, CYP3A4, CYP3A5, CYP2C19, CYP2C9, CYP1A2] que según DrugBank son las 5 por las que se metabolizan mas principios activos. Teniendo en cuenta tambien la CYP3A5 que es como la CYP3A4 (CAMBIO), sin embargo cuando ambas mencionadas previamente se consideraban principales, la CYP3A5 era eliminada debido a  que la mayoria de la pobalcion no expresa esta enzima.")
             print()
             print()
-        
+    #Si no hay lista de enzimas
     if not enzimas:
         if texto:
             print(f"El principio activo: {ppio} no se metaboliza por ninguna enzima de las tenidas en cuenta según la base de datos de DrugBank, por tanto la interacción con cuaquier otro principio activo consultado aparecerá categorizada como LEVE")
             print()
     else:
-        
+        #Si solo hay una enzima es la principal
         if len(enzimas) == 1:
             if texto:
                 print(f"El principio activo: {ppio} solo se metaboliza por una enzima de las que se tienen en cuenta, la cual hemos considerado como enzima de metabolización principal del principio activo")
-                #Aunque no tiene porque ser asi porque puede tener otra via principal de metabolizacion de enzimas no tenidas en cuenta, que pasaba con las fichas tecnicas de CIMA (salian otras enzimas de no mencionadas)
                 print()
             return True
         else:
-            
+            #Si no tiene principales (al menos de las tenidas en cuenta)
             if not principales:
                 if texto:
                     print(f"El principio activo: {ppio} se metaboliza por las siguientes enzimas: {enzimas}, no se ha podido determinar la enzima principal por la que se metaboliza, por tanto las interacciones mostradas a continuacion serán con cada una de ellas")
@@ -46,12 +244,14 @@ def texto_intro (ppio, enzimas, principales, texto, primero=False):
                 return False
 
             else:
+                #Cuando solo hay una principal
                 if len(principales) == 1:
                     if texto:
                         print(f"El principio activo: {ppio} se metaboliza por las enzimas: {enzimas} de las cuales, se ha considerado principal: {principales}, en las siguientes descripciones se mostrarán las interacciones solo con dicha enzima considerada principal")
                         print()
                     return True
                 else:
+                    #Cuando hay varias principales
                     if texto:
                         print(f"El principio activo: {ppio} se metaboliza por las enzimas: {enzimas}, de las cuales se han considerado principales las siguientes: {principales}, en las siguientes descripciones se mostrarán las interacciones solo con dichas enzimas consideradas principales")
                         print()
@@ -78,7 +278,9 @@ def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto=False)
     ---------------------------
         string que contiene "Alta","Media","Leve" dependiendo de cual sea su nivel de riesgo
     """
+    #Si hay coincidentes hay interaccion
     if coincidentes:
+        #Si las dos tienen principal
         if intro_1 and intro_2:
             if texto:
                 print(f"La interacción {ppio_1}-{ppio_2} es considerada Alta")
@@ -86,6 +288,7 @@ def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto=False)
                 print()
             return "Alta"
         else:
+            #Si al menos una no es principal la interaccion es consderada media
             if texto:
                 print(f"La interacción {ppio_1}-{ppio_2} es considerada Media")
                 print(f"Como no sabemos las enzimas principales de por lo menos uno de los dos principios activos pero coinciden en la metabolización de las siguientes enzimas: {coincidentes} su interacción es considerada Media")
@@ -93,14 +296,12 @@ def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto=False)
             return "Media"
 
     else:
+        #Si no hay coincidentes lo consideramos como sin interaccion, categorizado como Leve
         if texto:
             print(f"La interacción {ppio_1}-{ppio_2} es considerada Leve")
             print("Los principios activos no coinciden en ser metabolizados por ninguna enzima de las tenidas en cuenta y por tanto su interacción es categorizada como Leve")
             print()
         return "Leve"
-
-
-
 
 
 def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
@@ -163,7 +364,7 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
                 print()
 
             else:
-                #Texto genérico
+                #Texto genérico que describe interaccion
                 if len(mias_1)==1 and len(mias_2)==1:
                     a1 = traduccion[mias_1[0]]
                     a2 = traduccion[mias_2[0]]
@@ -175,12 +376,8 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
                     print(f"Para el principio: {ppio_2} las acciones registradas son:{mias_2}")
 
 
-              
 
-
-#Y SI UNO TIENE DOS ACCIONES????? CON QUE XUXA ME QUEDO
-
-
+#Los efectos salen en ingles porque la bbdd consultada es en ingles
 def texto_efectos (lista_ATC, ATC_ref, efectos_adversos, ppio):
     '''
     Imprime una tabla con los top 10 efectos adversos que esten asociados con los codigos ATC de cada uno de los principios (por separado)
@@ -196,28 +393,41 @@ def texto_efectos (lista_ATC, ATC_ref, efectos_adversos, ppio):
     ------------------
         None
     '''
+    #Si no hay ATC de referecncia significa que no se ha encontrado ninguna alternativa
     if len(ATC_ref)==0:
         print(f'No se ha podido encontar ninguna alternativa para el principio: {ppio}')
+    
     else:
+        #Sino, por cada ATC de referencia de el principio concreto
         for ref in ATC_ref:
+            #Vemos cuales son los codigos ATC que tienen cada codigo de referencia (5 letras al principio)
             ATCs = [x.str.startswith(ref, na=False) for x in lista_ATC]
+            #Inicializamos el contador
             cont = 0
 
+            #Por cada uno de los codigos ATC asociados al de referencia sacamos sus efectos adversos
             for uno in ATCs:
+                #Si es el primero determina df
                 if cont == 0:
                     df = efectos_adversos[efectos_adversos["Drug_ATC"]==uno]
                 else:
+                    #Cuando no es el primero determina nuevo
                     nuevo = efectos_adversos[efectos_adversos["Drug_ATC"]==uno]
+                    #Los uno
                     union = pd.concat([df, nuevo], ignore_index=True)
+                    #Y cambio la variable df
                     df = union
-
+                #Cambiamos el contador
                 cont+=1
+
+            #Para solo un codigo de referencia saco los 10 efectos adversos mas comunes sacados de SIDDER ordenados por mayor frecuencia
+            #Si hay un efecto que esta dos veces se calcula la media de las dos frecuencias y se tiene en cuenta esa
             final = (
                 union.groupby('Side_effect', as_index=False)['Freq_media']
                 .mean()
             ).sort_values(by="Freq_media", ascending=False)
 
-            print(f"Para el principio activo: {ppio} con codigo ATC de referencia: {ref} los posibles efectos adversos mas comunes son:")
+            print(f"Para el principio activo: {ppio} con codigo ATC de referencia: {ref} los 10 posibles efectos adversos mas comunes son:")
             final.head(10)
             print()
             print()
@@ -227,5 +437,15 @@ def texto_efectos (lista_ATC, ATC_ref, efectos_adversos, ppio):
 
 
 
-
-   
+'''
+#Pruebas con casos limite
+ppio_1 = "Omeprazole"
+ppio_2 = "Clopidogrel"
+existe = interaccion (ppio_1, ppio_2, DDI, efectos, texto=True)
+if existe=="Alta" or existe=="Media":
+    df_1 = DDI[DDI["Drug_name"] == ppio_1]   
+    ATC_1 = df_1["Drug_ATC"].unique()
+    df_2 = DDI[DDI["Drug_name"] == ppio_2]
+    ATC_2 = df_2["Drug_ATC"].unique()
+    opciones_ATC(DDI, efectos, ATC_1, ATC_2, ppio_1, ppio_2)
+'''

@@ -1,5 +1,11 @@
 from dash import Dash, html, dcc
 from dash import Input, Output, State
+from textos import *
+import pandas as pd
+
+#Accedemos a los dos csv
+DDI = pd.read_csv("DDI_sea.csv")
+efectos = pd.read_csv("efectos_adversos.csv")
 
 #Para integrar el código que tengo en dash tengo que separar mas las funciones
 
@@ -67,22 +73,18 @@ app.layout = html.Div([
     State("ppio2", "value")
 )
 #Analizo la interaccion
-def analizar_farmacos(n_clicks, farmaco1, farmaco2):
+def analizar_farmacos(n_clicks, ppio1, ppio2):
 
     if n_clicks is None:
         return {}
 
-    if not farmaco1 or not farmaco2:
+    if not ppio1 or not ppio2:
         return {}
 
-    # Ejemplo
-    datos = {
-        "efectos": f"Efectos adversos de {farmaco1} y {farmaco2}",
-        "interacciones": f"Interacciones entre {farmaco1} y {farmaco2}",
-        "contraindicaciones": f"Contraindicaciones de {farmaco1} y {farmaco2}"
-    }
+    #La funcion interacción sin riesgo me devuelve el nivel de interaccion que tengan
+    riesgo = interaccion(ppio1, ppio2, DDI)
 
-    return datos
+    return riesgo
 
 #VARIOS CALLBACK NECESARIOS EN ESTE CASO
 @app.callback(
