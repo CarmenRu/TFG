@@ -438,7 +438,84 @@ def main():
 
     return df
     
+#Separacion de bloques de medicamentos
+def dividir_df(df, tamano):
+    return [
+        df[i:i+tamano]
+        for i in range(0, len(df), tamano)
+    ]
 
+#PDFs
+def pdfs (carpeta, csv):
+    import os
+    import requests
+    import pandas as pd
+    import time
+
+    df = pd.read_csv(csv)
+    
+    # Carpeta destino
+    carpeta_destino = os.path.join("D:\\", carpeta)
+
+    os.makedirs(carpeta_destino, exist_ok=True)
+    
+    # Recorrer medicamentos únicos
+    for fila in df.itertuples():
+    
+        drug_name = fila.drug_name
+        numero_registro = fila.numero_registro
+    
+        # Lista de registros alternativos del mismo drug_name en total
+        alternativas = total.loc[
+            total["drug_name"] == drug_name,
+            "numero_registro"
+        ].drop_duplicates().tolist()
+    
+        # Poner primero el original
+        registros_a_probar = [numero_registro] + [
+            x for x in alternativas if x != numero_registro
+        ]
+    
+        descargado = False
+        #Para que no de errores de muchas requests (429)
+        time.sleep(2)
+    
+        for reg in registros_a_probar:
+    
+            # URL
+            url = f"https://cima.aemps.es/cima/pdfs/es/ft/{reg}/FT_{reg}.html.pdf"
+    
+            # Nombre archivo
+            nombre_archivo = f"{drug_name}.pdf"
+    
+            ruta_archivo = os.path.join(carpeta_destino, nombre_archivo)
+    
+            try:
+                print(f"Intentando {drug_name} - registro {reg}")
+    
+                response = requests.get(url, timeout=15)
+                time.sleep(2)
+    
+                if response.status_code == 200:
+    
+                    with open(ruta_archivo, "wb") as f:
+                        f.write(response.content)
+    
+                    print(f"Guardado en: {ruta_archivo}")
+    
+                    descargado = True
+                    break
+    
+                else:
+                    print(f"No encontrado ({response.status_code})")
+    
+            except Exception as e:
+                print(f" -- Error: {e}")
+    
+        if not descargado:
+            print(f" --------------> No se pudo descargar {drug_name}")
+    
+    print("\nProceso terminado.")
 
 
 
