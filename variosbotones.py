@@ -7,7 +7,6 @@ import pandas as pd
 DDI = pd.read_csv("DDI_sea.csv")
 efectos = pd.read_csv("efectos_adversos.csv")
 
-#Para integrar el código que tengo en dash tengo que separar mas las funciones
 
 app = Dash(__name__)
 
@@ -28,8 +27,8 @@ app.layout = html.Div([
 
     # Botón principal
     html.Button(
-        "Analizar interacción",
-        id="btn_interaccion"
+        "Analizar",
+        id="btn_analizar"
     ),
 
     html.Hr(),
@@ -41,13 +40,13 @@ app.layout = html.Div([
     ),
 
     html.Button(
-        "Descripcion metabolismo",
-        id="btn_enzimas"
+        "Interacciones",
+        id="btn_interacciones"
     ),
 
     html.Button(
-        "Descripcion interacciones",
-        id="btn_acciones"
+        "Contraindicaciones",
+        id="btn_contraindicaciones"
     ),
 
     html.Hr(),
@@ -67,13 +66,12 @@ app.layout = html.Div([
 @app.callback(
     Output("datos_analisis", "data"),
 
-    Input("btn_interaccion", "n_clicks"),
+    Input("btn_analizar", "n_clicks"),
 
     State("ppio1", "value"),
     State("ppio2", "value")
 )
-#Analizo la interaccion
-def analizar_farmacos(n_clicks, ppio1, ppio2):
+def analizar_farmacos(n_clicks, farmaco1, farmaco2):
 
     if n_clicks is None:
         return {}
@@ -81,10 +79,12 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     if not ppio1 or not ppio2:
         return {}
 
-    #La funcion interacción sin riesgo me devuelve el nivel de interaccion que tengan
-    riesgo = interaccion(ppio1, ppio2, DDI)
+    DDI["ppio_normalizado"] = DDI["Drug_name"].str.strip().str.casefold()
+    ppio1 = ppio1.strip().casefold()
+    ppio2 = ppio2.strip().casefold()
+    dic_resumen = interaccion (ppio1, ppio2, DDI)
 
-    return riesgo
+    return dic_resumen
 
 #VARIOS CALLBACK NECESARIOS EN ESTE CASO
 @app.callback(
@@ -94,54 +94,83 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
 
     State("datos_analisis", "data")
 )
-#Mostramos los efectos, solo si hay interaccion....funcion
+#Ver primero como saco los ATC de referencia
 def mostrar_efectos(n_clicks, datos):
 
     if n_clicks is None:
         return ""
 
-    if not datos:
+    if not dic_resumen:
         return "Primero pulsa Analizar"
 
-    return datos["efectos"]
+    return 
 
 
 @app.callback(
     Output("resultado", "children"),
 
-    Input("btn_enzimas", "n_clicks"),
+    Input("btn_interacciones", "n_clicks"),
 
     State("datos_analisis", "data")
 )
-#Mostramos la descripcion de enzimas: funcion
-def mostrar_descr_enz(n_clicks, datos):
+def mostrar_interacciones(n_clicks, datos):
 
     if n_clicks is None:
         return ""
 
-    if not datos:
+    if not dic_resumen:
         return "Primero pulsa Analizar"
 
-    return datos["interacciones"]
+    df_1 = dic_resumen[ppio1][0]
+    df_2 = dic_resumen[ppio2][0]
+    coincidentes = dic_resumen["interaccion"]
+    #Si hay interaccion entre ellas se mostrará en coincidentes, sino, la lista será vacia
+    if coincidentes:
+        #Sacar las acciones y el texto sera para cada enzima por separado
+        if texto:
+            for e in coincidentes:
+                #La fila q contiene la enzima que se quiere ver
+                fila_1 = df_1[df_1["Gene_name"]==e]
+                #Separamos por si tiene | (no da error si no lo tiene)
+                separado_1 = fila_1["Accion"].str.split(r"\|")
+                #Nos quedamos con los distintos
+                acciones_1 = set(separado_1.explode().tolist())
+    
+                #Lo mismo pero con el otro principio consultado
+                fila_2 = df_2[df_2["Gene_name"]==e]
+                separado_2 = fila_2["Accion"].str.split(r"\|")
+                acciones_2 = set(separado_2.explode().tolist())
+    
+                #Funcion que contiene el texto
+                texto_acciones(ppio_1,acciones_1,ppio_2,acciones_2,e) #PARA CADA ENZIMA
+                
+    return 
 
 
 @app.callback(
     Output("resultado", "children"),
 
-    Input("btn_acciones", "n_clicks"),
+    Input("btn_contraindicaciones", "n_clicks"),
 
     State("datos_analisis", "data")
 )
-#Mostramos la descripcion de las acciones. otra funcion
-def mostrar_descr_acciones(n_clicks, datos):
+def mostrar_opciones(n_clicks, datos):
 
     if n_clicks is None:
         return ""
 
-    if not datos:
+    if not dic_resumen:
         return "Primero pulsa Analizar"
 
-    return datos["contraindicaciones"]
+    riesgo = dic_resumen["riesgo"]
+    df_1 = dic_resumen[ppio1][0]
+    df_2 = dic_resumen[ppio2][0]
+    if riesgo=="Alta" or riesgo=="Media":   
+        ATC_1 = df_1["Drug_ATC"].unique().tolist()
+        ATC_2 = df_2["Drug_ATC"].unique().tolist()
+        opciones = opciones_ATC(DDI, efectos, ATC_1, ATC_2, ppio1, ppio2)
+        
+    return opciones
 
 
 
