@@ -2,6 +2,23 @@
 import pandas as pd
 from itertools import product
 
+def texto_principal(ppio_1, ppio_2, riesgo):
+    '''
+
+    '''
+    texto = ""
+    
+    if (ppio_1 not in DDI["ppio_normalizado"].values):
+        texto += f"{ppio_1} no se ha encontrado en la base de datos, porfavor introduce otro y vuelve a pulsar el boton analizar.\n\n"
+        #Dar posibles opciones??
+    elif (ppio_2 not in DDI["ppio_normalizado"].values):
+        texto += f"{ppio_2} no se ha encontrado en la base de datos, porfavor introduce otro y vuelve a pulsar el boton analizar.\n\n"
+        #Dar posibles opciones?
+    else:
+        texto += f"Nivel de riesgo: {riesgo}.\n\n"
+        
+    return texto
+    
 def principales(df):
     '''
     Busca la lista de las enzimas por las que se metaboliza un principio activo y sus principales en todo caso de haber.
@@ -15,7 +32,7 @@ def principales(df):
         ppal - Lista de enzimas principales por las que se metaboliza el fármaco (prioridad=1)
     '''
     #df con todas las enzimas por las que se metaboliza (no target)
-    df_enzimas = df[df["Tipo"]=="enzyme" ]
+    df_enzimas = df[df["Tipo"]=="enzyme"]
     # Lista de enzimas unicas por las que se metaboliza el ppio
     enz = df_enzimas["Gene_name"].unique().tolist()      
     #Lista de enzimas principales (si tiene) el ppio (categorizadas como 1)
@@ -23,9 +40,8 @@ def principales(df):
 
     return enz, ppal
 
-#LODELSTRIP()LOWER() tambien
-#Igual en vez de true/false para los booleanos deberia devolver los codigos atc y los ppios o algo asi VER A LA VUELTA si
-def interaccion (ppio_1, ppio_2, DDI, texto=False):
+
+def interaccion (ppio_1, ppio_2, DDI):
     '''
     Funcion que determina si existe interacción entre los dos principios activos o no.
     Ademas si texto, describe: cada principio y sus enzimas, 
@@ -35,57 +51,128 @@ def interaccion (ppio_1, ppio_2, DDI, texto=False):
         ppio_1 - El primer principio activo que se quiere comparar con el segundo
         ppio_2 - El segundo principio activo que se quiere comparar con el primero
         DDI - Dataframe que contiene los nombres, ATC, enzimas, target, acciones y prioridad
-        texto - Si es necesaria la impresión de texto o no (para comparar el ATC no lo es), por defecto a False
     Devolucion
     ------------------
-        Riesgo Leve, Medio y Alto
+        String con el nivel de riesgo Leve, Medio y Alto
     '''
-    
     #Comprobamos primero que esté en nuestra BBDD
-    if (ppio_1 in DDI["Drug_name"].values) and (ppio_2 in DDI["Drug_name"].values):
-        df_1 = DDI[DDI["Drug_name"] == ppio_1]
+    if (ppio_1 in DDI["ppio_normalizado"].values) and (ppio_2 in DDI["ppio_normalizado"].values):
+        df_1 = DDI[DDI["ppio_normalizado"] == ppio_1]
         enz_1, ppal_1 = principales(df_1)
         
-        df_2 = DDI[DDI["Drug_name"] == ppio_2]
+        df_2 = DDI[DDI["ppio_normalizado"] == ppio_2]
         enz_2, ppal_2 = principales(df_2)
-    else: 
-        if (ppio_1 in DDI["Drug_name"].values):
-            print(f"{ppio_1} no se ha encontrado en la base de datos, porfavor introduce otro")
-            #Dar posibles opciones??
-        elif (ppio_2 in DDI["Drug_name"].values):
-            print(f"{ppio_2} no se ha encontrado en la base de datos, porfavor introduce otro")
-            #Dar posibles opciones?
             
-    #Sabiendo que está, si queremos texto o no (descripcion de las enz y los ppios)
-    intro_1 = texto_intro(ppio_1, enz_1, ppal_1,texto, True) 
-    intro_2 = texto_intro(ppio_2, enz_2, ppal_2,texto)
-
-    #Aqui compruebo si hay interaccion o no
-    coincidentes = list(set(ppal_1) & set(ppal_2))
-    #Calculamos el riesgo y si se desea texto imprime el nivel de riesgo que tendrán
-    riesgo = calcular_riesgo(ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto)
-    #Si hay interaccion entre ellas se mostrará en coincidentes, sino, la lista será vacia
-    if coincidentes:
-        #Sacar las acciones y el texto sera para cada enzima por separado
-        if texto:
-            for e in coincidentes:
-                #La fila q contiene la enzima que se quiere ver
-                fila_1 = df_1[df_1["Gene_name"]==e]
-                #Separamos por si tiene | (no da error si no lo tiene)
-                separado_1 = fila_1["Accion"].str.split(r"\|")
-                #Nos quedamos con los distintos
-                acciones_1 = set(separado_1.explode().tolist())
+        #Sabiendo que está, no queremos texto
+        intro_1 = texto_intro(ppio_1, enz_1, ppal_1) 
+        intro_2 = texto_intro(ppio_2, enz_2, ppal_2)
     
-                #Lo mismo pero con el otro principio consultado
-                fila_2 = df_2[df_2["Gene_name"]==e]
-                separado_2 = fila_2["Accion"].str.split(r"\|")
-                acciones_2 = set(separado_2.explode().tolist())
+        #Comparamos con las ppales o con la lista de enzimas
+        if intro_1:
+            comparo1 = ppal_1
+        else:
+            comparo1 = enz_1
+        if intro_2:
+            comparo2 = ppal_2
+        else:
+            comparo2 = enz_2
+        #Aqui compruebo si hay interaccion o no
+        coincidentes = list(set(comparo1) & set(comparo2))
+        #Calculamos el riesgo y si se desea texto imprime el nivel de riesgo que tendrán
+        riesgo = calcular_riesgo(ppio_1, ppio_2,coincidentes, intro_1, intro_2)
 
-                #Funcion que contiene el texto
-                texto_acciones(ppio_1,acciones_1,ppio_2,acciones_2,e) #PARA CADA ENZIMA
+        if riesgo=="Alta" or riesgo=="Media":
+            ATC_1 = df_1["Drug_ATC"].unique().tolist()
+            ATC_2 = df_2["Drug_ATC"].unique().tolist()
+            ref_1 = []
+            ref_2 = []
+            #Poner opcion de introducir codigo ATC?
+            if ATC_1:
+                for ATC in ATC_1:
+                    comprobante = False
+                    #Cogemos los 5 primeras letras del ATC
+                    i=5
+                    while comprobante==False :
+                        #Si hemos llegado a i=0 es que no hay mas codigos atc que comprobar
+                        if i!=0:
+                            #En principio uso las 5 primeras letras del codigo ATC, luego voy bajando si no se encuentran opciones
+                            codigo_referencia = ATC[:i]
+                            #Para asegurarnos de que la lista al principio está vacía (anteriores búsquedas)
+                            principios_1 = []
+                            #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
+                            if codigo_referencia not in ref_1:
+                                principios_1 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
+                            #Si hay principios que coincidan con el codigo de referencia lo guardo
+                            if principios_1:
+                                ref_1.append(codigo_referencia)
+                                #Establezco el comprobante a True
+                                comprobante = True
+                            
+                        else:
+                            #Finalizamos el bucle
+                            comprobante = True
+                            
+                        #Si no hay principios uso una letra menos de la q estaba usando 
+                        i-=1
+                    
+            #Segundo ppio
+            if ATC_2:
+                for ATC in ATC_2:
+                    comprobante = False
+                    #Cogemos los 5 primeras letras del ATC
+                    i=5
+                    while comprobante==False :
+                        #Si hemos llegado a i=0 es que no hay mas codigos atc que comprobar
+                        if i!=0:
+                            #En principio uso las 5 primeras letras del codigo ATC, luego voy bajando si no se encuentran opciones
+                            codigo_referencia = ATC[:i]
+                            #Para asegurarnos de que la lista al principio está vacía (anteriores búsquedas)
+                            principios_2 = []
+                            #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
+                            if codigo_referencia not in ref_2:
+                                principios_2 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
+                            #Si hay principios que coincidan con el codigo de referencia lo guardo
+                            if principios_2:
+                                ref_2.append(codigo_referencia)
+                                #Establezco el comprobante a True
+                                comprobante = True
+                            
+                        else:
+                            #Finalizamos el bucle
+                            comprobante = True
+                            
+                        #Si no hay principios uso una letra menos de la q estaba usando 
+                        i-=1
 
-
-    return riesgo
+        else:
+            ATC_1 = []
+            ATC_2 = []
+            ref_1 = []
+            ref_2 = []
+        #Mas explicito 
+        dic_resumen = {"p1" : ppio_1,
+                       "p2" : ppio_2,
+                       
+                       "df1" : df_1.to_dict("records"),
+                       "df2" : df_2.to_dict("records"),
+                       
+                       "enz1" : enz_1,
+                       "enz2" : enz_2,
+                       
+                       "ppal1" : ppal_1,
+                       "ppal2" : ppal_2,
+                       
+                       "ATC1" : ATC_1,
+                       "ATC2" : ATC_2,
+                       
+                       "ref1" : ref_1,
+                       "ref2" : ref_2,
+                       
+                       "interaccion" : coincidentes,
+                       "riesgo" : riesgo
+                      }
+    
+    return dic_resumen
 
 #TENGO QUE DEVOLVER LOS ATC DE REFERENCIA
 #Si no fuera asi meteria aqui los efectos adversos pero no <3

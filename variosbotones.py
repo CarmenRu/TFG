@@ -5,6 +5,8 @@ import pandas as pd
 
 #Accedemos a los dos csv
 DDI = pd.read_csv("DDI_sea.csv")
+#Normalizamos los nombres
+DDI["ppio_normalizado"] = DDI["Drug_name"].str.strip().str.casefold()
 efectos = pd.read_csv("efectos_adversos.csv")
 
 
@@ -40,7 +42,7 @@ app.layout = html.Div([
     ),
 
     html.Button(
-        "Interacciones",
+        "Interacciones",   
         id="btn_interacciones"
     ),
 
@@ -53,38 +55,52 @@ app.layout = html.Div([
 
     # Almacenamiento interno
     dcc.Store(
-        id="datos_analisis"
+        id="dic_resumen"
     ),
-
-    # Zona de salida
+    # Salida que quiero que se quede siempre fija
+    html.Div(
+        id= "fijo"
+    ),
+    # Salida que va cambiando dependiendo en que boton se presione
     html.Div(
         id="resultado"
     )
+    
 ])
 
 
 @app.callback(
-    Output("datos_analisis", "data"),
-
+    Output("dic_resumen", "data"),
+    Output("fijo", "children"),
+    
     Input("btn_analizar", "n_clicks"),
 
     State("ppio1", "value"),
     State("ppio2", "value")
 )
-def analizar_farmacos(n_clicks, farmaco1, farmaco2):
+#En este quiero que me saque tambien:
+# texto_principal(ppio_1, ppio_2, riesgo) devuelve cadena de texto
+def analizar_farmacos(n_clicks, ppio1, ppio2):
 
     if n_clicks is None:
-        return {}
+        return {}, ""
 
     if not ppio1 or not ppio2:
-        return {}
+        return {}, "Introduce ambos principios activos"
 
-    DDI["ppio_normalizado"] = DDI["Drug_name"].str.strip().str.casefold()
     ppio1 = ppio1.strip().casefold()
     ppio2 = ppio2.strip().casefold()
+    
     dic_resumen = interaccion (ppio1, ppio2, DDI)
-
-    return dic_resumen
+    
+    riesgo = dic_resumen["riesgo"]
+    cadena_texto = texto_principal(ppio1, ppio2, riesgo)
+    
+    return (dic_resumen, 
+            html.Div([
+                html.H3(f"Interacción {ppio1} - {ppio2}."),
+                html.Pre(cadena_texto)])
+           )
 
 #VARIOS CALLBACK NECESARIOS EN ESTE CASO
 @app.callback(
@@ -101,8 +117,10 @@ def mostrar_efectos(n_clicks, datos):
         return ""
 
     if not dic_resumen:
-        return "Primero pulsa Analizar"
+        return "Primero pulsa Analizar o introduce valores validos como principios"
 
+    texto_efectos (ATC1, ATC_ref1, efectos, ppio1)
+    texto_efectos (ATC2, ATC_ref2, efectos, ppio2)
     return 
 
 
@@ -119,7 +137,7 @@ def mostrar_interacciones(n_clicks, datos):
         return ""
 
     if not dic_resumen:
-        return "Primero pulsa Analizar"
+        return "Primero pulsa Analizar o introduce valores validos como principios"
 
     df_1 = dic_resumen[ppio1][0]
     df_2 = dic_resumen[ppio2][0]
@@ -160,7 +178,7 @@ def mostrar_opciones(n_clicks, datos):
         return ""
 
     if not dic_resumen:
-        return "Primero pulsa Analizar"
+        return "Primero pulsa Analizar o introduce valores validos como principios"
 
     riesgo = dic_resumen["riesgo"]
     df_1 = dic_resumen[ppio1][0]
