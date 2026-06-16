@@ -125,6 +125,7 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
             ])
             
            )
+    
 @app.callback(
     Output("resultado", "children"),
     Input("btn_enzimas", "n_clicks"),
@@ -133,6 +134,7 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     Input("btn_opciones", "n_clicks"),
     State("datos_analisis", "data")
 )
+
 def mostrar_resultado(n1, n2, n3, n4, datos):
     boton = ctx.triggered_id
 
