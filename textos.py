@@ -99,14 +99,17 @@ def interaccion (ppio_1, ppio_2, DDI):
                             codigo_referencia = ATC[:i]
                             #Para asegurarnos de que la lista al principio está vacía (anteriores búsquedas)
                             principios_1 = []
-                            #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
-                            if codigo_referencia not in ref_1:
-                                principios_1 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
-                            #Si hay principios que coincidan con el codigo de referencia lo guardo
-                            if principios_1:
-                                ref_1.append(codigo_referencia)
-                                #Establezco el comprobante a True
+                            #Si ya existe el codigo de referencia
+                            if codigo_referencia in ref_1:
                                 comprobante = True
+                            else:
+                                #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
+                                principios_1 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
+                                #Si hay principios que coincidan con el codigo de referencia lo guardo
+                                if principios_1:
+                                    ref_1.append(codigo_referencia)
+                                    #Establezco el comprobante a True
+                                    comprobante = True
                             
                         else:
                             #Finalizamos el bucle
@@ -128,14 +131,17 @@ def interaccion (ppio_1, ppio_2, DDI):
                             codigo_referencia = ATC[:i]
                             #Para asegurarnos de que la lista al principio está vacía (anteriores búsquedas)
                             principios_2 = []
-                            #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
-                            if codigo_referencia not in ref_2:
-                                principios_2 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
-                            #Si hay principios que coincidan con el codigo de referencia lo guardo
-                            if principios_2:
-                                ref_2.append(codigo_referencia)
-                                #Establezco el comprobante a True
+                            #Si ya existe el codigo de referencia
+                            if codigo_referencia in ref_2:
                                 comprobante = True
+                            else:
+                                #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
+                                principios_2 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
+                                #Si hay principios que coincidan con el codigo de referencia lo guardo
+                                if principios_2:
+                                    ref_2.append(codigo_referencia)
+                                    #Establezco el comprobante a True
+                                    comprobante = True
                             
                         else:
                             #Finalizamos el bucle
@@ -205,19 +211,18 @@ def opciones_ATC(alternativas_1, alternativas_2, ppio_1, ppio_2, DDI):
     alt_2 = list(set(alternativas_2 + [ppio_2]))
     #Combinatoria
     #Deberia sacar combinatorias de ATC por separado dependiendo de su ATC concreto?? igual poner en un diccionario SI
-    for comb in product(alt_1, alt_2):
-        ppio1 = comb[0]
-        ppio2 = comb[1]
-        diccionario = interaccion (ppio1, ppio2, DDI)
+    for p1,p2 in product(alt_1, alt_2):
+        p1 = p1.strip().casefold()
+        p2 = p2.strip().casefold()
+        diccionario = interaccion (p1, p2, DDI)
         if not diccionario:
             continue
-        riesgo = diccionario["riesgo"]
-        if riesgo=="Leve":
+        if diccionario["riesgo"]=="Leve":
             #Tupla
-            opciones = opciones + [comb]
+            opciones = opciones + [(p1,p2)]
 
     #Cambiar opciones
-    return opciones 
+    return opciones  
 
 
 def texto_intro (ppio, enzimas, principales, texto=False, primero=False):
