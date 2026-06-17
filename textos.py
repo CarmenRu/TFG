@@ -2,18 +2,31 @@
 import pandas as pd
 from itertools import product
 
-def texto_principal(ppio_1, ppio_2, riesgo,DDI):
+def texto_principal(ppio_1, ppio_2, riesgo, DDI):
     '''
+    Devuelve el texto que se fijará en la parte de arriba
 
+    Parámetros
+    ------------------------
+        ppio_1 - El primer principio activo que se quiere comparar con el segundo
+        ppio_2 - El segundo principio activo que se quiere comparar con el primero
+        riesgo - Cadena de texto que indica el nivel de riesgo en la interaccion (Alta, Media, Leve)
+        DDI - Dataframe que contiene los nombres, ATC, enzimas, target, acciones y prioridad
+    Devolución
+    ---------------
+        texto - cadena de texto explicativa
     '''
+    #Inicializo la cadena de texto
     texto = ""
-    
+
+    #Cuando no se encuentra alguno de los principios se muestra en pantalla ese error
     if (ppio_1 not in DDI["ppio_normalizado"].values):
         texto += f"{ppio_1} no se ha encontrado en la base de datos, porfavor introduce otro y vuelve a pulsar el boton analizar.\n\n"
-        #Dar posibles opciones??
+        
     elif (ppio_2 not in DDI["ppio_normalizado"].values):
         texto += f"{ppio_2} no se ha encontrado en la base de datos, porfavor introduce otro y vuelve a pulsar el boton analizar.\n\n"
-        #Dar posibles opciones?
+
+    #Sino, se muestra el nivel de riesgo de la interacción
     else:
         texto += f"Nivel de riesgo: {riesgo}.\n\n"
         
@@ -57,17 +70,18 @@ def interaccion (ppio_1, ppio_2, DDI):
     dic_resumen = {}
     #Comprobamos primero que esté en nuestra BBDD
     if (ppio_1 in DDI["ppio_normalizado"].values) and (ppio_2 in DDI["ppio_normalizado"].values):
+        
+        #Conseguimos la lista de enzimas por las que se metaboliza cada principio y las principales en todo caso de haber
         df_1 = DDI[DDI["ppio_normalizado"] == ppio_1]
         enz_1, ppal_1 = principales(df_1)
-        
         df_2 = DDI[DDI["ppio_normalizado"] == ppio_2]
         enz_2, ppal_2 = principales(df_2)
             
-        #Sabiendo que está, no queremos texto
+        #Sabiendo que está saber si tiene principales o no
         intro_1 = texto_intro(ppio_1, enz_1, ppal_1) 
         intro_2 = texto_intro(ppio_2, enz_2, ppal_2)
     
-        #Comparamos con las ppales o con la lista de enzimas
+        #Comparamos con las ppales o con la lista de enzimas dependiendo si hay principal o nop
         if intro_1:
             comparo1 = ppal_1
         else:
@@ -105,6 +119,8 @@ def interaccion (ppio_1, ppio_2, DDI):
                             else:
                                 #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
                                 principios_1 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
+                                #Elimino el principio de la lista para que esté vacía si solo existe el principio en ella.
+                                principios_1 = [x for x in principios_1 if x.strip().casefold() != ppio_1]
                                 #Si hay principios que coincidan con el codigo de referencia lo guardo
                                 if principios_1:
                                     ref_1.append(codigo_referencia)
@@ -137,6 +153,8 @@ def interaccion (ppio_1, ppio_2, DDI):
                             else:
                                 #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
                                 principios_2 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
+                                #Elimino el principio de la lista para que esté vacía si solo existe el principio en ella.
+                                principios_2 = [x for x in principios_2 if x.strip().casefold() != ppio_2]
                                 #Si hay principios que coincidan con el codigo de referencia lo guardo
                                 if principios_2:
                                     ref_2.append(codigo_referencia)

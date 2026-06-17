@@ -18,13 +18,13 @@ app.layout = html.Div([
     dcc.Input(
         id="ppio1",
         type="text",
-        placeholder="Primer fármaco"
+        placeholder="Introduce el primer principio (en inglés)"
     ),
 
     dcc.Input(
         id="ppio2",
         type="text",
-        placeholder="Segundo fármaco"
+        placeholder="Introduce el segundo principio (en inglés)"
     ),
 
     # Botón principal
@@ -181,13 +181,20 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
             
             for ref in ATC_ref1:
                 df = texto_efectos (ATC1, ref, efectos, ppio1)
-            
-                componentes.extend([
-                    html.Pre(f"Para el ATC de referencia {ref} los 10 posibles efectos adversos mas comunes son:"),
-            
-                    dash_table.DataTable(data=df.to_dict("records"),
-                        columns=[{"name": c, "id": c} for c in df.columns])
-                ])
+
+                if not df:
+                    componentes.extend([
+                        html.Pre(f'No hay datos de efectos secundarios registrados en SIDDER para los codigos ATC con codigo de referencia {ref}.\n')
+
+                    ])
+
+                else:
+                    componentes.extend([
+                        html.Pre(f"Para el ATC de referencia {ref} los 10 posibles efectos adversos mas comunes son:"),
+                
+                        dash_table.DataTable(data=df.to_dict("records"),
+                            columns=[{"name": c, "id": c} for c in df.columns])
+                    ])
             
         componentes.append(html.H2(f'----{ppio2}-----'))
         
@@ -201,13 +208,19 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
             for ref in ATC_ref2:
             
                 df = texto_efectos (ATC2, ref, efectos, ppio2)
-            
-                componentes.extend([
-                    html.Pre(f"Para el ATC de referencia {ref} los 10 posibles efectos adversos mas comunes son:"),
-            
-                    dash_table.DataTable(data=df.to_dict("records"),
-                        columns=[{"name": c, "id": c}for c in df.columns])
-                ])
+
+                if not df:
+                    componentes.extend([
+                        html.Pre(f'No hay datos de efectos secundarios registrados en SIDDER para los codigos ATC con codigo de referencia {ref}.\n')
+                    ])
+
+                else:
+                    componentes.extend([
+                        html.Pre(f"Para el ATC de referencia {ref} los 10 posibles efectos adversos mas comunes son:"),
+                
+                        dash_table.DataTable(data=df.to_dict("records"),
+                            columns=[{"name": c, "id": c} for c in df.columns])
+                    ])
         
         return html.Div(componentes)
 
