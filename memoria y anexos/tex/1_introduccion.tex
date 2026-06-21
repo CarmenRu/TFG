@@ -1,10 +1,33 @@
 \capitulo{1}{Introducción}
 
+\section{Contexto}
+Las interacciones farmacológicas constituyen uno de los principales problemas asociados a la prescripción simultánea de varios medicamentos. Con esto pueden producirse alteraciones en su metabolismo que modifiquen su eficacia terapéutica o aumenten la probabilidad de aparición de efectos adversos.
 
-En este capítulo se presenta el trabajo realizado y se contextualiza el problema abordado. 
-Se debe indicar el ámbito en el que se enmarca el Trabajo Fin de Grado, la motivación del mismo 
-y la relevancia del problema tratado. 
+Dentro de las interacciones farmacocinéticas, una de las causas más frecuentes es la competencia por enzimas metabolizadoras pertenecientes al sistema del citocromo P450, especialmente CYP3A4, CYP2D6, CYP2C19, CYP2C9 y CYP1A2.
+
+La identificación temprana de estas interacciones resulta fundamental para mejorar la seguridad del paciente y facilitar la toma de decisiones clínicas.
+
+\section{Motivación}
+La mayoría de herramientas comerciales presentan dos limitaciones:
+\begin{itemize}
+    \item No explican el motivo de la interacción.
+    \item No proporcionan alternativas terapéuticas justificadas incluyendo combinaciones consideradas seguras por la aplicación.
+\end{itemize}
+Por este motivo se propone una herramienta con la posibilidad de detectar posibles interacciones cuando estos se estan ingiriendo por primer vez, explicar el mecanismo implicado, mostrar alternativas farmacológicas e informar sobre posibles efectos adversos asociados.
+
+
+\section{Descripción del proyecto}
+El proyecto consiste en el desarrollo de una herramienta informática para la detección de interacciones farmacológicas basada en el metabolismo enzimático de los principios activos.
+
+Para ello se construye una base de conocimiento a partir de 3 bases de datos públicas: DrugBank, CIMA (AEMPS) y SIDDER.
+
+Posteriormente se implementa un algoritmo capaz de analizar las enzimas metabolizadoras de dos principios activos, identificar si existen coincidencias, clasificar el riesgo de la interacción explicando además el mecanismo y como se ha llegado a la conclusión obtenida, proponer alternativas mediante códigos ATC y por último mostrar los 10 efectos adversos mas frecuentes.
+
+
+\section{Estructura de la memoria}
 Asimismo, se describirá brevemente la estructura de la memoria, indicando el contenido de cada capítulo.
+
+
 
 La extensión máxima del Trabajo Fin de Grado será de \textbf{50 páginas}, contabilizadas como el total resultante de la suma de todos los capítulos de la memoria comprendidos entre los apartados \textbf{Introducción, Metodología, Resultados, Discusión, Conclusiones y Lineas futuras}. 
 Este límite no incluye los anexos, que se entregarán en documentos independientes.
