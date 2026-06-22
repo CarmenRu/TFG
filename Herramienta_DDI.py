@@ -1,5 +1,6 @@
 from dash import Dash, html, dcc, dash_table, ctx
 from dash import Input, Output, State
+import plotly.graph_objs as go
 from textos import *
 import pandas as pd
 
@@ -8,6 +9,7 @@ DDI = pd.read_csv("DDI_sea.csv")
 #Normalizamos los nombres
 DDI["ppio_normalizado"] = DDI["Drug_name"].str.strip().str.casefold()
 efectos = pd.read_csv("efectos_adversos.csv")
+efectos["Freq_media"] = efectos["Freq_media"]*100
 
 
 app = Dash(__name__)
@@ -87,8 +89,13 @@ app.layout = html.Div([
 
 def analizar_farmacos(n_clicks, ppio1, ppio2):
 
-    if n_clicks is None:
-        return {}, ""
+    if not n_clicks :
+        return {}, html.Pre(texto_intro(primero=True),
+                            style={
+                             "whiteSpace": "pre-wrap",
+                             "overflowWrap": "break-word",
+                             "width": "100%"}
+                             )
 
     if not ppio1 or not ppio2:
         return {}, "Introduce ambos principios activos"
@@ -100,7 +107,7 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     
     if not dic_resumen:
         return {}, html.Div([
-            html.H3(f"Interacción {ppio1} - {ppio2}"),
+            html.H1(f"Interacción {ppio1} - {ppio2}"),
             html.Pre(texto_principal(ppio1, ppio2, None, DDI))
         ])
     
@@ -115,16 +122,55 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     intro_2 = texto_intro (ppio2, enzimas2, principales2, texto=False)
     
     texto_riesgo = calcular_riesgo (ppio1, ppio2,coincidentes, intro_1, intro_2, texto=True)
+
+    if riesgo == "Alta":
+        color_riesgo = "#f9051d"   
+    elif riesgo == "Media":
+        color_riesgo = "#ffff07"     
+    else:
+        color_riesgo = "#00FF48"   
     
+    badge_riesgo = html.Span(
+        riesgo.upper(),
+        style={
+            "backgroundColor": color_riesgo,
+            "color": "white",
+            "padding": "5px 12px",
+            "borderRadius": "8px",
+            "fontWeight": "bold",
+            "marginLeft": "10px"
+        }
+    )
+        
     return (dic_resumen, 
             
             html.Div([
-                html.H3(f"Interacción {ppio1} - {ppio2}."),
+                html.H1(f"Interacción {ppio1} - {ppio2}."),
+                html.Pre(badge_riesgo),
+                html.Br(),
                 html.Pre(cadena_texto),
-                html.Pre(texto_riesgo)
+                html.Details([
+                    html.Summary("?",
+                        style={
+                            "cursor": "pointer",
+                            "fontWeight": "bold",
+                            "color": "#320ee8"}
+                    ),
+                    html.Pre(texto_riesgo,
+                        style={
+                            "whiteSpace": "pre-wrap",
+                            "wordBreak": "break-word",
+                            "marginTop": "10px",
+                            "backgroundColor": "#0dfdfd",
+                            "padding": "10px",
+                            "borderRadius": "5px"}
+                    )
+                    
+                ])
+                
             ])
             
-           )
+        )
     
 @app.callback(
     Output("resultado", "children"),
@@ -142,7 +188,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
         return ""
 
     if not datos:
-        return "Primero pulsa Analizar o introduce valores validos como principios"
+        return "Primero pulsa Analizar o introduce valores validos como principios. Luego pulsa alguna de las opciones"
     
     #Recogemos las variables necesarias
     ppio1, ppio2 = datos["p1"], datos["p2"]
@@ -155,15 +201,26 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
 
     if boton == "btn_enzimas":
         
-        primero = texto_intro (ppio1, e1, ppal1, texto=True, primero=True)
+        primero = texto_intro (ppio1, e1, ppal1, texto=True)
         segundo = texto_intro (ppio2, e2, ppal2, texto=True)
             
         return html.Div([
-                    html.H2(f"Explicacion {ppio1}.\n"),
-                    html.Pre(primero),
-                    html.H2(f"Explicacion {ppio2}.\n"),
-                    html.Pre(segundo)]
-                    )
+                    html.H3(f"Explicacion {ppio1}.\n"),
+                    html.Pre(primero,
+                             style={
+                             "whiteSpace": "pre-wrap",
+                             "overflowWrap": "break-word",
+                             "width": "100%"}
+                            ),
+                            
+                    html.H3(f"Explicacion {ppio2}.\n"),
+                    html.Pre(segundo,
+                             style={
+                             "whiteSpace": "pre-wrap",
+                             "overflowWrap": "break-word",
+                             "width": "100%"}
+                            )
+                    ])
 
     elif boton == "btn_efectos":
 
@@ -182,18 +239,33 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
             for ref in ATC_ref1:
                 df = texto_efectos (ATC1, ref, efectos, ppio1)
 
-                if not df:
+                if df.empty:
                     componentes.extend([
-                        html.Pre(f'No hay datos de efectos secundarios registrados en SIDDER para los codigos ATC con codigo de referencia {ref}.\n')
+                        html.Pre(f'No hay datos de efectos secundarios registrados en SIDDER para los codigos ATC con código de referencia {ref}.\n')
 
                     ])
 
                 else:
+                    fig = go.Figure(
+                        data=[go.Bar(
+                                x=df["Side_effect"],
+                                y=df["Freq_media"]
+                                )
+                            ]
+                        )
+
+                    fig.update_layout(
+                        title=f"Efectos adversos más comunes para referencia {ref}",
+                        xaxis_title="Efecto adverso",
+                        yaxis_title="Frecuencia",
+                        height=500
+                    )
+
                     componentes.extend([
-                        html.Pre(f"Para el ATC de referencia {ref} los 10 posibles efectos adversos mas comunes son:"),
-                
-                        dash_table.DataTable(data=df.to_dict("records"),
-                            columns=[{"name": c, "id": c} for c in df.columns])
+                        dcc.Graph(
+                            figure=fig,
+                            config={"displayModeBar": False}
+                        )
                     ])
             
         componentes.append(html.H2(f'----{ppio2}-----'))
@@ -209,17 +281,32 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
             
                 df = texto_efectos (ATC2, ref, efectos, ppio2)
 
-                if not df:
+                if df.empty:
                     componentes.extend([
                         html.Pre(f'No hay datos de efectos secundarios registrados en SIDDER para los codigos ATC con codigo de referencia {ref}.\n')
                     ])
 
                 else:
+                    fig = go.Figure(
+                        data=[go.Bar(
+                                x=df["Side_effect"],
+                                y=df["Freq_media"]
+                                )
+                            ]
+                        )
+
+                    fig.update_layout(
+                        title=f"Efectos adversos más comunes para referencia {ref}",
+                        xaxis_title="Efecto adverso",
+                        yaxis_title="Frecuencia",
+                        height=500
+                    )
+
                     componentes.extend([
-                        html.Pre(f"Para el ATC de referencia {ref} los 10 posibles efectos adversos mas comunes son:"),
-                
-                        dash_table.DataTable(data=df.to_dict("records"),
-                            columns=[{"name": c, "id": c} for c in df.columns])
+                        dcc.Graph(
+                            figure=fig,
+                            config={"displayModeBar": False}
+                        )
                     ])
         
         return html.Div(componentes)
@@ -264,10 +351,12 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
 
             #Devolvemos lo almacenado en la variable textos
             return html.Div([
-                html.H2(f"Interacciones entre {ppio1} y {ppio2}"),
+                html.H3(f"Interacciones entre {ppio1} y {ppio2}"),
                 *textos
             ])
 
+
+    #Cambiar
     elif boton == "btn_opciones":
         
         componentes = []
@@ -347,7 +436,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
 
             
         return html.Div([
-                html.H2(f"Alternativas para {ppio1} y {ppio2}"),
+                html.H3(f"Alternativas para {ppio1} y {ppio2}"),
                 *componentes
             ])
     

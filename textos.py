@@ -25,10 +25,6 @@ def texto_principal(ppio_1, ppio_2, riesgo, DDI):
         
     elif (ppio_2 not in DDI["ppio_normalizado"].values):
         texto += f"{ppio_2} no se ha encontrado en la base de datos, porfavor introduce otro y vuelve a pulsar el boton analizar.\n\n"
-
-    #Sino, se muestra el nivel de riesgo de la interacción
-    else:
-        texto += f"Nivel de riesgo: {riesgo}.\n\n"
         
     return texto
     
@@ -243,7 +239,7 @@ def opciones_ATC(alternativas_1, alternativas_2, ppio_1, ppio_2, DDI):
     return opciones  
 
 
-def texto_intro (ppio, enzimas, principales, texto=False, primero=False):
+def texto_intro (ppio=None, enzimas=None, principales=None, texto=False, primero=False):
     '''
     Texto de introducción de el principio activo concreto (explica las enzimas)
 
@@ -270,7 +266,7 @@ def texto_intro (ppio, enzimas, principales, texto=False, primero=False):
         cadena += "Solo se han tenido en cuenta las siguientes enzimas: [CYP2D6, CYP3A4, CYP3A5, CYP2C19, CYP2C9, CYP1A2] que según DrugBank son las 5 por las que se metabolizan mas principios activos. Teniendo en cuenta tambien la CYP3A5 que es como la CYP3A4 (CAMBIO), sin embargo cuando ambas mencionadas previamente se consideraban principales, la CYP3A5 era eliminada debido a  que la mayoria de la pobalcion no expresa esta enzima.\n\n\n"
 
     #Si no hay lista de enzimas
-    if not enzimas:
+    elif not enzimas:
         cadena += f"El principio activo: {ppio} no se metaboliza por ninguna enzima de las tenidas en cuenta según la base de datos de DrugBank, por tanto la interacción con cuaquier otro principio activo consultado aparecerá categorizada como LEVE.\n\n"
     else:
         #Si solo hay una enzima es la principal
