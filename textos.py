@@ -21,10 +21,10 @@ def texto_principal(ppio_1, ppio_2, riesgo, DDI):
 
     #Cuando no se encuentra alguno de los principios se muestra en pantalla ese error
     if (ppio_1 not in DDI["ppio_normalizado"].values):
-        texto += f"{ppio_1} no se ha encontrado en la base de datos, porfavor introduce otro y vuelve a pulsar el boton analizar.\n\n"
+        texto += f"{ppio_1} has not been found in the database, please enter another one and press the analyze button again.\n\n"
         
     elif (ppio_2 not in DDI["ppio_normalizado"].values):
-        texto += f"{ppio_2} no se ha encontrado en la base de datos, porfavor introduce otro y vuelve a pulsar el boton analizar.\n\n"
+        texto += f"{ppio_2} has not been found in the database, please enter another one and press the analyze button again.\n\n"
         
     return texto
     
@@ -195,12 +195,6 @@ def interaccion (ppio_1, ppio_2, DDI):
     return dic_resumen
 
 
-#TENGO QUE SEPARAR LOS ATC POR CODIGOS DE REF
-#Como casos limite coger uno que no tenga opcion con las 5 primeras letras
-#Otro caso limite: sin codigo ATC
-#Y si tienen los dos el mismo codigo de referencia de ATC? EL SEGUNDO QUE SALGA NO SE UNE TAL Y COMO LO TENGO PUESTO AHORA
-
-#Devolver dos en el boton de opciones atc, las opciones y el texto
 def opciones_ATC(alternativas_1, alternativas_2, ppio_1, ppio_2, DDI):
     """
     Busqueda en la base de datos de opciones con el código ATC de los principios activos problema
@@ -261,32 +255,32 @@ def texto_intro (ppio=None, enzimas=None, principales=None, texto=False, primero
     booleano = None
     #Si es la primera vez que ejecuta se muestran explicaciones clave principales
     if primero:
-        cadena += "En esta web vamos a indicar si existe una interacción LEVE, MEDIA o ALTA basandonos en las enzimas por las que se metabolizan cada uno de los principios activos consultados en la base de datos de DrugBank\n"
-        cadena += "Se muestran solo las interacciones en la primera ingesta del principio activo, debido se desconocen los efectos a largo plazo de los principios.\n\n"
-        cadena += "Solo se han tenido en cuenta las siguientes enzimas: [CYP2D6, CYP3A4, CYP3A5, CYP2C19, CYP2C9, CYP1A2] que según DrugBank son las 5 por las que se metabolizan mas principios activos. Teniendo en cuenta tambien la CYP3A5 que es como la CYP3A4 (CAMBIO), sin embargo cuando ambas mencionadas previamente se consideraban principales, la CYP3A5 era eliminada debido a  que la mayoria de la pobalcion no expresa esta enzima.\n\n\n"
+        cadena += "In this website we indicate whether there is a LOW, MEDIUM or HIGH interaction based on the enzymes by which each of the active ingredients is metabolized in the DrugBank database.\n"
+        cadena += "Only first-dose interactions are shown, as the long-term effects of the active ingredients are unknown.\n\n"
+        cadena += "Only the following enzymes have been considered: [CYP2D6, CYP3A4, CYP3A5, CYP2C19, CYP2C9, CYP1A2], which according to DrugBank are among the most common metabolic enzymes. CYP3A5 is also included as it is similar to CYP3A4 (CHANGE), however when both CYP3A4 and CYP3A5 were considered primary, CYP3A5 was removed because most of the population does not express this enzyme.\n\n\n"
 
     #Si no hay lista de enzimas
     elif not enzimas:
-        cadena += f"El principio activo: {ppio} no se metaboliza por ninguna enzima de las tenidas en cuenta según la base de datos de DrugBank, por tanto la interacción con cuaquier otro principio activo consultado aparecerá categorizada como LEVE.\n\n"
+        cadena += f"The active ingredient: {ppio} is not metabolized by any of the enzymes considered according to the DrugBank database, therefore its interaction with any other active ingredient will be categorized as LOW.\n\n"
     else:
         #Si solo hay una enzima es la principal
         if len(enzimas) == 1:
-            cadena += f"El principio activo: {ppio} solo se metaboliza por una enzima de las que se tienen en cuenta, la cual hemos considerado como enzima de metabolización principal del principio activo.\n\n"
+            cadena += f"The active ingredient: {ppio} is metabolized by only one of the considered enzymes, which we have defined as its main metabolic enzyme.\n\n"
             booleano = True
         else:
             #Si no tiene principales (al menos de las tenidas en cuenta)
             if not principales:
-                cadena += f"El principio activo: {ppio} se metaboliza por las siguientes enzimas: {enzimas}, no se ha podido determinar la enzima principal por la que se metaboliza, por tanto las interacciones mostradas a continuacion serán con cada una de ellas.\n\n"
+                cadena += f"The active ingredient: {ppio} is metabolized by the following enzymes: {enzimas}, the main metabolic enzyme could not be determined, therefore interactions shown below will consider all of them.\n\n"
                 booleano = False
 
             else:
                 #Cuando solo hay una principal
                 if len(principales) == 1:
-                    cadena += f"El principio activo: {ppio} se metaboliza por las enzimas: {enzimas} de las cuales, se ha considerado principal: {principales}, en las siguientes descripciones se mostrarán las interacciones solo con dicha enzima considerada principal.\n\n"
+                    cadena += f"The active ingredient: {ppio} is metabolized by the enzymes: {enzimas}, of which the following has been considered primary: {principales}, in the following descriptions only interactions with this primary enzyme will be shown.\n\n"
                     booleano = True
                 else:
                     #Cuando hay varias principales
-                    cadena += f"El principio activo: {ppio} se metaboliza por las enzimas: {enzimas}, de las cuales se han considerado principales las siguientes: {principales}, en las siguientes descripciones se mostrarán las interacciones solo con dichas enzimas consideradas principales.\n\n"
+                    cadena += f"The active ingredient: {ppio} is metabolized by the enzymes: {enzimas}, of which the following have been considered primary: {principales}, in the following descriptions only interactions with these primary enzymes will be shown.\n\n"
                     booleano = True
 
     if texto:
@@ -319,19 +313,19 @@ def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto=False)
     if coincidentes:
         #Si las dos tienen principal
         if intro_1 and intro_2:
-            cadena += f"La interacción {ppio_1}-{ppio_2} es considerada Alta.\n"
-            cadena += f"Como ambos principios son metabolizados por enzimas tenidas en cuenta que tienen alguna enzima considerada principal y estas coinciden entre si en las siguientes: {coincidentes} es considerada como interacción alta.\n\n"
+            cadena += f"The interaction {ppio_1}-{ppio_2} is considered HIGH.\n"
+            cadena += f"As both active ingredients are metabolized by considered enzymes that have primary enzymes and these coincide in the following: {coincidentes}, it is considered a high interaction.\n\n"
             riesgo = "Alta"
         else:
             #Si al menos una no es principal la interaccion es consderada media
-            cadena += f"La interacción {ppio_1}-{ppio_2} es considerada Media.\n"
-            cadena += f"Como no sabemos las enzimas principales de por lo menos uno de los dos principios activos pero coinciden en la metabolización de las siguientes enzimas: {coincidentes} su interacción es considerada Media.\n\n"
+            cadena += f"The interaction {ppio_1}-{ppio_2} is considered MEDIUM.\n"
+            cadena += f"As we do not know the primary enzymes of at least one of the active ingredients but they coincide in the metabolism of the following enzymes: {coincidentes}, the interaction is considered medium.\n\n"
             riesgo = "Media"
 
     else:
         #Si no hay coincidentes lo consideramos como sin interaccion, categorizado como Leve
-        cadena += f"La interacción {ppio_1}-{ppio_2} es considerada Leve.\n"
-        cadena += "Los principios activos no coinciden en ser metabolizados por ninguna enzima de las tenidas en cuenta y por tanto su interacción es categorizada como Leve.\n\n"
+        cadena += f"The interaction {ppio_1}-{ppio_2} is considered LOW.\n"
+        cadena += "The active ingredients do not share metabolism through any of the considered enzymes and therefore their interaction is categorized as low.\n\n"
 
         riesgo = "Leve"
 
@@ -358,18 +352,18 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
         None
     """
     #Diccionario con la traducción de cada una de las acciones tenidas en cuenta
-    traduccion = {"substrate":"sustrato",
-              "inhibitor":"inhibidor",
-              "inducer":"inductor"}
+    traduccion = {"substrate":"substrate",
+              "inhibitor":"inhibitor",
+              "inducer":"inducer"}
     #Declaramos cuales son las posibilidades
     posibilidades = [x for x in traduccion]
     #Diccionario que dicta la prevalencia ante dos acciones de las tenidas en cuenta
-    competicion = {("sustrato","inductor"):"sustrato", ("inductor", "sustrato"):"sustrato",
-           ("sustrato","inhibidor"):"inhibidor",("inhibidor","sustrato"):"inhibidor",
-           ("inductor","inhibidor"):"inhibidor",("inhibidor","inductor"):"inhibidor"}
+    competicion = {("substrate","inducer"):"substrate", ("inducer", "substrate"):"substrate",
+           ("substrate","inhibitor"):"inhibitor",("inhibitor","substrate"):"inhibitor",
+           ("inducer","inhibitor"):"inhibitor",("inhibitor","inducer"):"inhibitor"}
     cadena = ""
     #Print explicativo
-    cadena += f"En este caso solo se describen las interacciones de los principios activos con la enzima: {enzima} teniendo en cuenta solo que lleven a cabo algunas de las siguientes acciones: {posibilidades}.\n\n"
+    cadena += f"In this case only the interactions of the active ingredients with the enzyme: {enzima} are described, considering only the following actions: {posibilidades}.\n\n"
     
     #De las listas proporcionadas con las acciones UNICAS eliminamos las que no tenemos en cuenta:
     mias_1 = [x for x in acc_1 if x in posibilidades]
@@ -383,17 +377,17 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
 
     #Una vez declaramos las variables comprobamos cada uno de los casos para obtener el texto adecuado
     if not acc_1 or not acc_2:
-        cadena += f"Las acciones de la enzima {enzima} para los principios activos {ppio_1} y {ppio_2} no están registradas en DrugBank, por tanto no se puede describir la interacción que tienen.\n\n"
+        cadena += f"The actions of enzyme {enzima} for active ingredients {ppio_1} and {ppio_2} are not recorded in DrugBank, therefore the interaction cannot be described.\n\n"
         
     else:
         #De la lista ninguna es inductor-inhibidor-sustrato
         if (not mias_1) or (not mias_2):
-            cadena += f"De las acciones que se llevan a cabo con la enzima: {enzima} en los dos principios activos consulltados: {ppio_1} y {ppio_2} ninguna es de las tenidas en cuenta, por tanto no se puede describir la interacción.\n\n"
+            cadena += f"Of the actions carried out with enzyme: {enzima} in the two active ingredients consulted: {ppio_1} and {ppio_2}, none are among those considered, therefore the interaction cannot be described.\n\n"
 
         else:
             if doble:
                 #Es posible que doble tenga mas de una acción ¿QUE HACES EN ESE CASO?, con que se tenga una que coincida pues vale supongo
-                cadena += f"Para la enzima: {enzima} los dos principios activos consultados actuan como: {esp} por tanto competirán al mismo nivel, lo que quiere decir que ninguno tendrá prevalencia sobre el otro a la hora de metabolizarse.\n\n"
+                cadena += f"For enzyme: {enzima} both active ingredients act as: {esp}, therefore they will compete at the same level, meaning neither will have priority over the other in metabolism.\n\n"
 
             else:
                 #Texto genérico que describe interaccion
@@ -401,11 +395,11 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
                     a1 = traduccion[mias_1[0]]
                     a2 = traduccion[mias_2[0]]
                     preval = competicion.get((a1,a2))
-                    cadena += f"Para la enzima: {enzima} el principio activo: {ppio_1} esta actuando como: {a1}, mientras que el principio activo: {ppio_2} está actuando como: {a2}, en este caso tiene prevalencia de metabolización el {preval}.\n"
+                    cadena += f"For enzyme: {enzima} the active ingredient: {ppio_1} acts as: {a1}, while the active ingredient: {ppio_2} acts as: {a2}, in this case the metabolization priority belongs to {preval}.\n"
                 else:
-                    cadena += f"Como alguno de los dos principios activos consultados poseen mas de una acción en la base de datos consultada para la enzima: {enzima} no es posible determinar si alguno de los dos tiene prioridad de metabolizacion.\n"
-                    cadena += f"Para el principio: {ppio_1} las acciones registradas son:{mias_1}.\n"
-                    cadena += f"Para el principio: {ppio_2} las acciones registradas son:{mias_2}.\n"
+                    cadena += f"As at least one of the active ingredients has more than one recorded action in the database for enzyme: {enzima}, it is not possible to determine which one has metabolic priority.\n"
+                    cadena += f"For active ingredient: {ppio_1} the recorded actions are:{mias_1}.\n"
+                    cadena += f"For active ingredient: {ppio_2} the recorded actions are:{mias_2}.\n"
                     
     return cadena
 
@@ -439,10 +433,9 @@ def texto_efectos (lista_ATC, ref, efectos_adversos, ppio):
     #Para solo un codigo de referencia saco los 10 efectos adversos mas comunes sacados de SIDDER ordenados por mayor frecuencia
     #Si hay un efecto que esta dos veces se calcula la media de las dos frecuencias y se tiene en cuenta esa
     final = (
-        df.groupby("Side_effect", as_index=False)["Freq_media"]
+        df.groupby("Side_effect", as_index=False)["Freq_mean"]
         .mean()
-        .sort_values(by="Freq_media", ascending=False)
+        .sort_values(by="Freq_mean", ascending=False)
     )
 
     return final.head(10)
-

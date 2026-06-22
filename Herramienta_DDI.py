@@ -16,22 +16,22 @@ app = Dash(__name__)
 
 app.layout = html.Div([
 
-    # Entradas
+    # Inputs
     dcc.Input(
         id="ppio1",
         type="text",
-        placeholder="Introduce el primer principio (en inglés)"
+        placeholder="Enter the first active ingredient (in English)"
     ),
 
     dcc.Input(
         id="ppio2",
         type="text",
-        placeholder="Introduce el segundo principio (en inglés)"
+        placeholder="Enter the second active ingredient (in English)"
     ),
 
     # Botón principal
     html.Button(
-        "Analizar",
+        "Analyze",
         id="btn_analizar"
     ),
 
@@ -39,23 +39,22 @@ app.layout = html.Div([
 
     # Botones secundarios
     html.Button(
-        "Explicacion enzimas",
+        "Enzyme explanation",
         id="btn_enzimas"
     ),
     
     html.Button(
-        "Efectos adversos",
+        "Adverse effects",
         id="btn_efectos"
     ),
 
     html.Button(
-        "Explicacion interacciones",   
+        "Interaction explanation",   
         id="btn_interacciones"
     ),
 
-    #Solo opciones?
     html.Button(
-        "Opciones",
+        "Options",
         id="btn_opciones"
     ),
 
@@ -65,6 +64,7 @@ app.layout = html.Div([
     dcc.Store(
         id="datos_analisis"
     ),
+
     # Salida que quiero que se quede siempre fija
     html.Div(
         id= "fijo"
@@ -90,7 +90,7 @@ app.layout = html.Div([
 def analizar_farmacos(n_clicks, ppio1, ppio2):
 
     if not n_clicks :
-        return {}, html.Pre(texto_intro(primero=True),
+        return {}, html.Pre(texto_intro(texto=True, primero=True),
                             style={
                              "whiteSpace": "pre-wrap",
                              "overflowWrap": "break-word",
@@ -98,7 +98,7 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
                              )
 
     if not ppio1 or not ppio2:
-        return {}, "Introduce ambos principios activos"
+        return {}, "Enter both active ingredients"
 
     ppio1 = ppio1.strip().casefold()
     ppio2 = ppio2.strip().casefold()
@@ -107,7 +107,7 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     
     if not dic_resumen:
         return {}, html.Div([
-            html.H1(f"Interacción {ppio1} - {ppio2}"),
+            html.H1(f"Interaction {ppio1} - {ppio2}"),
             html.Pre(texto_principal(ppio1, ppio2, None, DDI))
         ])
     
@@ -130,7 +130,7 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     else:
         color_riesgo = "#00FF48"   
     
-    badge_riesgo = html.Span(
+    cajacolor_riesgo = html.Span(
         riesgo.upper(),
         style={
             "backgroundColor": color_riesgo,
@@ -145,8 +145,8 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     return (dic_resumen, 
             
             html.Div([
-                html.H1(f"Interacción {ppio1} - {ppio2}."),
-                html.Pre(badge_riesgo),
+                html.H1(f"Interaction {ppio1} - {ppio2}."),
+                html.Pre(cajacolor_riesgo),
                 html.Br(),
                 html.Pre(cadena_texto),
                 html.Details([
@@ -188,9 +188,9 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
         return ""
 
     if not datos:
-        return "Primero pulsa Analizar o introduce valores validos como principios. Luego pulsa alguna de las opciones"
+        return "First press Analyze or enter valid values as active ingredients. Then press one of the options"
     
-    #Recogemos las variables necesarias
+    #Recogemos todas las variables 
     ppio1, ppio2 = datos["p1"], datos["p2"]
     e1, e2 = datos["enz1"], datos["enz2"]
     ppal1, ppal2 = datos["ppal1"], datos["ppal2"]
@@ -205,7 +205,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
         segundo = texto_intro (ppio2, e2, ppal2, texto=True)
             
         return html.Div([
-                    html.H3(f"Explicacion {ppio1}.\n"),
+                    html.H3(f"Enzymes {ppio1}.\n"),
                     html.Pre(primero,
                              style={
                              "whiteSpace": "pre-wrap",
@@ -213,7 +213,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
                              "width": "100%"}
                             ),
                             
-                    html.H3(f"Explicacion {ppio2}.\n"),
+                    html.H3(f"Enzymes {ppio2}.\n"),
                     html.Pre(segundo,
                              style={
                              "whiteSpace": "pre-wrap",
@@ -226,12 +226,12 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
 
         componentes = []
         
-        #Codigo
+        #Código
         componentes.append(html.H2(f'----{ppio1}-----'))
         
         if len(ATC_ref1) == 0:
             componentes.append(
-                html.P(f"No se ha podido encontrar ninguna alternativa para {ppio1}")
+                html.P(f"No alternatives could be found for {ppio1}")
             )
             
         else:
@@ -241,7 +241,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
 
                 if df.empty:
                     componentes.extend([
-                        html.Pre(f'No hay datos de efectos secundarios registrados en SIDDER para los codigos ATC con código de referencia {ref}.\n')
+                        html.Pre(f'No adverse effect data recorded in SIDDER for ATC codes with reference code {ref}.\n')
 
                     ])
 
@@ -255,9 +255,9 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
                         )
 
                     fig.update_layout(
-                        title=f"Efectos adversos más comunes para referencia {ref}",
-                        xaxis_title="Efecto adverso",
-                        yaxis_title="Frecuencia",
+                        title=f"Most common adverse effects for reference {ref}",
+                        xaxis_title="Adverse effect",
+                        yaxis_title="Frequency",
                         height=500
                     )
 
@@ -272,7 +272,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
         
         if len(ATC_ref2) == 0:
             componentes.append(
-                html.P(f"No se ha podido encontrar ninguna alternativa para {ppio2}")
+                html.P(f"No alternatives could be found for {ppio2}")
             )
             
         else:
@@ -283,7 +283,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
 
                 if df.empty:
                     componentes.extend([
-                        html.Pre(f'No hay datos de efectos secundarios registrados en SIDDER para los codigos ATC con codigo de referencia {ref}.\n')
+                        html.Pre(f'No adverse effect data recorded in SIDDER for ATC codes with reference code {ref}.\n')
                     ])
 
                 else:
@@ -296,9 +296,9 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
                         )
 
                     fig.update_layout(
-                        title=f"Efectos adversos más comunes para referencia {ref}",
-                        xaxis_title="Efecto adverso",
-                        yaxis_title="Frecuencia",
+                        title=f"Most common adverse effects for reference {ref}",
+                        xaxis_title="Adverse effect",
+                        yaxis_title="Frequency",
                         height=500
                     )
 
@@ -317,8 +317,8 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
         #Si hay interaccion entre ellas se mostrará en coincidentes, sino, la lista será vacia
         if not coincidentes:
             
-            return html.Div([html.H3("Interacciones"),
-                            html.P("No existen enzimas coincidentes entre ambos principios activos.")
+            return html.Div([html.H3("Interactions"),
+                            html.P("No coincident enzymes exist between both active ingredients.")
                             ])
             
         else:
@@ -344,35 +344,33 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
                 
                 textos.append(
                     html.Div([
-                        html.H4(f"Enzima {e}"),
+                        html.H4(f"Enzyme {e}"),
                         html.Pre(cadena)
                     ])
                 )
 
             #Devolvemos lo almacenado en la variable textos
             return html.Div([
-                html.H3(f"Interacciones entre {ppio1} y {ppio2}"),
+                html.H3(f"Interactions between {ppio1} and {ppio2}"),
                 *textos
             ])
 
 
-    #Cambiar
     elif boton == "btn_opciones":
         
         componentes = []
         alternativas_1 = []
         alternativas_2 = []
         
-        #Codigo
+        #Código
         componentes.append(html.H2(f'----{ppio1}-----'))
         if not ATC1:
-            #Poner opcion de introducir codigo ATC?
             componentes.append(
-                html.Pre(f"No ha sido posible buscar alternativas del principio activo: {ppio1} debido a que no hay datos de cual es su código ATC.\n\n")
+                html.Pre(f"No ATC code data available for active ingredient {ppio1}, so alternatives cannot be searched.\n\n")
             )
         elif len(ATC_ref1) == 0:
             componentes.append(
-                html.Pre(f"No se ha podido encontrar ninguna alternativa para {ppio1}.\n")
+                html.Pre(f"No alternatives could be found for {ppio1}.\n")
             )
         else:
             for ref in ATC_ref1:
@@ -380,24 +378,23 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
                 if principios_1:
                     alternativas_1.extend(principios_1)
                     componentes.extend([
-                        html.Pre(f'Alternativas con codigo ATC de referencia: {ref} para el principio {ppio1}.\n'),
+                        html.Pre(f'ATC reference alternatives: {ref} for drug {ppio1}.\n'),
                         html.P(principios_1)
                     ])
                 else:
                     componentes.append(
-                        html.Pre(f"No ha sido posible encontrar una opción factible para el principio: {ppio1} con el ATC de referencia: {ref}.\n\n")
+                        html.Pre(f"No suitable option could be found for {ppio1} with ATC reference {ref}.\n\n")
                     )
             
 
         componentes.append(html.H2(f'----{ppio2}-----'))
         if not ATC2:
-            #Poner opcion de introducir codigo ATC?
             componentes.append(
-                html.Pre(f"No ha sido posible buscar alternativas del principio activo: {ppio2} debido a que no hay datos de cual es su código ATC.\n\n")
+                html.Pre(f"No ATC code data available for active ingredient {ppio2}, so alternatives cannot be searched.\n\n")
             )
         elif len(ATC_ref2) == 0:
             componentes.append(
-                html.P(f"No se ha podido encontrar ninguna alternativa para {ppio2}")
+                html.P(f"No alternatives could be found for {ppio2}")
             )
         else:
             for ref in ATC_ref2:
@@ -405,19 +402,19 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
                 if principios_2:
                     alternativas_2.extend(principios_2)
                     componentes.extend([
-                        html.Pre(f'Alternativas con codigo ATC de referencia: {ref} para el principio {ppio2}.\n'),
+                        html.Pre(f'ATC reference alternatives: {ref} for drug {ppio2}.\n'),
                         html.P(principios_2)
                     ])
                 else:
                     componentes.append(
-                        html.Pre(f"No ha sido posible encontrar una opción factible para el principio: {ppio1} con el ATC de referencia: {ref}.\n\n")
+                        html.Pre(f"No suitable option could be found for {ppio1} with ATC reference {ref}.\n\n")
                     )
 
         if alternativas_1 or alternativas_2:
             opciones = opciones_ATC(alternativas_1, alternativas_2, ppio1, ppio2, DDI)
             if opciones:
                 componentes.extend([
-                    html.Pre("Las combinaciones posibles son:\n"),
+                    html.Pre("Possible combinations:\n"),
                     html.Ul([
                         html.Li(f"{a} - {b}")
                         for a,b in opciones
@@ -426,21 +423,20 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
                 
             else:
                 componentes.append(
-                    html.Pre("No ha habido ninguna combinacion factible.\n")
+                    html.Pre("No feasible combination was found.\n")
                 )
-                #Es posible que aqui pueda volver a llamar a la funcion pero con un número menos de i???
         else:
             componentes.append(
-                    html.Pre("No hay alternativas posibles.\n")
+                    html.Pre("No possible alternatives.\n")
                 )
 
             
         return html.Div([
-                html.H3(f"Alternativas para {ppio1} y {ppio2}"),
+                html.H3(f"Alternatives for {ppio1} and {ppio2}"),
                 *componentes
             ])
     
-    return "Ningun boton válido"
+    return "No valid button"
 
 if __name__ == "__main__":
     app.run(debug=True)
