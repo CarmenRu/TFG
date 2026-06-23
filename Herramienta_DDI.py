@@ -11,6 +11,8 @@ DDI = pd.read_csv("DDI_sea.csv")
 DDI["ppio_normalizado"] = DDI["Drug_name"].str.strip().str.casefold()
 efectos = pd.read_csv("efectos_adversos.csv")
 efectos["Freq_media"] = efectos["Freq_media"]*100
+#Estilo base
+recortar = {"whiteSpace": "pre-wrap", "overflowWrap": "break-word", "width": "100%"}
 
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -34,17 +36,6 @@ CONTENT_STYLE = {
 }
 
 sidebar = html.Div([
-
-    #Logo de la imagen
-    html.Img(
-        src="logo/interaccion.png",
-        style={
-            "width": "100%",
-            "marginBottom": "20px"
-        }
-    ),
-    html.Hr(),
-
     html.Div([
         html.H3("Drug Analysis"),
         # Inputs
@@ -73,40 +64,14 @@ sidebar = html.Div([
         ),
         html.Hr(),
 
-        # Botones secundarios
-        dbc.Button(
-            "Enzyme explanation",
-            id="btn_enzimas",
-            color = "secondary",
-            style={"width": "100%", "marginBottom": "10px"}
-        ),
-        html.Br(),
-        html.Br(),
-        
-        dbc.Button(
-            "Adverse effects",
-            id="btn_efectos",
-            color = "secondary",
-            style={"width": "100%", "marginBottom": "10px"}
-        ),
-        html.Br(),
-        html.Br(),
-
-        dbc.Button(
-            "Interaction explanation",   
-            id="btn_interacciones",
-            color = "secondary",
-            style={"width": "100%", "marginBottom": "10px"}
-            
-        ),
-        html.Br(),
-        html.Br(),
-
-        dbc.Button(
-            "Options",
-            id="btn_opciones",
-            color = "secondary",
-            style={"width": "100%", "marginBottom": "10px"}
+        dbc.Nav([
+                dbc.NavLink("Enzyme explanation", id="btn_enzimas", active="exact"),
+                dbc.NavLink("Adverse effects", id="btn_efectos", active="exact"),
+                dbc.NavLink("Interaction explanation", id="btn_interacciones", active="exact"),
+                dbc.NavLink("Options", id="btn_opciones", active="exact"),
+            ],
+            vertical=True,
+            pills=True,
         ),
         # Almacenamiento interno
         dcc.Store(id="datos_analisis"),
@@ -116,21 +81,22 @@ sidebar = html.Div([
 ])
 
 
-contenido = html.Div([
-
-        dbc.Card(
-            dbc.CardBody(
-                html.Div(id="fijo")
-            ), className="mb-4"
+contenido = html.Div(
+    [
+        #Logo de la imagen
+        html.Img(
+            src="assets/interaccion.png",
+            style={
+                "width": "30%",
+                "marginBottom": "10px"
+            }
         ),
-
-        dbc.Card(
-            dbc.CardBody(
-                html.Div(id="resultado")
-            )
-        )
-
-    ],style=CONTENT_STYLE
+        html.Hr(),
+        html.Div(id="fijo"),
+        html.Br(),
+        html.Div(id="resultado")
+    ],
+    style=CONTENT_STYLE
 )
 
 #layout
@@ -139,7 +105,6 @@ app.layout = html.Div([sidebar,contenido])
 @app.callback(
     Output("datos_analisis", "data"),
     Output("fijo", "children"),
-    Output("resultado", "children"),
 
     Input("btn_analizar", "n_clicks"),
 
@@ -151,14 +116,10 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
 
     if not n_clicks :
         return {}, html.Pre(texto_intro(texto=True, primero=True),
-                            style={
-                             "whiteSpace": "pre-wrap",
-                             "overflowWrap": "break-word",
-                             "width": "100%"}
-                             ), ""
+                            style=recortar)
 
     if not ppio1 or not ppio2:
-        return {}, "Enter both active ingredients", ""
+        return {}, "Enter both active ingredients"
 
     ppio1 = ppio1.strip().casefold()
     ppio2 = ppio2.strip().casefold()
@@ -168,8 +129,8 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     if not dic_resumen:
         return {}, html.Div([
             html.H1(f"Interaction {ppio1} - {ppio2}"),
-            html.Pre(texto_principal(ppio1, ppio2, None, DDI))
-        ]), ""
+            html.Pre(texto_principal(ppio1, ppio2, None, DDI), style = recortar)
+        ])
     
     riesgo = dic_resumen["riesgo"]
     coincidentes = dic_resumen["interaccion"]
@@ -211,7 +172,7 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
                 html.H1(f"Interaction {ppio1} - {ppio2}."),
                 html.Div(cajacolor_riesgo),
                 html.Br(),
-                html.Pre(cadena_texto),
+                html.Pre(cadena_texto, style = recortar),
                 html.Details([
                     html.Summary("?",
                         style={
@@ -231,13 +192,13 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
                     
                 ])
                 
-            ]),
-
-            ""  
+            ])
+            
         )
     
 @app.callback(
     Output("resultado", "children"),
+    Input("btn_analizar", "n_clicks"),
     Input("btn_enzimas", "n_clicks"),
     Input("btn_efectos", "n_clicks"),
     Input("btn_interacciones", "n_clicks"),
@@ -245,14 +206,14 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     State("datos_analisis", "data")
 )
 
-def mostrar_resultado(n1, n2, n3, n4, datos):
+def mostrar_resultado(n1, n2, n3, n4, n5, datos):
     boton = ctx.triggered_id
 
     if boton is None:
         return ""
 
     if not datos:
-        return "First enter valid values as active ingredients, then press Analyze. Later press one of the options"
+        return "First enter valid values as active ingredients, then press Search Ineractions. Later press one of the options"
     
     #Recogemos todas las variables 
     ppio1, ppio2 = datos["p1"], datos["p2"]
@@ -263,27 +224,20 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
     df1, df2 = pd.DataFrame(datos["df1"]), pd.DataFrame(datos["df2"])
     coincidentes = datos["interaccion"]
 
-    if boton == "btn_enzimas":
+    if boton == "btn_analizar":
+        return ""
+
+    elif boton == "btn_enzimas":
         
         primero = texto_intro (ppio1, e1, ppal1, texto=True)
         segundo = texto_intro (ppio2, e2, ppal2, texto=True)
             
         return html.Div([
                     html.H3(f"Enzymes {ppio1}.\n"),
-                    html.Pre(primero,
-                             style={
-                             "whiteSpace": "pre-wrap",
-                             "overflowWrap": "break-word",
-                             "width": "100%"}
-                            ),
+                    html.Pre(primero, style = recortar),
                             
                     html.H3(f"Enzymes {ppio2}.\n"),
-                    html.Pre(segundo,
-                             style={
-                             "whiteSpace": "pre-wrap",
-                             "overflowWrap": "break-word",
-                             "width": "100%"}
-                            )
+                    html.Pre(segundo, style = recortar)
                     ])
 
     elif boton == "btn_efectos":
@@ -491,10 +445,8 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
                         html.Ul([
                             html.Li(f"{a} - {b}")
                             for a,b in opciones if a==ppio1
-                        ], style={"width": "48%"})
-                    ]),
-
-                    html.Div([
+                        ], style={"width": "48%"}), 
+                        
                         html.H4(f"For {ppio2}"),
                         html.Ul([
                             html.Li(f"{a} - {b}")

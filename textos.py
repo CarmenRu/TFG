@@ -213,11 +213,10 @@ def opciones_ATC(alternativas_1, alternativas_2, ppio_1, ppio_2, DDI):
     """
     #Inicializo opciones
     opciones = []
-    #Añado los principios activos, porsiacaso aunque deberian estar, incluso aunque no haya ninguna otra opcion el ppio activo smp estará, tengo q cambiar eso antes creo yo
+    #Añado los principios activos, porsiacaso aunque deberian estar
     alt_1 = list(set(alternativas_1 + [ppio_1]))
     alt_2 = list(set(alternativas_2 + [ppio_2]))
     #Combinatoria
-    #Deberia sacar combinatorias de ATC por separado dependiendo de su ATC concreto?? igual poner en un diccionario SI
     for p1,p2 in product(alt_1, alt_2):
         p1 = p1.strip().casefold()
         p2 = p2.strip().casefold()
@@ -228,6 +227,7 @@ def opciones_ATC(alternativas_1, alternativas_2, ppio_1, ppio_2, DDI):
             #Tupla
             opciones = opciones + [(p1,p2)]
 
+    opciones = list(set(opciones))
     #Cambiar opciones
     return opciones  
 
