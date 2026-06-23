@@ -115,7 +115,8 @@ app.layout = html.Div([sidebar,contenido])
 def analizar_farmacos(n_clicks, ppio1, ppio2):
 
     if not n_clicks :
-        return {}, html.Pre(texto_intro(texto=True, primero=True),
+        txt = texto_intro(texto=True, primero=True)
+        return {}, html.Pre(txt,
                             style=recortar)
 
     if not ppio1 or not ppio2:
@@ -127,9 +128,10 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     dic_resumen = interaccion (ppio1, ppio2, DDI)
     
     if not dic_resumen:
+        txt = texto_principal(ppio1, ppio2, DDI)
         return {}, html.Div([
             html.H1(f"Interaction {ppio1} - {ppio2}"),
-            html.Pre(texto_principal(ppio1, ppio2, None, DDI), style = recortar)
+            html.Pre(txt, style = recortar)
         ])
     
     riesgo = dic_resumen["riesgo"]
@@ -137,7 +139,7 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     enzimas1, enzimas2 = dic_resumen["enz1"], dic_resumen["enz2"]
     principales1, principales2 = dic_resumen["ppal1"], dic_resumen["ppal2"]
     
-    cadena_texto = texto_principal(ppio1, ppio2, riesgo, DDI)
+    cadena_texto = texto_principal(ppio1, ppio2, DDI)
     
     intro_1 = texto_intro (ppio1, enzimas1, principales1, texto=False)
     intro_2 = texto_intro (ppio2, enzimas2, principales2, texto=False)
@@ -363,7 +365,7 @@ def mostrar_resultado(n1, n2, n3, n4, n5, datos):
                 textos.append(
                     html.Div([
                         html.H4(f"Enzyme {e}"),
-                        html.Pre(cadena)
+                        html.Pre(cadena, style = recortar)
                     ])
                 )
 
@@ -441,19 +443,19 @@ def mostrar_resultado(n1, n2, n3, n4, n5, datos):
                     html.H2("Possible combinations:"),
                     html.H3("Main alternatives"),
                     html.Div([
-                        html.H4(f"For {ppio1}"),
+                        html.H4(f"For {ppio2}"),
                         html.Ul([
                             html.Li(f"{a} - {b}")
                             for a,b in opciones if a==ppio1
                         ], style={"width": "48%"}), 
                         
-                        html.H4(f"For {ppio2}"),
+                        html.H4(f"For {ppio1}"),
                         html.Ul([
                             html.Li(f"{a} - {b}")
                             for a,b in opciones if b==ppio2
                         ], style={"width": "48%"})
                     ]),
-                    html.H4("Other alternatives"),
+                    html.H3("Other alternatives"),
                     html.Ul([
                         html.Li(f"{a} - {b}")
                         for a,b in opciones if (a!=ppio1 or b!=ppio2)
