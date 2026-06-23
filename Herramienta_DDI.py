@@ -1,5 +1,6 @@
-from dash import Dash, html, dcc, dash_table, ctx
+from dash import Dash, html, dcc,  ctx
 from dash import Input, Output, State
+import dash_bootstrap_components as dbc
 import plotly.graph_objs as go
 from textos import *
 import pandas as pd
@@ -12,75 +13,134 @@ efectos = pd.read_csv("efectos_adversos.csv")
 efectos["Freq_media"] = efectos["Freq_media"]*100
 
 
-app = Dash(__name__)
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-app.layout = html.Div([
+#Definimos esilos
+SIDEBAR_STYLE = {
+    "position": "fixed",
+    "top": 0,
+    "left": 0,
+    "bottom": 0,
+    "width": "18rem",
+    "padding": "1rem",
+    "backgroundColor": "#f8f9fa",
+    "borderRight": "1px solid #dee2e6",
+}
 
-    # Inputs
-    dcc.Input(
-        id="ppio1",
-        type="text",
-        placeholder="Enter the first active ingredient (in English)"
+CONTENT_STYLE = {
+    "marginLeft": "20rem",
+    "marginRight": "2rem",
+    "padding": "1rem",
+}
+
+sidebar = html.Div([
+
+    #Logo de la imagen
+    html.Img(
+        src="logo/interaccion.png",
+        style={
+            "width": "100%",
+            "marginBottom": "20px"
+        }
     ),
-
-    dcc.Input(
-        id="ppio2",
-        type="text",
-        placeholder="Enter the second active ingredient (in English)"
-    ),
-
-    # Botón principal
-    html.Button(
-        "Analyze",
-        id="btn_analizar"
-    ),
-
     html.Hr(),
 
-    # Botones secundarios
-    html.Button(
-        "Enzyme explanation",
-        id="btn_enzimas"
-    ),
-    
-    html.Button(
-        "Adverse effects",
-        id="btn_efectos"
-    ),
+    html.Div([
+        html.H3("Drug Analysis"),
+        # Inputs
+        dcc.Input(
+            id="ppio1",
+            type="text",
+            placeholder="Enter the first active ingredient"
+        ),
+        html.Br(),
+        html.Br(),
 
-    html.Button(
-        "Interaction explanation",   
-        id="btn_interacciones"
-    ),
+        dcc.Input(
+            id="ppio2",
+            type="text",
+            placeholder="Enter the second active ingredient"
+        ),
+        html.Br(),
+        html.Br(),
 
-    html.Button(
-        "Options",
-        id="btn_opciones"
-    ),
+        # Botón principal
+        dbc.Button(
+            "Search interaction",
+            id="btn_analizar",
+            color = "primary",
+            style={"width": "100%"}
+        ),
+        html.Hr(),
 
-    html.Hr(),
+        # Botones secundarios
+        dbc.Button(
+            "Enzyme explanation",
+            id="btn_enzimas",
+            color = "secondary",
+            style={"width": "100%", "marginBottom": "10px"}
+        ),
+        html.Br(),
+        html.Br(),
+        
+        dbc.Button(
+            "Adverse effects",
+            id="btn_efectos",
+            color = "secondary",
+            style={"width": "100%", "marginBottom": "10px"}
+        ),
+        html.Br(),
+        html.Br(),
 
-    # Almacenamiento interno
-    dcc.Store(
-        id="datos_analisis"
-    ),
+        dbc.Button(
+            "Interaction explanation",   
+            id="btn_interacciones",
+            color = "secondary",
+            style={"width": "100%", "marginBottom": "10px"}
+            
+        ),
+        html.Br(),
+        html.Br(),
 
-    # Salida que quiero que se quede siempre fija
-    html.Div(
-        id= "fijo"
-    ),
-    # Salida que va cambiando dependiendo en que boton se presione
-    html.Div(
-        id="resultado"
+        dbc.Button(
+            "Options",
+            id="btn_opciones",
+            color = "secondary",
+            style={"width": "100%", "marginBottom": "10px"}
+        ),
+        # Almacenamiento interno
+        dcc.Store(id="datos_analisis"),
+
+    ], style=SIDEBAR_STYLE
     )
-    
 ])
 
+
+contenido = html.Div([
+
+        dbc.Card(
+            dbc.CardBody(
+                html.Div(id="fijo")
+            ), className="mb-4"
+        ),
+
+        dbc.Card(
+            dbc.CardBody(
+                html.Div(id="resultado")
+            )
+        )
+
+    ],style=CONTENT_STYLE
+)
+
+#layout
+app.layout = html.Div([sidebar,contenido])
 
 @app.callback(
     Output("datos_analisis", "data"),
     Output("fijo", "children"),
-    
+    Output("resultado", "children"),
+
     Input("btn_analizar", "n_clicks"),
 
     State("ppio1", "value"),
@@ -95,10 +155,10 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
                              "whiteSpace": "pre-wrap",
                              "overflowWrap": "break-word",
                              "width": "100%"}
-                             )
+                             ), ""
 
     if not ppio1 or not ppio2:
-        return {}, "Enter both active ingredients"
+        return {}, "Enter both active ingredients", ""
 
     ppio1 = ppio1.strip().casefold()
     ppio2 = ppio2.strip().casefold()
@@ -109,7 +169,7 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
         return {}, html.Div([
             html.H1(f"Interaction {ppio1} - {ppio2}"),
             html.Pre(texto_principal(ppio1, ppio2, None, DDI))
-        ])
+        ]), ""
     
     riesgo = dic_resumen["riesgo"]
     coincidentes = dic_resumen["interaccion"]
@@ -124,14 +184,17 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
     texto_riesgo = calcular_riesgo (ppio1, ppio2,coincidentes, intro_1, intro_2, texto=True)
 
     if riesgo == "Alta":
+        riesgo_ingles = "High"
         color_riesgo = "#f9051d"   
     elif riesgo == "Media":
+        riesgo_ingles = "Medium"
         color_riesgo = "#ffff07"     
     else:
+        riesgo_ingles = "low"
         color_riesgo = "#00FF48"   
     
     cajacolor_riesgo = html.Span(
-        riesgo.upper(),
+        riesgo_ingles.upper(),
         style={
             "backgroundColor": color_riesgo,
             "color": "white",
@@ -146,7 +209,7 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
             
             html.Div([
                 html.H1(f"Interaction {ppio1} - {ppio2}."),
-                html.Pre(cajacolor_riesgo),
+                html.Div(cajacolor_riesgo),
                 html.Br(),
                 html.Pre(cadena_texto),
                 html.Details([
@@ -168,8 +231,9 @@ def analizar_farmacos(n_clicks, ppio1, ppio2):
                     
                 ])
                 
-            ])
-            
+            ]),
+
+            ""  
         )
     
 @app.callback(
@@ -188,7 +252,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
         return ""
 
     if not datos:
-        return "First press Analyze or enter valid values as active ingredients. Then press one of the options"
+        return "First enter valid values as active ingredients, then press Analyze. Later press one of the options"
     
     #Recogemos todas las variables 
     ppio1, ppio2 = datos["p1"], datos["p2"]
@@ -229,7 +293,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
         #Código
         componentes.append(html.H2(f'----{ppio1}-----'))
         
-        if len(ATC_ref1) == 0:
+        if not ATC_ref1:
             componentes.append(
                 html.P(f"No alternatives could be found for {ppio1}")
             )
@@ -239,7 +303,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
             for ref in ATC_ref1:
                 df = texto_efectos (ATC1, ref, efectos, ppio1)
 
-                if df.empty:
+                if df is None or df.empty:
                     componentes.extend([
                         html.Pre(f'No adverse effect data recorded in SIDDER for ATC codes with reference code {ref}.\n')
 
@@ -270,7 +334,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
             
         componentes.append(html.H2(f'----{ppio2}-----'))
         
-        if len(ATC_ref2) == 0:
+        if not ATC_ref2:
             componentes.append(
                 html.P(f"No alternatives could be found for {ppio2}")
             )
@@ -281,7 +345,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
             
                 df = texto_efectos (ATC2, ref, efectos, ppio2)
 
-                if df.empty:
+                if df is None or df.empty:
                     componentes.extend([
                         html.Pre(f'No adverse effect data recorded in SIDDER for ATC codes with reference code {ref}.\n')
                     ])
@@ -363,7 +427,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
         alternativas_2 = []
         
         #Código
-        componentes.append(html.H2(f'----{ppio1}-----'))
+        componentes.append(html.H3(f'----{ppio1}-----'))
         if not ATC1:
             componentes.append(
                 html.Pre(f"No ATC code data available for active ingredient {ppio1}, so alternatives cannot be searched.\n\n")
@@ -379,7 +443,10 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
                     alternativas_1.extend(principios_1)
                     componentes.extend([
                         html.Pre(f'ATC reference alternatives: {ref} for drug {ppio1}.\n'),
-                        html.P(principios_1)
+                        html.Ul([
+                            html.Li(ppio)
+                            for ppio in principios_1
+                        ])
                     ])
                 else:
                     componentes.append(
@@ -387,7 +454,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
                     )
             
 
-        componentes.append(html.H2(f'----{ppio2}-----'))
+        componentes.append(html.H3(f'----{ppio2}-----'))
         if not ATC2:
             componentes.append(
                 html.Pre(f"No ATC code data available for active ingredient {ppio2}, so alternatives cannot be searched.\n\n")
@@ -403,7 +470,10 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
                     alternativas_2.extend(principios_2)
                     componentes.extend([
                         html.Pre(f'ATC reference alternatives: {ref} for drug {ppio2}.\n'),
-                        html.P(principios_2)
+                        html.Ul([
+                            html.Li(ppio)
+                            for ppio in principios_2
+                        ])
                     ])
                 else:
                     componentes.append(
@@ -414,10 +484,27 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
             opciones = opciones_ATC(alternativas_1, alternativas_2, ppio1, ppio2, DDI)
             if opciones:
                 componentes.extend([
-                    html.Pre("Possible combinations:\n"),
+                    html.H2("Possible combinations:"),
+                    html.H3("Main alternatives"),
+                    html.Div([
+                        html.H4(f"For {ppio1}"),
+                        html.Ul([
+                            html.Li(f"{a} - {b}")
+                            for a,b in opciones if a==ppio1
+                        ], style={"width": "48%"})
+                    ]),
+
+                    html.Div([
+                        html.H4(f"For {ppio2}"),
+                        html.Ul([
+                            html.Li(f"{a} - {b}")
+                            for a,b in opciones if b==ppio2
+                        ], style={"width": "48%"})
+                    ]),
+                    html.H4("Other alternatives"),
                     html.Ul([
                         html.Li(f"{a} - {b}")
-                        for a,b in opciones
+                        for a,b in opciones if (a!=ppio1 or b!=ppio2)
                     ])
                 ])
                 
@@ -432,7 +519,7 @@ def mostrar_resultado(n1, n2, n3, n4, datos):
 
             
         return html.Div([
-                html.H3(f"Alternatives for {ppio1} and {ppio2}"),
+                html.H2(f"Alternatives for {ppio1} and {ppio2}"),
                 *componentes
             ])
     

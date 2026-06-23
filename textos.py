@@ -2,7 +2,7 @@
 import pandas as pd
 from itertools import product
 
-def texto_principal(ppio_1, ppio_2, riesgo, DDI):
+def texto_principal(ppio_1, ppio_2, DDI):
     '''
     Devuelve el texto que se fijará en la parte de arriba
 
@@ -10,7 +10,6 @@ def texto_principal(ppio_1, ppio_2, riesgo, DDI):
     ------------------------
         ppio_1 - El primer principio activo que se quiere comparar con el segundo
         ppio_2 - El segundo principio activo que se quiere comparar con el primero
-        riesgo - Cadena de texto que indica el nivel de riesgo en la interaccion (Alta, Media, Leve)
         DDI - Dataframe que contiene los nombres, ATC, enzimas, target, acciones y prioridad
     Devolución
     ---------------
@@ -372,8 +371,6 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
     #Guardamos una variable con las coincidencias de las acciones (sustrato-sustrato, inhib-inhib, induct-induct)
     #Se supone que ya deben de ser las distintas pero porsiacaso set
     doble = list(set(mias_1) & set(mias_2))
-    #Lo traducimos al español para el print
-    esp = [traduccion[x] for x in doble]
 
     #Una vez declaramos las variables comprobamos cada uno de los casos para obtener el texto adecuado
     if not acc_1 or not acc_2:
@@ -387,13 +384,13 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
         else:
             if doble:
                 #Es posible que doble tenga mas de una acción ¿QUE HACES EN ESE CASO?, con que se tenga una que coincida pues vale supongo
-                cadena += f"For enzyme: {enzima} both active ingredients act as: {esp}, therefore they will compete at the same level, meaning neither will have priority over the other in metabolism.\n\n"
+                cadena += f"For enzyme: {enzima} both active ingredients act as: {doble}, therefore they will compete at the same level, meaning neither will have priority over the other in metabolism.\n\n"
 
             else:
                 #Texto genérico que describe interaccion
                 if len(mias_1)==1 and len(mias_2)==1:
-                    a1 = traduccion[mias_1[0]]
-                    a2 = traduccion[mias_2[0]]
+                    a1 = mias_1[0]
+                    a2 = mias_2[0]
                     preval = competicion.get((a1,a2))
                     cadena += f"For enzyme: {enzima} the active ingredient: {ppio_1} acts as: {a1}, while the active ingredient: {ppio_2} acts as: {a2}, in this case the metabolization priority belongs to {preval}.\n"
                 else:
@@ -433,9 +430,9 @@ def texto_efectos (lista_ATC, ref, efectos_adversos, ppio):
     #Para solo un codigo de referencia saco los 10 efectos adversos mas comunes sacados de SIDDER ordenados por mayor frecuencia
     #Si hay un efecto que esta dos veces se calcula la media de las dos frecuencias y se tiene en cuenta esa
     final = (
-        df.groupby("Side_effect", as_index=False)["Freq_mean"]
+        df.groupby("Side_effect", as_index=False)["Freq_media"]
         .mean()
-        .sort_values(by="Freq_mean", ascending=False)
+        .sort_values(by="Freq_media", ascending=False)
     )
 
     return final.head(10)
