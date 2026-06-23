@@ -377,105 +377,195 @@ def mostrar_resultado(n1, n2, n3, n4, n5, datos):
 
 
     elif boton == "btn_opciones":
-        
+
         componentes = []
         alternativas_1 = []
         alternativas_2 = []
-        
-        #Código
-        componentes.append(html.H3(f'----{ppio1}-----'))
+
+        #Ppio1
+        contenido_ppio1 = []
+
         if not ATC1:
-            componentes.append(
-                html.Pre(f"No ATC code data available for active ingredient {ppio1}, so alternatives cannot be searched.\n\n")
+            contenido_ppio1.append(
+                dbc.Alert(
+                    f"No ATC code data available for {ppio1}",
+                    color="danger"
+                )
             )
+
         elif len(ATC_ref1) == 0:
-            componentes.append(
-                html.Pre(f"No alternatives could be found for {ppio1}.\n")
+            contenido_ppio1.append(
+                dbc.Alert(
+                    f"No alternatives found for {ppio1}",
+                    color="warning"
+                )
             )
+
         else:
             for ref in ATC_ref1:
-                principios_1 = DDI[DDI['Drug_ATC'].str.startswith(ref, na=False)]["Drug_name"].unique().tolist()
+                principios_1 = DDI[
+                    DDI['Drug_ATC'].str.startswith(ref, na=False)
+                ]["Drug_name"].unique().tolist()
+
                 if principios_1:
                     alternativas_1.extend(principios_1)
-                    componentes.extend([
-                        html.Pre(f'ATC reference alternatives: {ref} for drug {ppio1}.\n'),
-                        html.Ul([
-                            html.Li(ppio)
-                            for ppio in principios_1
-                        ])
-                    ])
-                else:
-                    componentes.append(
-                        html.Pre(f"No suitable option could be found for {ppio1} with ATC reference {ref}.\n\n")
-                    )
-            
 
-        componentes.append(html.H3(f'----{ppio2}-----'))
+                    contenido_ppio1.append(
+                        dbc.Card([
+                            dbc.CardHeader(f"ATC Ref: {ref}"),
+                            dbc.CardBody(
+                                html.Ul([
+                                    html.Li(ppio) for ppio in principios_1
+                                ])
+                            )
+                        ], className="mb-2")
+                    )
+                else:
+                    contenido_ppio1.append(
+                        dbc.Alert(
+                            f"No options for ATC {ref}",
+                            color="secondary"
+                        )
+                    )
+
+        componentes.append(
+            dbc.Card([
+                dbc.CardHeader(html.H4(ppio1)),
+                dbc.CardBody(contenido_ppio1)
+            ], className="mb-4")
+        )
+
+        #Ppio2
+        contenido_ppio2 = []
+
         if not ATC2:
-            componentes.append(
-                html.Pre(f"No ATC code data available for active ingredient {ppio2}, so alternatives cannot be searched.\n\n")
+            contenido_ppio2.append(
+                dbc.Alert(
+                    f"No ATC code data available for {ppio2}",
+                    color="danger"
+                )
             )
+
         elif len(ATC_ref2) == 0:
-            componentes.append(
-                html.P(f"No alternatives could be found for {ppio2}")
+            contenido_ppio2.append(
+                dbc.Alert(
+                    f"No alternatives found for {ppio2}",
+                    color="warning"
+                )
             )
+
         else:
             for ref in ATC_ref2:
-                principios_2 = DDI[DDI['Drug_ATC'].str.startswith(ref, na=False)]["Drug_name"].unique().tolist()
+                principios_2 = DDI[
+                    DDI['Drug_ATC'].str.startswith(ref, na=False)
+                ]["Drug_name"].unique().tolist()
+
                 if principios_2:
                     alternativas_2.extend(principios_2)
-                    componentes.extend([
-                        html.Pre(f'ATC reference alternatives: {ref} for drug {ppio2}.\n'),
-                        html.Ul([
-                            html.Li(ppio)
-                            for ppio in principios_2
-                        ])
-                    ])
+
+                    contenido_ppio2.append(
+                        dbc.Card([
+                            dbc.CardHeader(f"ATC Ref: {ref}"),
+                            dbc.CardBody(
+                                html.Ul([
+                                    html.Li(ppio) for ppio in principios_2
+                                ])
+                            )
+                        ], className="mb-2")
+                    )
                 else:
-                    componentes.append(
-                        html.Pre(f"No suitable option could be found for {ppio1} with ATC reference {ref}.\n\n")
+                    contenido_ppio2.append(
+                        dbc.Alert(
+                            f"No options for ATC {ref}",
+                            color="secondary"
+                        )
                     )
 
+        componentes.append(
+            dbc.Card([
+                dbc.CardHeader(html.H4(ppio2)),
+                dbc.CardBody(contenido_ppio2)
+            ], className="mb-4")
+        )
+
+        # Combinaciones
         if alternativas_1 or alternativas_2:
+
             opciones = opciones_ATC(alternativas_1, alternativas_2, ppio1, ppio2, DDI)
+
             if opciones:
-                componentes.extend([
-                    html.H2("Possible combinations:"),
-                    html.H3("Main alternatives"),
-                    html.Div([
-                        html.H4(f"For {ppio2}"),
-                        html.Ul([
-                            html.Li(f"{a} - {b}")
-                            for a,b in opciones if a==ppio1
-                        ], style={"width": "48%"}), 
-                        
-                        html.H4(f"For {ppio1}"),
-                        html.Ul([
-                            html.Li(f"{a} - {b}")
-                            for a,b in opciones if b==ppio2
-                        ], style={"width": "48%"})
-                    ]),
-                    html.H3("Other alternatives"),
-                    html.Ul([
-                        html.Li(f"{a} - {b}")
-                        for a,b in opciones if (a!=ppio1 or b!=ppio2)
-                    ])
-                ])
-                
-            else:
+
+                principales_1 = [
+                    html.Li(f"{a} - {b}")
+                    for a, b in opciones if a == ppio1
+                ]
+
+                principales_2 = [
+                    html.Li(f"{a} - {b}")
+                    for a, b in opciones if b == ppio2
+                ]
+
+                otras = [
+                    html.Li(f"{a} - {b}")
+                    for a, b in opciones if (a != ppio1 or b != ppio2)
+                ]
+
                 componentes.append(
-                    html.Pre("No feasible combination was found.\n")
-                )
-        else:
-            componentes.append(
-                    html.Pre("No possible alternatives.\n")
+                    dbc.Card([
+                        dbc.CardHeader(html.H4("Possible combinations")),
+
+                        dbc.CardBody([
+
+                            dbc.Row([
+
+                                dbc.Col(
+                                    dbc.Card([
+                                        dbc.CardHeader(f"For {ppio1}"),
+                                        dbc.CardBody(html.Ul(principales_1))
+                                    ]),
+                                    width=6
+                                ),
+
+                                dbc.Col(
+                                    dbc.Card([
+                                        dbc.CardHeader(f"For {ppio2}"),
+                                        dbc.CardBody(html.Ul(principales_2))
+                                    ]),
+                                    width=6
+                                )
+
+                            ], className="mb-3"),
+
+                            html.H5("Other alternatives"),
+                            html.Ul(otras)
+
+                        ])
+                    ])
                 )
 
-            
-        return html.Div([
-                html.H2(f"Alternatives for {ppio1} and {ppio2}"),
-                *componentes
-            ])
+            else:
+                componentes.append(
+                    dbc.Alert(
+                        "No feasible combination found",
+                        color="danger"
+                    )
+                )
+
+        else:
+            componentes.append(
+                dbc.Alert(
+                    "No possible alternatives",
+                    color="secondary"
+                )
+            )
+
+        return dbc.Container([
+            html.H2(
+                f"Alternatives for {ppio1} and {ppio2}",
+                className="mb-4"
+            ),
+            *componentes
+        ], fluid=True)
     
     return "No valid button"
 
