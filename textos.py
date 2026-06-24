@@ -20,10 +20,10 @@ def texto_principal(ppio_1, ppio_2, DDI):
 
     #Cuando no se encuentra alguno de los principios se muestra en pantalla ese error
     if (ppio_1 not in DDI["ppio_normalizado"].values):
-        texto += f"{ppio_1} has not been found in the database, please enter another one and press the analyze button again.\n\n"
+        texto += f"{ppio_1} has not been found in the database, please enter another one and press the search interaction button again.\n\n"
         
     elif (ppio_2 not in DDI["ppio_normalizado"].values):
-        texto += f"{ppio_2} has not been found in the database, please enter another one and press the analyze button again.\n\n"
+        texto += f"{ppio_2} has not been found in the database, please enter another one and press the search interaction button again.\n\n"
         
     return texto
     
@@ -102,8 +102,8 @@ def interaccion (ppio_1, ppio_2, DDI):
                     #Cogemos los 5 primeras letras del ATC
                     i=5
                     while comprobante==False :
-                        #Si hemos llegado a i=0 es que no hay mas codigos atc que comprobar
-                        if i!=0:
+                        #Si hemos llegado a i=2 es demasiado ambiguo como para seguir comprobando
+                        if i!=2:
                             #En principio uso las 5 primeras letras del codigo ATC, luego voy bajando si no se encuentran opciones
                             codigo_referencia = ATC[:i]
                             #Para asegurarnos de que la lista al principio está vacía (anteriores búsquedas)
@@ -136,8 +136,8 @@ def interaccion (ppio_1, ppio_2, DDI):
                     #Cogemos los 5 primeras letras del ATC
                     i=5
                     while comprobante==False :
-                        #Si hemos llegado a i=0 es que no hay mas codigos atc que comprobar
-                        if i!=0:
+                        #Si hemos llegado a i=2 es que no hay mas codigos atc que comprobar
+                        if i!=2:
                             #En principio uso las 5 primeras letras del codigo ATC, luego voy bajando si no se encuentran opciones
                             codigo_referencia = ATC[:i]
                             #Para asegurarnos de que la lista al principio está vacía (anteriores búsquedas)
@@ -254,13 +254,13 @@ def texto_intro (ppio=None, enzimas=None, principales=None, texto=False, primero
     booleano = None
     #Si es la primera vez que ejecuta se muestran explicaciones clave principales
     if primero:
-        cadena += "In this website we indicate whether there is a LOW, MEDIUM or HIGH interaction based on the enzymes by which each of the active ingredients is metabolized in the DrugBank database.\n"
+        cadena += "This website indicates whether there is a LOW, MEDIUM or HIGH interaction based on the enzymes by which each of the active ingredients is metabolized in the DrugBank database.\n"
         cadena += "Only first-dose interactions are shown, as the long-term effects of the active ingredients are unknown.\n\n"
-        cadena += "Only the following enzymes have been considered: [CYP2D6, CYP3A4, CYP3A5, CYP2C19, CYP2C9, CYP1A2], which according to DrugBank are among the most common metabolic enzymes. CYP3A5 is also included as it is similar to CYP3A4 (CHANGE), however when both CYP3A4 and CYP3A5 were considered primary, CYP3A5 was removed because most of the population does not express this enzyme.\n\n\n"
+        cadena += "Only the following enzymes have been considered: [CYP2D6, CYP3A4, CYP3A5, CYP2C19, CYP2C9, CYP1A2], which, according to DrugBank are among the most common metabolic enzymes. CYP3A5 is also included as it is similar to CYP3A4 (CHANGE), however when both CYP3A4 and CYP3A5 were considered primary, CYP3A5 was removed because most of the population does not express this enzyme.\n\n\n"
 
     #Si no hay lista de enzimas
     elif not enzimas:
-        cadena += f"The active ingredient: {ppio} is not metabolized by any of the enzymes considered according to the DrugBank database, therefore its interaction with any other active ingredient will be categorized as LOW.\n\n"
+        cadena += f"The active ingredient: {ppio} is not metabolized by any of the enzymes considered according to the DrugBank database, therefore it's interaction with any other active ingredient will be categorized as LOW.\n\n"
     else:
         #Si solo hay una enzima es la principal
         if len(enzimas) == 1:
@@ -313,19 +313,18 @@ def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto=False)
         #Si las dos tienen principal
         if intro_1 and intro_2:
             cadena += f"The interaction {ppio_1}-{ppio_2} is considered HIGH.\n"
-            cadena += f"As both active ingredients are metabolized by considered enzymes that have primary enzymes and these coincide in the following: {coincidentes}, it is considered a high interaction.\n\n"
+            cadena += f"As both active ingredients are metabolized by the same enzyme that has been selected as primary: {coincidentes}, it is considered a high interaction.\n\n"
             riesgo = "Alta"
         else:
             #Si al menos una no es principal la interaccion es consderada media
             cadena += f"The interaction {ppio_1}-{ppio_2} is considered MEDIUM.\n"
-            cadena += f"As we do not know the primary enzymes of at least one of the active ingredients but they coincide in the metabolism of the following enzymes: {coincidentes}, the interaction is considered medium.\n\n"
+            cadena += f"As we do not know the primary enzymes of at least one of the active ingredients but they are both metabolized by the following enzymes: {coincidentes}, the interaction is considered medium.\n\n"
             riesgo = "Media"
 
     else:
         #Si no hay coincidentes lo consideramos como sin interaccion, categorizado como Leve
         cadena += f"The interaction {ppio_1}-{ppio_2} is considered LOW.\n"
-        cadena += "The active ingredients do not share metabolism through any of the considered enzymes and therefore their interaction is categorized as low.\n\n"
-
+        cadena += "The active ingredients are not metabolized by the same enzymes and therefore their interaction is categorized as low.\n\n"
         riesgo = "Leve"
 
     if texto:
@@ -362,7 +361,7 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
            ("inducer","inhibitor"):"inhibitor",("inhibitor","inducer"):"inhibitor"}
     cadena = ""
     #Print explicativo
-    cadena += f"In this case only the interactions of the active ingredients with the enzyme: {enzima} are described, considering only the following actions: {posibilidades}.\n\n"
+    cadena += f"In this case, only the interactions of the active ingredients with the enzyme: {enzima} are described, considering only the following actions: {posibilidades}.\n\n"
     
     #De las listas proporcionadas con las acciones UNICAS eliminamos las que no tenemos en cuenta:
     mias_1 = [x for x in acc_1 if x in posibilidades]
@@ -379,7 +378,7 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
     else:
         #De la lista ninguna es inductor-inhibidor-sustrato
         if (not mias_1) or (not mias_2):
-            cadena += f"Of the actions carried out with enzyme: {enzima} in the two active ingredients consulted: {ppio_1} and {ppio_2}, none are among those considered, therefore the interaction cannot be described.\n\n"
+            cadena += f"Ninguna de las acciones pra la enzima son sustrato inhibidr iductor o son tenidas en cuenta. Neither of the active ingredients are  Of the possible actions carried out by the enzyme: {enzima} in the two active ingredients consulted: {ppio_1} and {ppio_2}, none are among those considered, therefore the interaction cannot be described.\n\n"
 
         else:
             if doble:
