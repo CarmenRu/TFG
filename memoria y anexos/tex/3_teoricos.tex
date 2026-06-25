@@ -1,35 +1,94 @@
 \capitulo{3}{Conceptos teóricos}
 
-
-Explicación de los conceptos teóricos básicos necesarios para que cualquier miembro del tribunal pueda entender el trabajo realizado.
-Se describirán los conceptos, modelos, técnicas o tecnologías fundamentales para el desarrollo del TFG, apoyándose en referencias bibliográficas adecuadas y actualizadas.
-
-Esta sección puede contener el número de subsecciones que sean necesarias.
-
-
-Los principios activos contenidos (utilizados?) en los fármacos se metabolizan por diferentes vias
 SOLO EN SU PRIMERA INGESTA
 
-\section{Interacciones farmacológicas (fármaco-fármaco)}
-Las interacciones farmácologicas de tipo fármaco-fármaco son las posibles alteraciones que pueden surgir en los efectos que deberían producir los fármacos suministrados en el organismo debida a la utilización simultánea de otro u otros fármacos. {https://www.msdmanuals.com/es/professional/farmacolog%C3%ADa-cl%C3%ADnica/factores-que-afectan-la-respuesta-a-los-f%C3%A1rmacos/interacciones-farmacol%C3%B3gicas?query=interacciones%20farmacol%C3%B3gicas}
-Que suceda una interacción de este tipo puede incrementar o reducir los efectos deseados de los fármacos recetados.
+\subsection{Metabolismo de fármacos}
+El metabolismo de los fármacos es el proceso mediante el cual el organismo modifica la estructura química de los medicamentos con el objetivo de facilitar su eliminación y evitar la acumulación de sustancias potencialmente tóxicas.
+El principal órgano responsable de este proceso es el hígado y puede llevarse a cabo mediante diferentes mecanismos, entre ellos oxidación, reducción, hidrólisis, conjugación e isomerización. \cite{msd_metabolismo}
 
-Existen dos grandes niveles de interacciones:
-https://www.cse.udelar.edu.uy/wp-content/uploads/2022/09/Manual-farmacologia-corregido-.pdf
+Una vez administrado, un fármaco puede unirse a su diana terapéutica para ejercer su acción farmacológica o ser transformado por enzimas metabolizadoras que modifican su estructura química, dando lugar a metabolitos. 
+Como resultado del metabolismo pueden generarse distintos tipos de metabolitos:
 \begin{itemize}
-    \item \textbf{Farmacodinámica:} es el estudio de los efectos bioquímicos, celulares y fisiológicos de los fármacos en el organismo y sus mecanismos de acción.
-    \item \textbf{Farmacocinética:} es la rama de la farmacología encargada de seguir los procesos de liberación, absorción, distribución, biotransformación y eliminación de los fármacos. 
+    \item \textbf{profármacos} se introducen al organismo de forma inactiva y cuando se convierten en metabolitos acabarán como el fármaco activo con el que poder realizar el efecto deseado.
+    \item \textbf{metabolitos activos} estos seguirán con actividad biológica y pueden prolongar el efecto del medicamento original o causar efectos secundarios.
+    \item \textbf{metabolitos inactivos} que perderán su actividad biológica y tan solo se excretarán.
 \end{itemize}
 
+El proceso de metabolismo de los fármacos, en la mayoría de los casos, comprende dos fases: 
+\begin{itemize}
+    \item En las reacciones de fase I se altera la estructura del fármaco formando, modificando o eliminando un grupo funcional. En esta fase normalmente se utilizan enzimas provenientes del sistema enzimático del citocromo 450 (CYP450). Como resultado el fármaco se inactiva o da lugar a un metabolito activo o en el caso de los profármacos se activa, como se ha comentado previamente.
+    \item En las reacciones de fase II se produce la conjugación del fármaco o de sus metabolitos con moléculas endógenas, incrementando generalmente su solubilidad en agua y facilitando su eliminación.
+\end{itemize}
 
-\section{Metabolismo de fármacos}
-https://www.msdmanuals.com/es/professional/farmacolog%C3%ADa-cl%C3%ADnica/farmacocin%C3%A9tica/metabolismo-de-los-f%C3%A1rmacos?_gl=1*kh1lje*_up*MQ..*_ga*OTIwMTYyNzMyLjE3ODIwNTM3OTA.*_ga_CJ792HFYYC*czE3ODIwNTM3OTAkbzEkZzAkdDE3ODIwNTM4MDgkajQyJGwwJGgw
+Hay algunos factores que alteran el metabolismo de los fármacos como por ejemplo: \cite{sefh_medicamentos}
+\begin{itemize}
+    \item \textbf{Factores genéticos}. Hay variaciones en los genes de cada individuo que pueden alterar a la capacidad de eliminar o procesar sustancias en el organismo.
+    \item \textbf{Interacciones con otros medicamentos}. Algunos fármacos pueden inducir (acelerar) o inhibir (bloquear) las enzimas pertenecientes a CYP450, alterando el efecto de otros medicamentos administrados al mismo tiempo.
+    \item \textbf{Factores dietéticos y hábitos de vida}. Cambios en ambos factores pueden alterar el metabolismo fomentandolo o, por el contrario, retrásandolo.
+    \item \textbf{Enfermedades preexistentes}. Las enfermedades hepáticas, como las hepatitis o la cirrosis, pueden disminuir la capacidad metabólica del organismo. En principio, se ven más afectadas las reacciones de fase 1.
+\end{itemize}
 
-\section{Sistema Citocromo P450}
-Es una enorme y diversa superfamilia de hemoproteínas encontradas en bacterias, archaea y eucariotas. {https://es.wikipedia.org/wiki/Citocromo_P450#Familias_del_CYP_humano}
+\subsection{Interacciones farmacológicas (fármaco-fármaco)}
+Las interacciones farmácologicas de tipo fármaco-fármaco son las posibles alteraciones que pueden surgir en los efectos que deberían producir los fármacos suministrados en el organismo derivadas de la administración simultánea de dos o más medicamentos. {https://www.msdmanuals.com/es/professional/farmacolog%C3%ADa-cl%C3%ADnica/factores-que-afectan-la-respuesta-a-los-f%C3%A1rmacos/interacciones-farmacol%C3%B3gicas?query=interacciones%20farmacol%C3%B3gicas}
+Estas interacciones pueden incrementar o disminuir la eficacia terapéutica de los medicamentos, así como aumentar la probabilidad de aparición de efectos adversos dependiendo de las acciones que lleven a cabo las enzimas que los metabolizan.
 
-\section{Sistema ATC}
-Decir que significa cada uno de las letras y xq.
+Estas interacciones farmacológicas las podemos clasificar en dos grandes grupos: \cite{udelar_manual_farmacologia}
+\begin{itemize}
+    \item \textbf{Interacciones farmacodinámicas:} relacionadas con los efectos bioquímicos, celulares y fisiológicos de los fármacos en el organismo y sus mecanismos de acción.
+    \item \textbf{Interacciones farmacocinéticas:} asociadas a seguir los procesos de liberación, absorción, distribución, biotransformación y eliminación de los fármacos. 
+\end{itemize}
+
+\subsection{Sistema enzimático del citocromo P450}
+El citocromo P450 (CYP450) es una superfamilia de enzimas presente principalmente en el hígado, aunque también puede encontrarse en otros tejidos como el intestino, los pulmones o los riñones. Estas enzimas participan en el metabolismo de numerosas sustancias endógenas, como hormonas y ácidos grasos, así como de compuestos exógenos, entre ellos una gran cantidad de fármacos.
+La principal función del sistema CYP450 es catalizar reacciones de oxidación pertenecientes a la fase I del metabolismo de los fármacos. Estas reacciones modifican la estructura química de los compuestos, facilitando posteriormente su eliminación o su transformación mediante las reacciones de fase II.
+
+\subsubsection{Importancia clínica}
+El sistema CYP450 desempeña un papel fundamental en farmacología debido a que determina la velocidad con la que los medicamentos son metabolizados y eliminados del organismo. La actividad de estas enzimas puede variar entre individuos debido a factores genéticos, fisiológicos o ambientales, lo que provoca diferencias en la respuesta a un mismo tratamiento farmacológico.
+Además, muchas interacciones farmacológicas están relacionadas con la capacidad de determinados medicamentos para inhibir o inducir la actividad de las enzimas CYP450. Estas alteraciones pueden modificar las concentraciones plasmáticas de otros fármacos administrados simultáneamente, aumentando el riesgo de efectos adversos o reduciendo la eficacia terapéutica.
+
+\subsubsection{Principales familias de enzimas CYP450}
+Aunque se han identificado numerosas enzimas pertenecientes a esta superfamilia, unas pocas son responsables de la mayor parte del metabolismo de los medicamentos utilizados en la práctica clínica.
+
+\paragraph{CYP3A4}
+Es la enzima más importante del sistema CYP450 y participa en el metabolismo de aproximadamente la mitad de los fármacos comercializados. Se encuentra principalmente en el hígado y en el intestino. Entre los medicamentos metabolizados por esta enzima se encuentran diversas estatinas, benzodiacepinas, inmunosupresores y algunos antibióticos.
+
+\paragraph{CYP2D6}
+Participa en el metabolismo de aproximadamente un cuarto de los fármacos. Presenta una elevada variabilidad genética entre individuos, lo que puede originar metabolizadores lentos, normales o ultrarrápidos. 
+
+\paragraph{CYP2C9}
+Interviene en el metabolismo de medicamentos de uso frecuente como la warfarina, algunos antiinflamatorios no esteroideos y determinados antidiabéticos. Las variaciones genéticas en esta enzima pueden afectar significativamente a la dosis necesaria de algunos tratamientos.
+
+\paragraph{CYP2C19}
+Metaboliza fármacos como el clopidogrel, el omeprazol o determinados antidepresivos. Al igual que CYP2D6, presenta polimorfismos genéticos que pueden alterar la respuesta terapéutica.
+
+\paragraph{CYP1A2}
+Participa en el metabolismo de sustancias como la cafeína, la teofilina y algunos antipsicóticos. Su actividad puede verse modificada por factores ambientales como el tabaquismo.
+
+\paragraph{CYP3A5} 
+El CYP3A5 es una enzima perteneciente a la subfamilia CYP3A del sistema citocromo P450. Junto con CYP3A4, es una de las principales enzimas responsables del metabolismo de medicamentos en humanos. La mayoría de personas no expresan el CYP3A5 debido a la gran cantidad de polimorfismos que posee, por lo tanto no es considerada tan relevante como el CYP3A4. \cite{lamba2012pharmgkb}
+Sin embargo, para las personas que la expresan esta encima el CYP3A5 puede representar más de la mitad de toda la actividad CYP3A hepática, influyendo significativamente en la velocidad de eliminación de determinados medicamentos. \cite{wang2001abundance}
+
+\subsubsection{Inducción e inhibición enzimática}
+
+Las enzimas del sistema CYP450 pueden verse afectadas por la presencia de determinados fármacos o sustancias externas.
+
+La inducción enzimática consiste en un aumento de la actividad metabólica de una enzima, lo que provoca una eliminación más rápida de los medicamentos metabolizados por dicha vía y, en consecuencia, una posible disminución de su efecto terapéutico.
+
+Por el contrario, la inhibición enzimática reduce la actividad de la enzima, aumentando las concentraciones plasmáticas del fármaco afectado y el riesgo de aparición de efectos adversos o toxicidad.
+
+Estos fenómenos constituyen uno de los principales mecanismos responsables de las interacciones farmacológicas de tipo farmacocinético.
+
+\subsubsection{Relación con las interacciones farmacológicas}
+
+Debido a que numerosos medicamentos comparten las mismas vías metabólicas, el sistema CYP450 constituye uno de los principales responsables de las interacciones fármaco-fármaco. Cuando dos o más fármacos son administrados simultáneamente, pueden competir por una misma enzima, inducir su actividad o inhibirla, alterando las concentraciones plasmáticas de alguno de ellos.
+
+Por este motivo, el conocimiento de las enzimas CYP450 implicadas en el metabolismo de cada medicamento resulta esencial para predecir posibles interacciones y optimizar la seguridad de los tratamientos farmacológicos.
+
+
+
+
+\subsection{Sistema de Clasificación Anatómica, Terapéutica y Química (ATC)}
+
 
 \section{FrameWork de DASH}
 
