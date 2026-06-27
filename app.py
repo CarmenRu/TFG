@@ -5,6 +5,8 @@ import plotly.graph_objs as go
 from textos import *
 import pandas as pd
 
+server = app.server
+
 #Accedemos a los dos csv
 DDI = pd.read_csv("DDI_sea.csv")
 #Normalizamos los nombres
