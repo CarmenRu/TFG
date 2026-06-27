@@ -5,8 +5,6 @@ import plotly.graph_objs as go
 from textos import *
 import pandas as pd
 
-server = app.server
-
 #Accedemos a los dos csv
 DDI = pd.read_csv("DDI_sea.csv")
 #Normalizamos los nombres
@@ -18,6 +16,7 @@ recortar = {"whiteSpace": "pre-wrap", "overflowWrap": "break-word", "width": "10
 
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+server = app.server
 
 #Definimos esilos
 SIDEBAR_STYLE = {
