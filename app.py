@@ -40,18 +40,23 @@ sidebar = html.Div([
     html.Div([
         html.H3("Drug Analysis"),
         # Inputs
-        dcc.Input(
-            id="ppio1",
-            type="text",
-            placeholder="Enter the first active ingredient"
+        dcc.Dropdown(
+        id="ppio1",
+        options=[{"label": i, "value": i} for i in DDI["Drug_name"].dropna().unique()],
+        placeholder="Select first active ingredient",
+        searchable=True,
+        clearable=True
         ),
+        
         html.Br(),
         html.Br(),
 
-        dcc.Input(
-            id="ppio2",
-            type="text",
-            placeholder="Enter the second active ingredient"
+        dcc.Dropdown(
+        id="ppio2",
+        options=[{"label": i, "value": i} for i in DDI["Drug_name"].dropna().unique()],
+        placeholder="Select second active ingredient",
+        searchable=True,
+        clearable=True
         ),
         html.Br(),
         html.Br(),
