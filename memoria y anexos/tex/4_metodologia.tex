@@ -1,20 +1,60 @@
 \capitulo{4}{Metodología}
 
-\section{Descripción de los datos.}
-\subsection{DrugBank}
+\setsecnumdepth{subsubsection}
 
-\subsection{CIMA}
+\section{Descripción de los datos}
+En este apartado se detalla la información obtenida de las tres bases de datos públicas de referencia utilizadas en este proyecto: DrugBank \cite{drugbank}, SIDER \cite{sider} y CIMA \cite{cima}.
 
-\subsection{SIDER}
+Además se especifican los criterios de selección y filtrado de datos para la realización de los conjuntos de datos creados.
+\paragraph{SIDER}
+Se descargaron los registros estructurados en formato TSV correspondientes a efectos adversos (\texttt{meddra\_all\_se.tsv}), frecuencias de aparición (\texttt{meddra\_freq.tsv}) y mapeo de nombres (\texttt{drug\_names.tsv}). A través de un cruce indexado por identificador de compuesto (flat), se unificó la información para calcular la frecuencia media de aparición de cada síntoma recogido en el documento llamado \texttt{efectos\_adversos.csv}.
 
-\subsection{Descarga automaticas de pdfs}
+\paragraph{DrugBank}
+Se utilizó como la ontología central para el modelado de fármacos, dianas y rutas metabólicas. La adquisición se realizó mediante la descarga de su base de datos completa en formato XML (\texttt{full\_database.xml}), procesando mediante parsing un total de 10.162 principios activos únicos. De este repositorio se extrajeron de forma dirigida los campos de identificador binario (\texttt{drugbank\_id}), nombre genérico, sinónimos comerciales, tipos de interacción (diana o enzima), nombre del gen codificante y acciones farmacodinámicas asociadas.
 
-Se describirán los datos utilizados en el proyecto, indicando su origen, tipo, formato y características principales. 
-Cuando el tratamiento de datos sea extenso, se hará referencia al anexo correspondiente.
+\paragraph{CIMA}
+Se extrajo e iteró la base de datos estructurada de prescripción (Prescripcion.xml) junto a sus diccionarios auxiliares de formas farmacéuticas y situaciones de registro. Esto permitió trabajar con 30.232 registros de medicamentos autorizados en España.
+
+\subsection{Criterio inclusión/exclusión}
+Para acotar el alcance del proyecto se aplicaron de forma secuencial los siguientes criterios de selección (filtros de inclusión/exclusión):
+\begin{itemize}
+    \item \textbf{Restricción del Perfil Enzimático (Top 6 CYP).} Tras analizar la distribución de frecuencias de las enzimas en DrugBank, se constató que la familia del citocromo P450 concentraba la inmensa mayoría de las rutas metabólicas de fase I. Se acotó el diseño computacional a las seis isoenzimas con mayor impacto y frecuencia de aparición (visible en la tabla \ref{fig:frecuencia_cyp} creada en un notebook auxiliar no incluido): CYP3A4, CYP2C9, CYP2D6, CYP1A2, CYP2C19 y CYP3A5. Se incluyó CYP3A5 debido a su estrecha coexpresión y solapamiento con CYP3A4. 
+    \item \textbf{Criterio Base de Datos de CIMA.} De estos registros inicialmente extrahídos se excluyeron los medicamentos compuestos por mas de un principio activo. Esto permitió aislar 25.453 medicamentos monofármaco. De estos, eliminando duplicidades de presentaciones comerciales, se identificaron 2.100 principios activos puros validados para el mercado español.
+    \item \textbf{Filtrado Ontológico de Efectos Adversos.} Por último para el procesamiento de SIDER, se aplicó un criterio de exclusión sobre la columna \texttt{meddra\_type}, descartando los términos generales (LLT) y limitando la Ingesta únicamente a los Términos Preferidos (PT, Preferred Terms). Esto eliminó la redundancia léxica y redujo el conjunto final a 968 compuestos químicos con perfiles de toxicidad normalizados y frecuencias cuantitativas verificadas.
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/frecuencias_cyp.jpeg} 
+    \caption{Resumen frecuencia de aparición de las enzimas seleccionadas en DrugBank}
+    \label{fig:frecuencia_cyp}
+\end{figure}
+
+\subsection{Criterio de resolución de ambiguedades}
+Cuando un principio activo presentaba múltiples enzimas del citocromo P450 seleccionadas en DrugBank de forma simultánea, el sistema informático se encontraba ante una ambigüedad matemática para determinar el riesgo de interacción asociado. Por tanto, se intentará detectar la via metabólica principal que sigue cada uno de los 753 principios activos en los que esto sucede.
+
+Para ello se filtran tan solo los que tienen como acción sustrato \footnote{sustrato: que posean como acción sustrato significa que la enzima actúa de manera directa sobre una molécula específica para transformarla químicamente \cite{biolan_health_enzimas}}, lo que reduce el conjunto a 665 registros, después, se seleccionaron de forma programática los códigos ATC coincidentes entre DrugBank y CIMA de esos principios activos, lo que nos reduce un más el conjunto de datos a 418 registros. Sobre estos se ejecutó un algoritmo de extracción (mediante web scraping \footnote{Web scrapping: técnica que se utilizada para extraer información de sitios web de manera automatizada \cite{esic_web_scraping}.}) sobre sus respectivas fichas técnicas oficiales. En el presente proyecto primero se descargaron de manera programática cada uno de los pdfs correspondientes a las fichas técnicas (en caso de encontrarse) de cada principio activo problema (en un periodo prolongado de tiempo, evitando de esta manera errores del tipo 429 \footnote{error 429: too many requests, significa que el servidor rechaza temporalmente tu conexión porque has enviado demasiadas solicitudes en muy poco tiempo.}). 
+
+Esta información textual extraída fue procesada mediante modelos de lenguaje vectorizados (NotebookLM y ChatGPT) para determinar cuál de las enzimas registradas ejercía el rol de vía metabólica principal (categorizada como prioridad = 1) frente a las secundarias y su posterior creación de un dataframe con esta información con el objetivo de poder incluirlo con los datos extraídos de DrugBank. Cuando no fue posible encontrar ninguna via principal se categorizan a todas las presentes en ese principio activo como prioridad = 0.
+
+
+
+Se explica con mayor detalle la generación de el conjunto de datos finalmente utilizado \texttt{DDI\_sea.csv} y \texttt{efectos\_adversos.csv} en el apartado correspondiente de anexos junto con el diagrama de flujo seguido para la herramienta generada.
+
 
 \section{Técnicas y herramientas.}
-EXPLICAR PORQUE CYP3A5 NO SE COGE CUANDO HAY DOS, EXPLICAR PORQUE SE ESCOGIERON SOLO 6 ENZYMAS, XQ SOLO SUSTRATO/INHBIDOR/INNDUCTOR, XQ DASH....
+Para el desarrollo del sistema de detección e interpretación de interacciones farmacológicas, se ha diseñado un flujo de trabajo enfocado en la ingeniería de datos biomédicos, el procesamiento de lenguaje natural y la visualización analítica. A continuación, se detallan las técnicas e infraestructuras de software implementadas:
 
+\subsubsection{Entorno de Programación y Librerías Científicas}
+La extracción y procesamiento de los datos y a lógica computacional, se han implemantado bajo el lenguaje de programación Python. Para la manipulación y estructuración matricial de la información se ha utilizado la librería de código abierto Pandas, permitiendo realizar operaciones complejas de unificación (merge), filtrado por condiciones y agregación de variables bioinformáticas. Asimismo, se ha empleado la biblioteca nativa ElementTree (ET) para la lectura y extracción eficiente en términos de memoria de archivos extensos estructurados en formato XML.
+
+\subsubsection{Técnicas de Extracción y Consolidación de Datos}
+Debido a la heterogeneidad y procedencia de las fuentes originales, ha sido necesario aplicar diferentes técnicas de ingeniería de datos para unificar los identificadores de los principios activos y posibilitar la interoperabilidad entre las diferentes fuentes:
+
+\begin{itemize}
+    \item \textbf{Estandarización de Identificadores mediante Código ATC.} Para resolver las discrepancias nomenclátricas entre las bases de datos americanas, europeas y nacionales, se ha utilizado el sistema de clasificación jerárquica de la Organización Mundial de la Salud (OMS). Los códigos ATC se han empleado como clave primaria universal para cruzar e integrar registros procedentes de plataformas inicialmente inconexas.
+    \item \textbf{Procesamiento de Estructuras Jerárquicas Complejas.} 
+\end{itemize}
 
 Se presentarán las técnicas metodológicas y las herramientas empleadas durante el desarrollo del proyecto. 
 Se deben justificar las elecciones realizadas frente a otras posibles alternativas.
