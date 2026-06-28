@@ -1,6 +1,18 @@
 \capitulo{6}{Discusión}
 
 \section{Discusión de los resultados}
+El desarrollo de la herramienta informática presentada en este trabajo demuestra la viabilidad técnica y metodológica de integrar fuentes de datos biomédicos heterogéneas (DrugBank, CIMA y SIDER) para construir un sistema interpretable de detección de interacciones farmacológicas (DDI \footnote{DDI: drug-drug interaction}) basado en el metabolismo de las enzimas CYP3A4, CYP3A5, CYP2D6, CYP2C9, CYP2C19 y CYP1A2 correspondientes al citocromo P450. A diferencia de las soluciones comerciales dominantes, como se discutió en el apartado de estado del arte, este enfoque no solo identifica el riesgo de interacción, sino que aporta claridad ante el proceso de toma de decisiones clínicas mediante la explicación del mecanismo biológico subyacente y la sugerencia automatizada de alternativas terapéuticas consideradas seguras para la herramienta.
 
-Se realizará un análisis crítico de los resultados, interpretando su significado y, cuando sea pertinente, 
-comparándolos con los resultados de trabajos previos.
+Los resultados obtenidos en general son los esperados para los ejemplos comprobados explicados en el apartado de resultados. Por lo tanto, con el presente proyecto se han logrado implementar las nuevas funcionalidades que no encontramos presentes en las previas herramientas desarrolladas.
+
+Uno de los mayores desafíos abordados en este proyecto ha sido la resolución de ambigüedades en fármacos con perfiles metabólicos múltiples. Mientras que plataformas como DrugBank listan de manera exhaustiva todas las enzimas con las que un principio activo puede interactuar, carecen en muchos casos de una jerarquización cuantitativa o clínica de estas vías. La estrategia metodológica de realizar un \textit{web scraping} dirigido sobre las fichas técnicas de la AEMPS a través de CIMA, complementado con el procesamiento mediante modelos de NotebookLM y ChatGPT, ha permitido discriminar de forma efectiva las vías metabólicas principales (Prioridad = 1) de las secundarias. 
+
+Por otra parte, al deberse a una plataforma de desarrollo incial presenta ciertas limitaciones como son:
+
+\begin{itemize}
+    \item La imposibilidad de conseguir la via metabólica principal de alguno de los principios activos, hay interacciones categorizadas como nivel medio cuando deberían ser alto, aunque no se ofrecen como alternativa segura finalmente.
+    \item Al incluir solo algunas de las enzimas mas importantes del sistema citocromo p450 se está simplificando el problema que los fármacos con perfiles metabólicos múltiples. Sin embargo es posible que se esté categorizando alguna interacción como leve de algún principio activo que se metaboliza por enzimas no tenidas en cuenta, en este caso los registros solo mostrarían dianas y no enzimas.
+    \item Dependencia de la calidad y completitud de las bases de datos públicas consultadas. Existen elementos nulos en columnas clave como son por ejemplo los códigos ATC de cada principio activo o las acciones que las enzimas lleven a cabo.
+    \item Restricciones en la interpretación automática de textos no estructurados (CIMA). Debido a la imposibilidad de comprobación de todos los registros procesados por la IA en los que se identifica mas de una enzima que los metaboliza.
+\end{itemize}
+

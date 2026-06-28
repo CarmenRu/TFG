@@ -1,19 +1,36 @@
 \capitulo{7}{Conclusiones}
 
-Todo proyecto debe incluir las conclusiones que se derivan de su desarrollo. Éstas pueden ser de diferente índole, dependiendo de la tipología del proyecto, pero normalmente van a estar presentes un conjunto de conclusiones relacionadas con los resultados del proyecto y un conjunto de conclusiones técnicas. 
+\section{Conclusiones sobre los resultados del proyecto}
+El desarrollo de este Trabajo Fin de Gardo ha permitido alcanzar con éxito el objetivo general y cada uno de los objetivos específicos planteados originalmente. Las principales conclusiones derivadas de los resultados obtenidos son las siguientes:
 
-
+\begin{itemize}
+    \item \textbf{Viabilidad de la detección de interacciones.} Se ha demostrado que es posible automatizar la detección de interacciones farmacológicas y dotar al sistema de un componente de interpretabilidad clínica analizando las isoenzimas del sistema citocromo P450, superando el modelo clásico de las plataformas comerciales a la hora de mostrar la información de manera mas clara.
+    \item \textbf{Efectividad del módulo de alternativas:} El algoritmo basado en la jerarquía de códigos ATC ha probado ser una solución robusta para resolver interacciones de riesgo medio y alto, identificando de esta manera con precisión principios activos equivalentes terapéuticamente pero con rutas metabólicas compatibles, por las cuales no se detecte interacción.
+    \item \textbf{Utilidad del cuadro de mando integrado:} La interfaz web interactiva centraliza de manera eficiente tres flujos de información críticos para el personal facultativo (el nivel de riesgo, el porqué biológico de la interacción y el perfil de toxicidad de SIDER). El diseño de esta herramienta permite al usuario visualizar de manera eficaz la información necesaria para modificar algún principio activo de los recetados en caso de ser necesario.
+    \item \textbf{Interoperabilidad de fuentes heterogéneas:} El uso del código ATC de la OMS como clave primaria universal ha demostrado ser la estrategia idónea para unificar las estructuras de datos consultadas como fichas técnicas en formato PDF (CIMA), bases de datos en XML (DrugBank) y registros estructurados en TSV (SIDER).
+    \item \textbf{Eficiencia de arquitecturas ligeras:} La arquitectura integrada por Python, Pandas, Plotly Dash y el despliegue en Render confirma que es posible construir interfaces analíticas de alto rendimiento y producción estable para el sector farmacéutico sin necesidad de complejas herammientas usadas tradicionalmente.
+\end{itemize}
 
 \section{Aspectos relevantes.}
+Durante el desarrollo del presente software, se han tomado decisiones arquitectónicas y metodológicas clave que transformaron el enfoque del proyecto:
 
-Este apartado pretende recoger los aspectos más interesantes del \textbf{desarrollo del proyecto}, comentados por los autores del mismo.
+\subsection*{El fracaso de la aproximación por fuerza bruta en DrugBank (Resultados negativos)}
+En las primeras fases del diseño del algoritmo de detección de interacciones, se intentó operar exclusivamente con los datos de DrugBank. El planteamiento inicial consistía en mostrar las interacciones basándose su via de metabolización. Este enfoque supuso un problema debido a la gran cantidad de principios activos con perfiles metabólicos múltiples existentes en la misma,  cuando se planteó la idea de no proponer via metabólica principal surgió un problema: habría interacciones que se categorizaran como altas o medias cuando deberían ser leves.
 
-Debe incluir los detalles más relevantes en cada fase del desarrollo, justificando los caminos tomados, especialmente aquellos que no sean triviales. 
+Este obstáculo obligó a pivotar el diseño hacia la introducción de un parámetro de prioridad. Entender que necesitábamos discriminar de forma matemática qué enzima era la vía principal frente a las vías secundarias fue el punto de inflexión del proyecto y lo que motivó la inclusión de CIMA en el desarrollo del mismo.
 
-Puede ser el lugar más adecuado para documentar los aspectos más interesantes del proyecto y también los resultados negativos obtenidos por soluciones previas a la solución entregada.
+\subsection*{Justificación del Web Scraping asíncrono y control de errores 429}
+La obtención de las fichas técnicas de CIMA para resolver las ambigüedades de los 418 principios activos conflictivos que se pudieron encontrar registrados en CIMA supuso un reto de infraestructura. Las primeras pruebas de descarga masiva mediante scripts convencionales de requests provocaron el bloqueo inmediato de las conexiones por parte de los servidores de la AEMPS (error 429). 
 
-Este apartado, debe convertirse en el resumen de la experiencia práctica del proyecto, y por sí mismo justifica que la memoria se convierta en un documento útil, fuente de referencia para los autores, los tutores y futuros alumnos.
+Para solucionar este comportamiento no trivial, se diseñó un flujo asíncrono controlado que segmentaba las solicitudes en bloques de 40 registros e introducía retrasos estocásticos de tiempo en la ejecución. Esta decisión ralentizó deliberadamente la fase de ingesta, pero garantizó la integridad del proceso de extracción automatizada sin penalizaciones ni pérdida de paquetes de datos.
 
+\subsection*{Procesamiento de texto libre y el uso de IA}
+El análisis de los PDFs descargados mediante técnicas tradicionales de procesamiento de lenguaje natural basado en expresiones regulares se mostró ineficiente debido a la nula homogeneidad en la redacción de las fichas técnicas españolas (el metabolismo no siempre se define en el mismo apartado, además, se utiliza terminología muy variable). 
 
+La solución fue integrar NotebookLM, esto constituyó uno de los aspectos innovadores de la ingeniería de datos del proyecto. Al alimentar el modelo exclusivamente con los PDFs de CIMA extraídos, se eliminó la transcripción manual de miles de páginas. El uso posterior de ChatGPT para convertir el texto libre resultante en un DataFrame limpio y estructurado demostró cómo las IA generativas pueden actuar como traductores de formatos óptimos dentro de un flujo de desarrollo de software clásico.
 
+\subsection*{Gestión de la inconsistencia de datos en casos límite}
+Durante la fase de validación, la puesta en marcha de la plataforma evidenció que las bases de datos públicas distan de ser perfectas. Casos como la interacción entre clopidogrel y omeprazol revelaron que un mismo fármaco puede estar asociado a múltiples códigos ATC y que SIDER no siempre dispone de registros de toxicidad para todas sus variantes comerciales. Ante esta situación, se optó por diseñar el componente visual en Dash para que informara explícitamente al usuario de la ausencia de datos de efectos adversos para un código concreto, en lugar de provocar el fallo de la aplicación mediante una excepción de Python. Esta decisión incrementa la robustez del sistema y lo hace más adecuado para su utilización en entornos biomédicos reales.
+
+En resumen, el desarrollo de este proyecto pone de manifiesto que el éxito de una herramienta de salud digital no depende únicamente de la potencia de sus algoritmos internos, sino también de la capacidad para integrar, depurar, clasificar y resolver las inconsistencias presentes en los datos biológicos de origen.
 

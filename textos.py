@@ -91,8 +91,8 @@ def interaccion (ppio_1, ppio_2, DDI):
         riesgo = calcular_riesgo(ppio_1, ppio_2,coincidentes, intro_1, intro_2)
 
         if riesgo=="Alta" or riesgo=="Media":
-            ATC_1 = df_1["Drug_ATC"].unique().tolist()
-            ATC_2 = df_2["Drug_ATC"].unique().tolist()
+            ATC_1 = df_1["Drug_ATC"].dropna().unique().tolist()
+            ATC_2 = df_2["Drug_ATC"].dropna().unique().tolist()
             ref_1 = []
             ref_2 = []
             #Poner opcion de introducir codigo ATC?
@@ -402,7 +402,6 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
 
 
 #Los efectos salen en ingles porque la bbdd consultada es en ingles
-#Cambiar descripcion
 def texto_efectos (lista_ATC, ref, efectos_adversos, ppio):
     '''
     Imprime una tabla con los top 10 efectos adversos que esten asociados con los codigos ATC de cada uno de los principios (por separado)

@@ -91,6 +91,9 @@ ENV/
 env.bak/
 venv.bak/
 
+#Casos limite
+Casos limite.ipynb
+
 #Latex
 *.aux
 *.log

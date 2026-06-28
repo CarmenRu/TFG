@@ -9,7 +9,7 @@ Todos los ejemplos mostrados en los siguientes resultados son para la interacci�
 Una vez dentro de la plataforma se encuentra la interfaz principal \ref{fig:pag_ppal} que posee un logo creado en la parte superior, una breve descripción de la funcionalidad de la herramienta y las enzimas tenidas en cuenta para la interacción junto a un menú lateral con las diferentes pestañas en las que introduciremos cada uno de los principios activos. 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{img/pagina_principal.jpeg} 
+    \includegraphics[width=0.8\textwidth]{img/pagina_principal.png} 
     \caption{Página principal de la herramienta desarrollada}
     \label{fig:pag_ppal}
 \end{figure}
@@ -18,16 +18,16 @@ Tras introducir los pares de principios activios y pulsar el boton de “search 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{img/interaccion.jpeg} 
+    \includegraphics[width=0.8\textwidth]{img/interaccion.png} 
     \caption{Cuadro fijo}
     \label{fig:buscar_interaccion}
 \end{figure}
 
-Por otro lado, el botón "enzyme explanation" nos ofrece las enzimas principales de los principios activos solicitados, en caso de tenerlas, y una breve explicación del criterio de selección de dichas enzimas, un ejemplo del mismo es el visto en la siguiente imagen \ref{fig:enzimas}.
+Por otro lado, el botón “enzyme explanation” nos ofrece las enzimas principales de los principios activos solicitados, en caso de tenerlas, y una breve explicación del criterio de selección de dichas enzimas, un ejemplo del mismo es el visto en la siguiente imagen \ref{fig:enzimas}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{img/exp_enz.jpeg} 
+    \includegraphics[width=0.8\textwidth]{img/exp_enz.png} 
     \caption{Explicación de enzimas}
     \label{fig:enzimas}
 \end{figure}
@@ -36,25 +36,25 @@ En el módulo de efectos adversos, nos muestra en un gráfico de barras interact
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{img/diagrama_ea.jpeg} 
+    \includegraphics[width=0.8\textwidth]{img/diagrama_ea.png} 
     \caption{Diagrama de barras de efectos adversos}
     \label{fig:grafico_ea}
 \end{figure}
 
-Otro de los botones incluidos "Interaction explanation" explica el mecanismo de acción que siguen ambos principios para las enzimas detectadas por el algoritmo como coincidentes, indicando de esta manera el nivel de prevalencia de una sobre otra, se puede observar en la siguiente imagen \ref{fig:acciones}.
+Otro de los botones incluidos “Interaction explanation” explica el mecanismo de acción que siguen ambos principios para las enzimas detectadas por el algoritmo como coincidentes, indicando de esta manera el nivel de prevalencia de una sobre otra, se puede observar en la siguiente imagen \ref{fig:acciones}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{img/exp_acciones.jpeg} 
+    \includegraphics[width=0.8\textwidth]{img/exp_acciones.png} 
     \caption{Explicación de las acciones de cada enzima que hace que los principios interactúen.}
     \label{fig:acciones}
 \end{figure}
 
-Finalmente, en la pestaña "options" podemos ver alternativas terapéuticas consideradas seguras para el algoritmo, en caso de que la interacción entre los principios activos resulte ser media-alta, se muestran las alternativas para los principios activos seleccionados en la imagen \ref{fig:alternativas}.
+Finalmente, en la pestaña “options” podemos ver alternativas terapéuticas consideradas seguras para el algoritmo, en caso de que la interacción entre los principios activos resulte ser media-alta, se muestran las alternativas para los principios activos seleccionados en la imagen \ref{fig:alternativas}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{img/opciones.jpeg} 
+    \includegraphics[width=0.8\textwidth]{img/opciones.png} 
     \caption{Posibles alternativas terapéuticas clopidogrel-omeprazole.}
     \label{fig:alternativas}
 \end{figure}
@@ -62,5 +62,15 @@ Finalmente, en la pestaña "options" podemos ver alternativas terapéuticas cons
 En conjunto, el sistema desarrollado cumple los objetivos planteados, proporcionando una herramienta funcional para el análisis de interacciones farmacológicas y proposición de alternativas seguras. No obstante, su uso debe entenderse como un sistema de apoyo a la decisión y no como una herramienta clínica definitiva.
 
 \section{Casos de prueba}
+Con el fin de probar los posibles inconvenientes de la herramienta creada se realizaron pruebas con los diferentes casos límites encontrados, entre los que destacan los siguientes:
 
-PRIMERO TENGO QUE SOLUCIONAR EL RENDER
+\paragraph{Interacción baja (LOW)} Cuando esto sucede la herramienta solo proporcionará resultado en el botón designado para explicar porque se ha detectado esa interacción y que enzimas se han tenido en cuenta para ello.  Esto pasa por ejemplo con la interacción para los principios activos Lepirudin y Cetuximab, además, ambos tienen solo dianas según la tabla consultada ninguno tiene enzimas por las que se metabolizan.
+\paragraph{Interacción de nivel medio (MEDIUM)} Para los ejemplos de principios activos cuya interacción es categorizada como nivel medio o alto si se dispone de información para todos los botones presentados.
+\paragraph{Pulsar botones sin buscar interaccion primero} Cuando esto sucede se muestra en pantalla un mensaje que indica la necesidad de pulsar primero el botón de search interaction y más tarde cualquiera de los otros pulsadores disponibles .
+\paragraph{Clopidogrel-omeprazole} Se usa como ejemplo principal para explicar la herramienta, también se trata de un caso límite al existir mas de un código de referencia para uno de los dos. Además no se encuentran coincidencias con uno de los códigos de referencia en la tabla de efectos adversos, por tanto, se muestra en pantalla.
+\paragraph{(R)-warfarin–(s)-warfarin} Es un ejemplo en el que no se encuentran códigos ATC y además no tiene acciones asociadas a las enzimas tenidas en cuenta, lo que se explica en el botón pertinente.
+\paragraph{Abametapir–duloxetine} En este caso límite los dos principios activos coinciden en su via metabólica en mas de una enzima y en consecuencia se explica en los apartados adecuados las interacciones y las acciones de cada una de las enzimas en las que se detecta interacción por separado.
+
+Tambien se realizaron pruebas con algunos para ver si se obtenía el resultado esperado:
+\paragraph{Ibuprofen-acetaminophen} Los dos mencionados son el principio activo del ibuprofeno y del paracetamol respectivamente. Se explica que su nivel de interacción es medio debido a que no se ha podido determinar su enzima principal. Esto cumple los estándares que tenemos, debido a que no se pondría como posible opción debido a que efectivamente tienen interacción.
+\paragraph{Simvastatin-clarithromycin} De la misma manera que sucede con estos dos principios activos, de los cuales también se llega a la conclusión de que existe interacción, que es la respuesta esperada. En este caso el nivel de riesgo también es categorizado como medio, debido a que no fue posible encontrar la enzima principal de metabolización de la claritromicina.
