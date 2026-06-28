@@ -41,23 +41,24 @@ sidebar = html.Div([
         html.H3("Drug Analysis"),
         # Inputs
         dcc.Dropdown(
-        id="ppio1",
-        options=[{"label": i, "value": i} for i in DDI["Drug_name"].dropna().unique()],
-        placeholder="Select first active ingredient",
-        searchable=True,
-        clearable=True
+            id="ppio1",
+            options=[{"label": i, "value": i} for i in DDI["Drug_name"].dropna().unique()],
+            placeholder="Select first active ingredient",
+            searchable=True,
+            clearable=True
         ),
         
         html.Br(),
         html.Br(),
 
         dcc.Dropdown(
-        id="ppio2",
-        options=[{"label": i, "value": i} for i in DDI["Drug_name"].dropna().unique()],
-        placeholder="Select second active ingredient",
-        searchable=True,
-        clearable=True
+            id="ppio2",
+            options=[{"label": i, "value": i} for i in DDI["Drug_name"].dropna().unique()],
+            placeholder="Select second active ingredient",
+            searchable=True,
+            clearable=True
         ),
+
         html.Br(),
         html.Br(),
 
@@ -93,7 +94,7 @@ contenido = html.Div(
         html.Img(
             src="assets/interaccion.png",
             style={
-                "width": "10%",
+                "width": "25%",
                 "marginBottom": "10px"
             }
         ),
