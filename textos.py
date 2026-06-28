@@ -256,7 +256,7 @@ def texto_intro (ppio=None, enzimas=None, principales=None, texto=False, primero
     if primero:
         cadena += "This website indicates whether there is a LOW, MEDIUM or HIGH interaction based on the enzymes by which each of the active ingredients is metabolized in the DrugBank database.\n"
         cadena += "Only first-dose interactions are shown, as the long-term effects of the active ingredients are unknown.\n\n"
-        cadena += "Only the following enzymes have been considered: [CYP2D6, CYP3A4, CYP3A5, CYP2C19, CYP2C9, CYP1A2], which, according to DrugBank are among the most common metabolic enzymes. CYP3A5 is also included as it is similar to CYP3A4 (CHANGE), however when both CYP3A4 and CYP3A5 were considered primary, CYP3A5 was removed because most of the population does not express this enzyme.\n\n\n"
+        cadena += "Only the following enzymes have been considered: CYP2D6, CYP3A4, CYP3A5, CYP2C19, CYP2C9, CYP1A2, which, according to DrugBank are among the most common metabolic enzymes. CYP3A5 is also included as it is similar to CYP3A4, however when both CYP3A4 and CYP3A5 were considered primary, CYP3A5 was removed because most of the population does not express this enzyme.\n\n\n"
 
     #Si no hay lista de enzimas
     elif not enzimas:
@@ -269,17 +269,17 @@ def texto_intro (ppio=None, enzimas=None, principales=None, texto=False, primero
         else:
             #Si no tiene principales (al menos de las tenidas en cuenta)
             if not principales:
-                cadena += f"The active ingredient: {ppio} is metabolized by the following enzymes: {enzimas}, the main metabolic enzyme could not be determined, therefore interactions shown below will consider all of them.\n\n"
+                cadena += f"The active ingredient: {ppio} is metabolized by the following enzymes: {', '.join(enzimas)}, the main metabolic enzyme could not be determined, therefore interactions shown below will consider all of them.\n\n"
                 booleano = False
 
             else:
                 #Cuando solo hay una principal
                 if len(principales) == 1:
-                    cadena += f"The active ingredient: {ppio} is metabolized by the enzymes: {enzimas}, of which the following has been considered primary: {principales}, in the following descriptions only interactions with this primary enzyme will be shown.\n\n"
+                    cadena += f"The active ingredient: {ppio} is metabolized by the enzymes: {', '.join(enzimas)}, of which the following has been considered primary: {', '.join(principales)}, in the following descriptions only interactions with this primary enzyme will be shown.\n\n"
                     booleano = True
                 else:
                     #Cuando hay varias principales
-                    cadena += f"The active ingredient: {ppio} is metabolized by the enzymes: {enzimas}, of which the following have been considered primary: {principales}, in the following descriptions only interactions with these primary enzymes will be shown.\n\n"
+                    cadena += f"The active ingredient: {ppio} is metabolized by the enzymes: {', '.join(enzimas)}, of which the following have been considered primary: {', '.join(principales)}, in the following descriptions only interactions with these primary enzymes will be shown.\n\n"
                     booleano = True
 
     if texto:
@@ -313,12 +313,12 @@ def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto=False)
         #Si las dos tienen principal
         if intro_1 and intro_2:
             cadena += f"The interaction {ppio_1}-{ppio_2} is considered HIGH.\n"
-            cadena += f"As both active ingredients are metabolized by the same enzyme that has been selected as primary: {coincidentes}, it is considered a high interaction.\n\n"
+            cadena += f"As both active ingredients are metabolized by the same enzyme that has been selected as primary: {', '.join(coincidentes)}, it is considered a high interaction.\n\n"
             riesgo = "Alta"
         else:
             #Si al menos una no es principal la interaccion es consderada media
             cadena += f"The interaction {ppio_1}-{ppio_2} is considered MEDIUM.\n"
-            cadena += f"As we do not know the primary enzymes of at least one of the active ingredients but they are both metabolized by the following enzymes: {coincidentes}, the interaction is considered medium.\n\n"
+            cadena += f"As we do not know the primary enzymes of at least one of the active ingredients but they are both metabolized by the following enzymes: {', '.join(coincidentes)}, the interaction is considered medium.\n\n"
             riesgo = "Media"
 
     else:
@@ -361,7 +361,7 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
            ("inducer","inhibitor"):"inhibitor",("inhibitor","inducer"):"inhibitor"}
     cadena = ""
     #Print explicativo
-    cadena += f"In this case, only the interactions of the active ingredients with the enzyme: {enzima} are described, considering only the following actions: {posibilidades}.\n\n"
+    cadena += f"In this case, only the interactions of the active ingredients with the enzyme: {enzima} are described, considering only the following actions: {', '.join(posibilidades)}.\n\n"
     
     #De las listas proporcionadas con las acciones UNICAS eliminamos las que no tenemos en cuenta:
     mias_1 = [x for x in acc_1 if x in posibilidades]
@@ -383,7 +383,7 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
         else:
             if doble:
                 #Es posible que doble tenga mas de una acción ¿QUE HACES EN ESE CASO?, con que se tenga una que coincida pues vale supongo
-                cadena += f"For enzyme: {enzima} both active ingredients act as: {doble}, therefore they will compete at the same level, meaning neither will have priority over the other in metabolism.\n\n"
+                cadena += f"For enzyme: {enzima} both active ingredients act as: {', '.join(doble)}, therefore they will compete at the same level, meaning neither will have priority over the other in metabolism.\n\n"
 
             else:
                 #Texto genérico que describe interaccion
@@ -394,8 +394,8 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
                     cadena += f"For enzyme: {enzima} the active ingredient: {ppio_1} acts as: {a1}, while the active ingredient: {ppio_2} acts as: {a2}, in this case the metabolization priority belongs to {preval}.\n"
                 else:
                     cadena += f"As at least one of the active ingredients has more than one recorded action in the database for enzyme: {enzima}, it is not possible to determine which one has metabolic priority.\n"
-                    cadena += f"For active ingredient: {ppio_1} the recorded actions are:{mias_1}.\n"
-                    cadena += f"For active ingredient: {ppio_2} the recorded actions are:{mias_2}.\n"
+                    cadena += f"For active ingredient: {ppio_1} the recorded actions are:{', '.join(mias_1)}.\n"
+                    cadena += f"For active ingredient: {ppio_2} the recorded actions are:{', '.join(mias_2)}.\n"
                     
     return cadena
 

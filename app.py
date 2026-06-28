@@ -93,7 +93,7 @@ contenido = html.Div(
         html.Img(
             src="assets/interaccion.png",
             style={
-                "width": "30%",
+                "width": "10%",
                 "marginBottom": "10px"
             }
         ),
