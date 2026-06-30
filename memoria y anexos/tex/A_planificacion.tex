@@ -1,29 +1,63 @@
 \apendice{Plan de Proyecto}
 
 \section{Introducción}
-PRIMERO EL CONTEXTO
-LUEGO MOTIVACION
-LUEGO EL PROBLEMA Y DECIR QUE ES VISUALIZACION FACIL
-Por tanto el presente proyecto tiene el propósito de realizar una herramienta capaz de mostrar el nivel de interacción que puedan tener dos principios activos por separado, explicando las enzimas que se han tenido en cuenta para llegar a esa conclusión y porque, la prevalencia que tendría uno sobre otro dependiendo de las acciones que lleven a cabo en caso de que se detecte interacción, mostrar los efectos adversos asociados a cada principio y por último proponer alternativas terapéuticas consideradas seguras por el algoritmo generado. 
-Q se pretende conseguir con el tfg tambien estaba
+Uno de los principales problemas asociados a la polimedicación son las interacciones farmacológicas que pueden derivarse de la administración simultánea de varios medicamentos. Por esta razón, la identificación precoz de dichas interacciones resulta fundamental para mejorar la seguridad del paciente y facilitar la toma de decisiones clínicas.
+
+La mayoría de las herramientas disponibles para comprobar la viabilidad de las alternativas terapéuticas propuestas requieren introducir nuevamente cada fármaco de forma individual y presentan una gran cantidad de información, lo que dificulta su interpretación. Por ello, uno de los principales objetivos de este trabajo fue simplificar la visualización de los resultados, permitiendo acceder de un solo vistazo a la información más relevante.
+
+En este contexto, el presente proyecto tiene como objetivo desarrollar una herramienta capaz de evaluar el nivel de interacción entre dos principios activos. Además de indicar el grado de interacción, la herramienta explica las enzimas implicadas y el motivo por el que se consideran relevantes, determina qué principio activo tendría mayor influencia en función de los mecanismos de acción asociados a las enzimas implicadas, muestra los efectos adversos asociados a cada compuesto y propone alternativas terapéuticas que el algoritmo considera seguras.
+
+Los anexos que se presentan a continuación contienen la documentación complementaria del proyecto, incluyendo el funcionamiento y uso de la herramienta, así como la planificación y el diseño desarrollados durante su implementación.
 
 \section{Metodología de ingeniería del software}
-Si procede.
-Se debe describir la metodología seguida durante el desarrollo del proyecto. En caso de existir desarrollo software, se indicará la metodología utilizada (por ejemplo, cascada, ágil o experimental)
-En cada apartado de los apéndices (A hasta el G) se deberá indicar que tarea o fase de la metodología utilizada se está realizando, o bien en este nuevo apéndice deberá quedar reflejado con detalle las tareas y fases que se han ido realizando.
-Si el TFG no contiene  todo el ciclo de vida de la metodología utilizada, deberá indicarse las fases y tareas que han quedado pendientes.
-Si el TFG no está centrado el desarrollo software, pero puede servir para un posterior desarrollo software, se deberá indicar qué metodología de desarrollo se recomienda y argumentar los motivos.
+En el desarrollo de este Trabajo Fin de Grado se ha seguido una metodología de desarrollo ágil e incremental, adaptada a las características del proyecto
 
+A diferencia de las metodologías tradicionales, como el modelo en cascada, el enfoque seguido ha facilitado realizar modificaciones durante el desarrollo conforme se identificaban nuevas necesidades o se detectaban posibles mejoras en el algoritmo de análisis de interacciones farmacológicas.
+
+El proyecto en líneas generales se estructuró en las siguientess fases:
+
+\subsection*{Análisis de requisitos.} 
+En esta primera fase del proyecto se definieron los objetivos generales que debía conseguir, además de las funcionalidades que la herramienta debería ofrecer. Entre ellas destacan:
+\begin{itemize}
+    \item Consulta de interacciones entre dos principios activos (indicando su nivel concreto, basándonos en 3 etiquetas preestablecidas).
+    \item Explicación de la razón por la que se considera interacción.
+    \item Visualización de las enzimas implicadas.
+    \item Identificación del principio activo con mayor influencia sobre la interacción detectada.
+    \item Presentación de los efectos adversos asociados.
+    \item Propuesta automática de alternativas terapéuticas seguras.
+\end{itemize}
+Asimismo, se estudiaron las principales fuentes de información farmacológica disponibles y se seleccionaron aquellas que aportaban información suficiente para el desarrollo del algoritmo.
+
+\subsection*{Diseño}
+En la siguiente fase se definió la arquitectura general de la aplicación, estableciendo de esta manera los distintos módulos que la componen y la relación entre ellos.
+
+Se diseñó la estructura de la base de datos utilizada para almacenar la información farmacológica y se estableció el flujo de trabajo seguido por el algoritmo para generar las recomendaciones terapéuticas.
+
+También se diseñó la interfaz gráfica priorizando la simplicidad y la facilidad de interpretación de los resultados obtenidos.
+
+\subsection*{Implementación}
+La fase de implementación comprendió el desarrollo progresivo de todos los componentes de la aplicación.
+
+En primer lugar se desarrolló el módulo encargado de obtener la información farmacológica necesaria para el análisis. Posteriormente se implementó el algoritmo responsable de evaluar las posibles interacciones y generar las recomendaciones correspondientes.
+
+Finalmente se desarrolló la interfaz de usuario, integrando todos los módulos desarrollados previamente.
+
+Todo el código fuente fue versionado mediante Git y almacenado en un repositorio de GitHub, lo que permitió mantener un control de versiones adecuado durante el desarrollo.
+
+\subsection*{Periodo de prueba}
+Una vez implementadas las funcionalidades principales se realizaron diferentes pruebas utilizando casos reales de interacción farmacológica.
+
+Estas pruebas permitieron verificar el correcto funcionamiento del algoritmo, comprobar la coherencia de las recomendaciones generadas y detectar posibles errores que fueron corregidos de forma iterativa.
+
+DEMASIADO???????????????????'
 
 \section{Planificación temporal}
-
-Se presentará la planificación temporal del proyecto, preferiblemente mediante un cronograma o diagrama de Gantt, donde se reflejen las principales tareas, fases y su duración aproximada.
+DIAGRAMA DE GRANT
+Cada semana que se programaba una reunión con las tutoras se realizaba un milestone nuevo en los que se iban estructurando los diferentes requisitos que se iban planteando.
 
 \subsection{Planificación económica}
 
-\subsection{Viabilidad legal}
 
-Si corresponde, incluir aquí el documento de aprovación por parte de la Comisión de Bioética.
 
 Ojo \footnote{Los anexos deben de tener su propia bibliografía, eso es tan fácil como utilizar referencias igual que en la memoria \cite{bortolot2005}}
 
