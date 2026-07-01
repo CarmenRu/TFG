@@ -14,7 +14,7 @@ En el desarrollo de este Trabajo Fin de Grado se ha seguido una metodología de 
 
 A diferencia de las metodologías tradicionales, como el modelo en cascada, el enfoque seguido ha facilitado realizar modificaciones durante el desarrollo conforme se identificaban nuevas necesidades o se detectaban posibles mejoras en el algoritmo de análisis de interacciones farmacológicas.
 
-El proyecto en líneas generales se estructuró en las siguientess fases:
+El proyecto en líneas generales se estructuró de la siguiente manera:
 
 \subsection*{Análisis de requisitos.} 
 En esta primera fase del proyecto se definieron los objetivos generales que debía conseguir, además de las funcionalidades que la herramienta debería ofrecer. Entre ellas destacan:
@@ -49,15 +49,63 @@ Una vez implementadas las funcionalidades principales se realizaron diferentes p
 
 Estas pruebas permitieron verificar el correcto funcionamiento del algoritmo, comprobar la coherencia de las recomendaciones generadas y detectar posibles errores que fueron corregidos de forma iterativa.
 
-DEMASIADO???????????????????'
 
 \section{Planificación temporal}
-DIAGRAMA DE GRANT
-Cada semana que se programaba una reunión con las tutoras se realizaba un milestone nuevo en los que se iban estructurando los diferentes requisitos que se iban planteando.
+El desarrollo del proyecto se llevó a cabo de forma progresiva durante el segundo cuatrimestre del curso académico, organizando el trabajo en diferentes fases. Primero un planteamiento inicial de los objetivos y revisión bibliográfica. Luego se esperó una semana a la aprobación del proyecto por parte del tribunal del TFG. Cuando eso sucedió se siguió con la elaboración de la base de datos. Seguida del desarrollo del algoritmo.
+Con la posterior visualización, prueba y mejoras del algoritmo y planteamiento creados. Para finalizar, se elaboró la redacción de la memoria junto con los anexos y las revisiones finales necesarias. 
+
+Se puede observar la planificación temporal del proyecto de una manera mas clara en el siguiente diagrama de gantt creado \ref{fig:gantt} .
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/Diagrama de Gantt.png} 
+    \caption{Diagrama de Gantt que presenta la planificación temporal del presente proyecto.}
+    \label{fig:gantt}
+\end{figure}
 
 \subsection{Planificación económica}
+Al ser un proyecto desarrollado con fines académicos no ha supuesto costes directos de infraestructura.
+
+\subsection*{Costes de personal}
+El principal coste corresponde en este caso al tiempo invertido en el desarrollo del proyecto: extracción de los datos, desarrollo del algoritmo y pruebas y mejoras en el mismo.
+Teniendo en cuenta que un ingeniero junior puede cobrar aproximadamente entre 15 y 20 euros la hora y, además, que el proyecto se ha desarrollado en 4 meses (16 semanas) una aproximación de costes humanos podría ser la recogida en la tabla \ref{tab:humanos}.
+
+\begin{table}[htbp]
+\centering
+\caption{Estimación de los costes de personal.}
+\label{tab:humanos}
+\begin{tabular}{lr}
+\toprule
+\textbf{Tiempo} & \textbf{Coste} \\
+\midrule
+1 hora & 15 € \\
+1 día (8 h) & 120 € \\
+1 semana (5 días) & 600 € \\
+16 semanas & 9.600 € \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 
+\subsection*{Recursos software y hardware}
+En el proyecto se han utilizado herramientas de libre distribución que se encuentran recogidas en la tabla \ref{tab:software}.
 
-Ojo \footnote{Los anexos deben de tener su propia bibliografía, eso es tan fácil como utilizar referencias igual que en la memoria \cite{bortolot2005}}
+\begin{table}[htbp]
+\centering
+\caption{Estimación de los costes de personal.}
+\label{tab:software}
+\begin{tabular}{lr}
+\toprule
+\textbf{Recurso} & \textbf{Coste} \\
+\midrule
+GitHub & 0 € \\
+Visual Studio Code & 0 € \\
+Python & 0 € \\
+Librerías utilizadas & 0 € \\
+\bottomrule
+\end{tabular}
+\end{table}
 
+Por último, como recurso hardware utilizado se encuentra únicamente el ordenador personal.
+
+Por tanto, como coste total aproximado teniendo en cuenta todos los apartados calculados se estiman 9600€.
