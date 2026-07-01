@@ -1,15 +1,69 @@
 \apendice{Manual de especificación de diseño}
 
 \section{Diseño arquitectónico}
-Se trata de un proyecto centrado en el desarrollo de una herramienta software que sigue una arquitectura modular \footnote{Arquitectura modular: metodología de diseño que divide un sistema complejo en partes más pequeñas, autónomas e independientes, llamadas módulos}, en la que cada uno de los componentes desempeña una función específica dentro del proceso de análisis de interacciones farmacológicas.
-Esta organización facilita el mantenimiento del código, favorece la reutilización de componentes y permite incorporar nuevas funcionalidades sin modificar el resto del sistema.
+Se trata de un proyecto centrado en el desarrollo de una herramienta software que sigue una arquitectura modular \footnote{Arquitectura modular: metodología de diseño que divide un sistema complejo en partes más pequeñas, autónomas e independientes, llamadas módulos}, 
+en la que cada uno de los componentes desempeña una función específica dentro del proceso de análisis de interacciones farmacológicas.
 
-La arquitectura general puede dividirse en cinco módulos principales:
-\begin{itemize}
-    \item \textbf{}
-\end{itemize}
+Esta organización facilita el mantenimiento del código, favorece la reutilización de componentes y permite incorporar nuevas funcionalidades sin modificar el resto del sistema, lo que ayudó a la mejora del algoritmo durante la realización del proyecto.
 
-Se describirá la arquitectura general del sistema o solución desarrollada. Puede incluir diagramas de bloques, diagramas de clases, diagramas de despliegue u otros esquemas que faciliten la comprensión del diseño.
+La arquitectura general puede dividirse en tres módulos principales detallados a continuación;
+\paragraph{Interfaz de usuario.}Está implementada mediante el framework Dash, que permite construir una aplicación web interactiva utilizando 
+Python.Se encuentra recogida en el documento llamado \texttt{app.py} y es la encargada de mostrar la interfaz gráfica al usuario, recoger 
+los principios activos seleccionados y presentar los resultados obtenidos en forma de texto, tablas y gráficos.
+La interfaz gráfica ofrece estos resultados estructurados en 4 botones principales que se sitúan en la parte izquierda de la pantalla. 
+\paragraph{Lógica del sistema.}Se encuentra implementada principalmente en el módulo \texttt{textos.py}. 
+En él se concentra toda la funcionalidad necesaria para realizar el análisis farmacológico, incluyendo la identificación de las enzimas 
+implicadas en el metabolismo de cada principio activo, el cálculo del nivel de riesgo de interacción, la descripción textual de las 
+interacciones, la obtención de posibles alternativas terapéuticas mediante los códigos ATC y la preparación de los datos utilizados 
+para representar los efectos adversos.
+\paragraph{Extracción de datos.}Las funciones que se utilizan para parsear los datos de DrugBank, SIDER y CIMA se encuentran incluidas en el documento \texttt{Funciones\_BBDD.py}. 
+Con ellas se crean los ficheros CSV que son cargados al iniciar la aplicación y permiten realizar consultas de forma rápida sin necesidad de volver a 
+procesar las bases de datos originales. El archivo \texttt{DDI\_sea.csv} contiene la información relativa a principios activos, enzimas, 
+acciones farmacológicas y códigos ATC, mientras que \texttt{efectos\_adversos.csv} almacena los efectos adversos asociados a cada código ATC 
+junto con su frecuencia media calculada.
 
+La comunicación entre las distintas capas se realiza mediante los callbacks definidos en Dash. Cuando el usuario selecciona dos principios 
+activos y pulsa el botón de búsqueda, la interfaz envía la información a la lógica del sistema. Esta consulta los datos almacenados en los 
+ficheros CSV, calcula las posibles interacciones y devuelve los resultados a la interfaz para su representación.
+
+Esta separación entre presentación, lógica y datos permite mantener un diseño desacoplado, facilitando futuras modificaciones. 
+Con el objetivo de tener una mayor comprensión sobre el diseño del algoritmo generado se han elaborado dos diagramas. En uno se 
+explica el origen y procesamiento de los datos \ref{fig:general}, el otro diagrama enseña el flujo de funcionamiento \ref{fig:secuencial}, es decir, cómo funciona la aplicación cuando el usuario realiza una consulta.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/Diagrama general.png} 
+    \caption{Diagrama de flujo con el origen y procesamiento de los datos.}
+    \label{fig:general}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/Diagrama secuencia.png} 
+    \caption{Diagrama de flujo del funcionamiento de la aplicación.}
+    \label{fig:secuencial}
+\end{figure}
 
 \section{Diseño de datos}
+La aplicación utiliza como fuente de información dos conjuntos de datos en formato CSV generados previamente 
+mediante un proceso de extracción y transformación de diferentes bases de datos biomédicas. Esta estrategia 
+permite reducir el tiempo de carga de la aplicación y evita tener que procesar los ficheros originales en cada 
+ejecución.
+
+El archivo \texttt{DDI\_sea.csv} constituye la principal fuente de información de la aplicación. En él se almacena, 
+para cada principio activo, la información necesaria para evaluar posibles interacciones farmacológicas. 
+Entre los campos más relevantes se encuentran el nombre del principio activo, su código ATC, el tipo de proteína 
+(enzima o diana terapéutica), el nombre de la enzima implicada, las acciones farmacológicas registradas y la 
+prioridad asignada a cada enzima metabólica.
+
+Por otra parte, el archivo \texttt{efectos\_adversos.csv} contiene la relación entre los códigos ATC y los efectos 
+adversos obtenidos a partir de la base de datos SIDER. Para cada efecto adverso se almacena una frecuencia media 
+calculada a partir de los intervalos de frecuencia disponibles en la base de datos original. Esta información se 
+emplea para representar gráficamente los efectos adversos más frecuentes asociados a las posibles alternativas 
+terapéuticas.
+
+Estos archivos CSV utilizados por la aplicación no proceden directamente de las bases de datos originales. 
+Ambos son generados mediante el módulo \texttt{Funciones\_BBDD.py}, encargado de procesar los ficheros XML 
+de DrugBank, los conjuntos de datos de SIDER y las fichas técnicas de CIMA. Durante este proceso se 
+realizan tareas de limpieza, normalización de nombres, unificación de identificadores, cálculo de frecuencias 
+medias y selección únicamente de los atributos necesarios para el funcionamiento de la aplicación.
