@@ -264,7 +264,7 @@ def mostrar_resultado(n1, n2, n3, n4, n5, datos):
         else:
             
             for ref in ATC_ref1:
-                df = texto_efectos (ATC1, ref, efectos, ppio1)
+                df = texto_efectos (ATC1, ref, efectos)
 
                 if df is None or df.empty:
                     componentes.extend([
@@ -306,7 +306,7 @@ def mostrar_resultado(n1, n2, n3, n4, n5, datos):
             
             for ref in ATC_ref2:
             
-                df = texto_efectos (ATC2, ref, efectos, ppio2)
+                df = texto_efectos (ATC2, ref, efectos)
 
                 if df is None or df.empty:
                     componentes.extend([

@@ -90,106 +90,106 @@ def interaccion (ppio_1, ppio_2, DDI):
         #Calculamos el riesgo y si se desea texto imprime el nivel de riesgo que tendrán
         riesgo = calcular_riesgo(ppio_1, ppio_2,coincidentes, intro_1, intro_2)
 
-        if riesgo=="Alta" or riesgo=="Media":
-            ATC_1 = df_1["Drug_ATC"].dropna().unique().tolist()
-            ATC_2 = df_2["Drug_ATC"].dropna().unique().tolist()
-            ref_1 = []
-            ref_2 = []
-            #Poner opcion de introducir codigo ATC?
-            if ATC_1:
-                for ATC in ATC_1:
-                    comprobante = False
-                    #Cogemos los 5 primeras letras del ATC
-                    i=5
-                    while comprobante==False :
-                        #Si hemos llegado a i=2 es demasiado ambiguo como para seguir comprobando
-                        if i!=2:
-                            #En principio uso las 5 primeras letras del codigo ATC, luego voy bajando si no se encuentran opciones
-                            codigo_referencia = ATC[:i]
-                            #Para asegurarnos de que la lista al principio está vacía (anteriores búsquedas)
-                            principios_1 = []
-                            #Si ya existe el codigo de referencia
-                            if codigo_referencia in ref_1:
-                                comprobante = True
-                            else:
-                                #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
-                                principios_1 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
-                                #Elimino el principio de la lista para que esté vacía si solo existe el principio en ella.
-                                principios_1 = [x for x in principios_1 if x.strip().casefold() != ppio_1]
-                                #Si hay principios que coincidan con el codigo de referencia lo guardo
-                                if principios_1:
-                                    ref_1.append(codigo_referencia)
-                                    #Establezco el comprobante a True
-                                    comprobante = True
-                            
-                        else:
-                            #Finalizamos el bucle
+        ATC_1 = df_1["Drug_ATC"].dropna().unique().tolist()
+        ATC_2 = df_2["Drug_ATC"].dropna().unique().tolist()
+        ref_1 = []
+        ref_2 = []
+        #Poner opcion de introducir codigo ATC?
+        if ATC_1:
+            for ATC in ATC_1:
+                comprobante = False
+                #Cogemos los 5 primeras letras del ATC
+                i=5
+                while comprobante==False :
+                    #Si hemos llegado a i=2 es demasiado ambiguo como para seguir comprobando
+                    if i!=2:
+                        #En principio uso las 5 primeras letras del codigo ATC, luego voy bajando si no se encuentran opciones
+                        codigo_referencia = ATC[:i]
+                        #Para asegurarnos de que la lista al principio está vacía (anteriores búsquedas)
+                        principios_1 = []
+                        #Si ya existe el codigo de referencia
+                        if codigo_referencia in ref_1:
                             comprobante = True
-                            
-                        #Si no hay principios uso una letra menos de la q estaba usando 
-                        i-=1
-                    
-            #Segundo ppio
-            if ATC_2:
-                for ATC in ATC_2:
-                    comprobante = False
-                    #Cogemos los 5 primeras letras del ATC
-                    i=5
-                    while comprobante==False :
-                        #Si hemos llegado a i=2 es que no hay mas codigos atc que comprobar
-                        if i!=2:
-                            #En principio uso las 5 primeras letras del codigo ATC, luego voy bajando si no se encuentran opciones
-                            codigo_referencia = ATC[:i]
-                            #Para asegurarnos de que la lista al principio está vacía (anteriores búsquedas)
-                            principios_2 = []
-                            #Si ya existe el codigo de referencia
-                            if codigo_referencia in ref_2:
-                                comprobante = True
-                            else:
-                                #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
-                                principios_2 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
-                                #Elimino el principio de la lista para que esté vacía si solo existe el principio en ella.
-                                principios_2 = [x for x in principios_2 if x.strip().casefold() != ppio_2]
-                                #Si hay principios que coincidan con el codigo de referencia lo guardo
-                                if principios_2:
-                                    ref_2.append(codigo_referencia)
-                                    #Establezco el comprobante a True
-                                    comprobante = True
-                            
                         else:
-                            #Finalizamos el bucle
+                            #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
+                            principios_1 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
+                            #Elimino el principio de la lista para que esté vacía si solo existe el principio en ella.
+                            principios_1 = [x for x in principios_1 if x.strip().casefold() != ppio_1]
+                            #Si hay principios que coincidan con el codigo de referencia lo guardo
+                            if principios_1:
+                                ref_1.append(codigo_referencia)
+                                #Establezco el comprobante a True
+                                comprobante = True
+                        
+                    else:
+                        #Finalizamos el bucle
+                        comprobante = True
+                        
+                    #Si no hay principios uso una letra menos de la q estaba usando 
+                    i-=1
+                
+        #Segundo ppio
+        if ATC_2:
+            for ATC in ATC_2:
+                comprobante = False
+                #Cogemos los 5 primeras letras del ATC
+                i=5
+                while comprobante==False :
+                    #Si hemos llegado a i=2 es que no hay mas codigos atc que comprobar
+                    if i!=2:
+                        #En principio uso las 5 primeras letras del codigo ATC, luego voy bajando si no se encuentran opciones
+                        codigo_referencia = ATC[:i]
+                        #Para asegurarnos de que la lista al principio está vacía (anteriores búsquedas)
+                        principios_2 = []
+                        #Si ya existe el codigo de referencia
+                        if codigo_referencia in ref_2:
                             comprobante = True
-                            
-                        #Si no hay principios uso una letra menos de la q estaba usando 
-                        i-=1
+                        else:
+                            #Obtengo los nombres de los principios que sirven como alternativa si no estan en el diccionario
+                            principios_2 = DDI[DDI['Drug_ATC'].str.startswith(codigo_referencia, na=False)]["Drug_name"].unique().tolist()
+                            #Elimino el principio de la lista para que esté vacía si solo existe el principio en ella.
+                            principios_2 = [x for x in principios_2 if x.strip().casefold() != ppio_2]
+                            #Si hay principios que coincidan con el codigo de referencia lo guardo
+                            if principios_2:
+                                ref_2.append(codigo_referencia)
+                                #Establezco el comprobante a True
+                                comprobante = True
+                        
+                    else:
+                        #Finalizamos el bucle
+                        comprobante = True
+                        
+                    #Si no hay principios uso una letra menos de la q estaba usando 
+                    i-=1
 
-        else:
-            ATC_1 = []
-            ATC_2 = []
-            ref_1 = []
-            ref_2 = []
-        #Mas explicito 
-        dic_resumen = {"p1" : ppio_1,
-                       "p2" : ppio_2,
-                       
-                       "df1" : df_1.to_dict("records"),
-                       "df2" : df_2.to_dict("records"),
-                       
-                       "enz1" : enz_1,
-                       "enz2" : enz_2,
-                       
-                       "ppal1" : ppal_1,
-                       "ppal2" : ppal_2,
-                       
-                       "ATC1" : ATC_1,
-                       "ATC2" : ATC_2,
-                       
-                       "ref1" : ref_1,
-                       "ref2" : ref_2,
-                       
-                       "interaccion" : coincidentes,
-                       "riesgo" : riesgo
-                      }
+    else:
+        ATC_1 = []
+        ATC_2 = []
+        ref_1 = []
+        ref_2 = []
+
+    #Mas explicito 
+    dic_resumen = {"p1" : ppio_1,
+                    "p2" : ppio_2,
+                    
+                    "df1" : df_1.to_dict("records"),
+                    "df2" : df_2.to_dict("records"),
+                    
+                    "enz1" : enz_1,
+                    "enz2" : enz_2,
+                    
+                    "ppal1" : ppal_1,
+                    "ppal2" : ppal_2,
+                    
+                    "ATC1" : ATC_1,
+                    "ATC2" : ATC_2,
+                    
+                    "ref1" : ref_1,
+                    "ref2" : ref_2,
+                    
+                    "interaccion" : coincidentes,
+                    "riesgo" : riesgo
+                    }
     
     return dic_resumen
 
@@ -402,7 +402,7 @@ def texto_acciones (ppio_1, acc_1, ppio_2, acc_2, enzima):
 
 
 #Los efectos salen en ingles porque la bbdd consultada es en ingles
-def texto_efectos (lista_ATC, ref, efectos_adversos, ppio):
+def texto_efectos (lista_ATC, ref, efectos_adversos):
     '''
     Imprime una tabla con los top 10 efectos adversos que esten asociados con los codigos ATC de cada uno de los principios (por separado)
 
