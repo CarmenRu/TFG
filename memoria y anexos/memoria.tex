@@ -145,12 +145,12 @@
 \makeatother
 
 \newcommand{\nombre}{Carmen Ruiz Alonso}
-\newcommand{\nombreTutor}{Miriam Saiz Rodriguez} 
+\newcommand{\nombreTutor}{Miriam Saiz Rodríguez} 
 \newcommand{\nombreTutorb}{Alicia Olivares Gil} 
 \newcommand{\dni}{71188814L} 
 
 % Datos de portada
-\title{Título del trabajo}
+\title{InteraDD: herramienta web para la detección e interpretación de interacciones farmacológicas basadas en el sistema CYP450}
 \author{\nombre}
 \tutor{\nombreTutor}
 \tutorb{\nombreTutorb} 
@@ -169,8 +169,8 @@
 
 \noindent\includegraphics[width=\textwidth]{CabeceraEPS.png}\vspace{1cm}
 
-\noindent D. \nombreTutor, profesor/a del departamento de departamento, área de área.
-\noindent D. \nombreTutorb, profesor/a del departamento de departamento, área de área.
+\noindent D. \nombreTutor, profesor/a del departamento de Ciencias de la Salud, área de Fisiología.
+\noindent D. \nombreTutorb, profesor/a del departamento de Ingeniería, área de Informática.
 
 \noindent Expone/n:
 
@@ -218,12 +218,16 @@ D. \nombreTutorb
 % Abstract en castellano
 \renewcommand*\abstractname{Resumen}
 \begin{abstract}
-En este primer apartado se hace una \textbf{breve} presentación del tema que se aborda en el proyecto.
+El presente Trabajo de Fin de Grado desarrolla una herramienta web orientada al análisis de interacciones farmacológicas entre principios activos mediante el estudio de las enzimas del sistema del citocromo P450 (CYP450). La aplicación integra información procedente de las bases de datos DrugBank, CIMA y SIDER, permitiendo identificar posibles interacciones farmacocinéticas, explicar el mecanismo biológico implicado, mostrar los efectos adversos asociados y proponer alternativas terapéuticas basadas en la clasificación ATC.
+
+Para ello se diseñó un proceso de extracción, transformación e integración de datos procedentes de diferentes fuentes biomédicas, resolviendo las ambigüedades existentes en la determinación de las principales vías metabólicas mediante el análisis automatizado de fichas técnicas oficiales. La herramienta fue desarrollada en Python utilizando el framework Dash para la interfaz web y Pandas para el procesamiento de la información.
+
+Los resultados obtenidos demuestran la viabilidad de integrar múltiples fuentes farmacológicas en una única plataforma capaz de ofrecer información interpretable sobre las interacciones entre medicamentos, incorporando funcionalidades que no suelen encontrarse de forma conjunta en las herramientas comerciales, como la explicación del mecanismo de interacción y la propuesta de alternativas terapéuticas compatibles. Aunque la aplicación presenta limitaciones derivadas de la calidad de las bases de datos y de la identificación de las vías metabólicas principales, constituye una prueba de concepto con potencial para evolucionar hacia un sistema de apoyo a la decisión clínica.
 \end{abstract}
 
 \renewcommand*\abstractname{Descriptores}
 \begin{abstract}
-Palabras separadas por comas que identifiquen el contenido del proyecto Ej: servidor web, buscador de vuelos, android \ldots
+Interacciones farmacológicas, CYP450, Citocromo P450, DrugBank, CIMA, SIDER, Python, Dash, Bases de datos biomédicas, Ingeniería de la Salud, Farmacología, ATC, Interoperabilidad de datos, Apoyo a la decisión clínica
 \end{abstract}
 
 \clearpage
@@ -231,12 +235,16 @@ Palabras separadas por comas que identifiquen el contenido del proyecto Ej: serv
 % Abstract en inglés
 \renewcommand*\abstractname{Abstract}
 \begin{abstract}
-A \textbf{brief} presentation of the topic addressed in the project.
+This Final Graduate Project details the development of a web tool designed to analyze drug-drug interactions (DDIs) among active ingredients through the study of cytochrome P450 (CYP450) system enzymes. The application integrates information from the DrugBank, CIMA, and SIDER databases, allowing the identification of potential pharmacokinetic interactions, clarifying the biological mechanisms involved, displaying associated adverse effects, and proposing therapeutic alternatives based on the ATC classification system.
+
+To achieve this, an extraction, transformation, and data integration process was designed using various biomedical sources, resolving existing ambiguities in the determination of primary metabolic pathways through the automated analysis of official summary of product characteristics. The tool was developed in Python, utilizing the Dash framework for the web interface and Pandas for data processing.
+
+The results demonstrate the feasibility of integrating multiple pharmacological sources into a single platform capable of offering interpretable information on drug interactions. It incorporates features not typically found together in commercial tools, such as explaining the interaction mechanism and proposing compatible therapeutic alternatives. Although the application has limitations derived from database quality and the identification of primary metabolic pathways, it serves as a proof of concept with the potential to evolve into a clinical decision support system.
 \end{abstract}
 
 \renewcommand*\abstractname{Keywords}
 \begin{abstract}
-keywords separated by commas.
+Drug-drug interactions, CYP450, Cytochrome P450, DrugBank, CIMA, SIDER, Python, Dash, Biomedical databases, Health Engineering, Pharmacology, ATC, Data interoperability, Clinical decision support
 \end{abstract}
 
 \clearpage
