@@ -16,3 +16,14 @@ Por otra parte, al deberse a una plataforma de desarrollo incial presenta cierta
     \item Restricciones en la interpretación automática de textos no estructurados (CIMA). Debido a la imposibilidad de comprobación de todos los registros procesados por la IA en los que se identifica mas de una enzima que los metaboliza.
 \end{itemize}
 
+
+PARTE DEL ESTADO DEL arte
+La herramienta desarrollada en este Trabajo Fin de Grado adopta un enfoque diferente al de las soluciones existentes. En lugar de limitarse a indicar si existe o no una interacción, analiza el metabolismo de ambos principios activos utilizando la información contenida en DrugBank sobre enzimas metabolizadoras, prestando especial atención a las enzimas CYP más relevantes (CYP3A4, CYP3A5, CYP2D6, CYP2C9, CYP2C19 y CYP1A2). A partir de esta información determina un nivel de riesgo (bajo, medio o alto) en función de la coincidencia de las enzimas implicadas y de si estas han sido identificadas como principales en el metabolismo de cada fármaco.
+
+Además de clasificar el riesgo, proporciona una explicación del motivo de la interacción, indicando las enzimas compartidas y el papel que desempeña cada principio activo sobre ellas (sustrato, inhibidor o inductor). Esta característica aporta un componente de interpretabilidad que no suele encontrarse en los comprobadores comerciales, permitiendo comprender el mecanismo farmacocinético responsable de la posible interacción.
+
+Otra contribución diferencial consiste en la incorporación de un módulo de búsqueda de alternativas terapéuticas basado en la clasificación ATC. Cuando se detecta una interacción de riesgo medio o alto, el sistema identifica principios activos pertenecientes al mismo grupo terapéutico y evalúa automáticamente todas las combinaciones posibles hasta encontrar aquellas cuya interacción se clasifica como de bajo riesgo. De esta forma, la herramienta no solo identifica el problema, sino que propone posibles soluciones consideradas seguras para el algoritmo.
+
+Finalmente, la aplicación integra información sobre efectos adversos procedente de la base de datos SIDER, mostrando gráficamente los efectos secundarios más frecuentes asociados a los códigos ATC de referencia. Esta funcionalidad proporciona información adicional que puede resultar útil durante la valoración de posibles alternativas terapéuticas.
+
+

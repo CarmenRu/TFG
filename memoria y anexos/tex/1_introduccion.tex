@@ -1,31 +1,62 @@
 \capitulo{1}{Introducción}
 
 \section{Contexto}
-Las interacciones farmacológicas constituyen uno de los principales problemas asociados a la prescripción simultánea de varios medicamentos. Con esto pueden producirse alteraciones en su metabolismo que modifiquen su eficacia terapéutica o aumenten la probabilidad de aparición de efectos adversos.
+Las interacciones farmacológicas constituyen uno de los principales problemas asociados a la prescripción 
+concomitante de múltiples medicamentos, ya que pueden modificar su comportamiento farmacocinético y 
+farmacodinámico, alterando la eficacia terapéutica o incrementando el riesgo de aparición de efectos adversos \cite{rodrigues2016drug}.
 
-Dentro de las interacciones farmacocinéticas, una de las causas más frecuentes es la competencia por enzimas metabolizadoras pertenecientes al sistema del citocromo P450, especialmente CYP3A4, CYP2D6, CYP2C19, CYP2C9 y CYP1A2.
+Entre las interacciones farmacocinéticas, una de las más relevantes es la que se produce a nivel del metabolismo 
+hepático, especialmente cuando varios fármacos son sustratos, inhibidores o inductores de una misma isoenzima del 
+sistema del citocromo P450 (CYP450) \cite{flockhart2021table}. La administración simultánea de medicamentos metabolizados por una misma 
+isoenzima puede dar lugar a fenómenos de competencia por el metabolismo, inhibición o inducción enzimática, 
+modificando las concentraciones plasmáticas de uno o varios fármacos y aumentando el riesgo de toxicidad o de 
+fracaso terapéutico \cite{denisov2015mechanism} \cite{guengerich2008cytochrome}. Las isoenzimas CYP3A4, CYP2D6, CYP2C19, CYP2C9 y CYP1A2 son las principales responsables del 
+metabolismo de una gran proporción de los medicamentos de uso clínico y, por tanto, las más frecuentemente 
+implicadas en este tipo de interacciones \cite{zanger2013cytochrome}.
 
-La identificación temprana de estas interacciones resulta fundamental para mejorar la seguridad del paciente y facilitar la toma de decisiones clínicas.
+La relevancia clínica de estas interacciones queda reflejada en numerosos casos descritos en la literatura. 
+Entre los ejemplos más representativos se encuentran la administración concomitante de \textbf{simvastatina y claritromicina}, 
+en la que la inhibición de la isoenzima CYP3A4 incrementa las concentraciones plasmáticas de la estatina y aumenta 
+el riesgo de rabdomiólisis \cite{zhou2007clinically} \cite{deodhar2020mechanisms}; la combinación de \textbf{warfarina y amiodarona}, asociada a la inhibición de CYP2C9 y al 
+consecuente aumento del efecto anticoagulante con mayor riesgo de hemorragia \cite{lee2024review} \cite{deodhar2020mechanisms}; y la administración conjunta de 
+\textbf{omeprazol y clopidogrel}, donde la inhibición de CYP2C19 reduce la activación del clopidogrel y puede disminuir 
+su efecto antiplaquetario \cite{lee2024review}.
+
+En este contexto, la identificación temprana de las posibles interacciones mediadas por el sistema CYP450 resulta 
+fundamental para optimizar la farmacoterapia, mejorar la seguridad del paciente y facilitar la toma de decisiones 
+clínicas basadas en la evidencia.
+
 
 \section{Motivación}
 La mayoría de herramientas comerciales presentan dos limitaciones:
 \begin{itemize}
     \item No explican el motivo de la interacción.
-    \item No proporcionan alternativas terapéuticas justificadas incluyendo combinaciones consideradas seguras por la aplicación.
+    \item No proporcionan alternativas terapéuticas justificadas incluyendo combinaciones consideradas seguras 
+    por la aplicación.
 \end{itemize}
-Por este motivo se propone una herramienta con la posibilidad de detectar posibles interacciones entre los principios activos introducidos cuando estos se estan ingiriendo por primer vez, explicar el mecanismo implicado, mostrar alternativas farmacológicas e informar sobre posibles efectos adversos asociados.
+Por este motivo se propone una herramienta con la posibilidad de detectar posibles interacciones entre los 
+principios activos introducidos, explicar el mecanismo implicado, 
+mostrar alternativas farmacológicas e informar sobre posibles efectos adversos asociados.
 
 
 \section{Descripción del proyecto}
-El proyecto consiste en el desarrollo de una herramienta informática para la detección de interacciones farmacológicas basada en el metabolismo enzimático de los principios activos.
+El proyecto consiste en el desarrollo de una herramienta informática orientada al análisis de posibles interacciones farmacológicas 
+de los principios activos. Permite al usuario seleccionar dos principios activos y obtener una estimación 
+del nivel de riesgo de interacción en función de las enzimas implicadas en su metabolismo, proporcionando además una explicación de los 
+resultados obtenidos, información sobre los efectos adversos asociados y posibles alternativas terapéuticas basadas en la clasificación 
+ATC.
 
-Para ello se construye una base de conocimiento a partir de 3 bases de datos públicas: DrugBank, CIMA (AEMPS) y SIDDER.
+Para ello se construye una base de conocimiento a partir de 3 bases de datos biomédicas, públicas de referencia: \textbf{DrugBank} \footnote{Drugbank: Base de datos online completa y de acceso libre que contiene información detallada sobre fármacos y sus dianas terapéuticas}, 
+Centro de Información Online de Medicamentos (\textbf{CIMA}) de la Agencia Española de Medicamentos y Productos Sanitarios (AEMPS) y Side Effect Resource (\textbf{SIDER}) \footnote{Side Effect Resource:  Base de datos pública que recopila información sobre medicamentos comercializados y sus reacciones adversas asociadas}.
+A partir de estas bases de datos se realiza un proceso previo de extracción, transformación y normalización de la información, generando conjuntos de datos optimizados que permiten realizar consultas de forma eficiente durante la ejecución de la aplicación.
 
-Posteriormente se implementa un algoritmo capaz de analizar las enzimas metabolizadoras de dos principios activos, identificar si existen coincidencias, clasificar el riesgo de la interacción explicando además el mecanismo y como se ha llegado a la conclusión obtenida, proponer alternativas mediante códigos ATC y por último mostrar los 10 efectos adversos mas frecuentes.
+La solución desarrollada ha sido implementada en Python utilizando el framework Dash para la construcción de la interfaz web, mientras que la gestión y el procesamiento de los datos se realizan mediante la biblioteca Pandas. El resultado es una aplicación interactiva que facilita la consulta de información farmacológica de forma sencilla y comprensible, sirviendo como herramienta de apoyo para el estudio de posibles interacciones entre medicamentos.
 
 
-\section{Estructura de la memoria}
-Asimismo, se describirá brevemente la estructura de la memoria, indicando el contenido de cada capítulo.
+\section{Estructura del documento}
+La memoria del presente proyecto se encuentra estructurada en varios capítulos. Para empezar
+
+HACERLO AL FINAL CUANDO ESTÉ TODO BIEN ESTRUCTURADO
 
 
 

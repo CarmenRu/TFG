@@ -75,7 +75,7 @@ sidebar = html.Div([
                 dbc.NavLink("Enzyme explanation", id="btn_enzimas", active="exact"),
                 dbc.NavLink("Adverse effects", id="btn_efectos", active="exact"),
                 dbc.NavLink("Interaction explanation", id="btn_interacciones", active="exact"),
-                dbc.NavLink("Options", id="btn_opciones", active="exact"),
+                dbc.NavLink("Search for drug alternatives", id="btn_opciones", active="exact"),
             ],
             vertical=True,
             pills=True,

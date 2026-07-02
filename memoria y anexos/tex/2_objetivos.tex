@@ -1,17 +1,34 @@
 \capitulo{2}{Objetivos}
 
 \section{Objetivo general}
-Desarrollar una herramienta capaz de detectar posibles interacciones farmacológicas entre principios activos mediante el análisis de las enzimas que las metabolizan.
+Integrar conocimientos adquiridos durante el grado en un proyecto completo
+ que abarca desde la preparación de los datos hasta el desarrollo de una 
+ aplicación funcional. La cual, consiste en una herramienta, capaz de detectar posibles interacciones farmacológicas entre principios activos, 
+mediante el análisis de las enzimas que las metabolizan, además de mostrar recomendaciones de fármacos con el mismo efecto 
+terapéutico pero sin riesgo de interacción.
 
 \section{Objetivos específicos}
 \begin{enumerate}
-    \item Extraer información de DrugBank, las fichas técnicas presentes en CIMA y los efectos adversos recogidos en SIDER.
-    \item Integrar los datos heterogéneos obtenidos de las distintas fuentes en una base de datos farmacológica unificada.
-    \item Diseñar un algoritmo de clasificación de riesgo.
-    \item Implementar un sistema de búsqueda de alternativas terapéuticas basado en códigos ATC.
-    \item Desarrollar una visualización accesible y sencilla para el usuario.
-    \item Validar el funcionamiento mediante casos de prueba.
+    \item Analizar las principales bases de datos farmacológicas disponibles para la obtención de información sobre metabolismo, interacciones y efectos adversos de los medicamentos.
+    \item Diseñar un proceso de extracción, transformación y normalización de datos heterogenéos que permita integrar la información procedentes de diferentes bases de datos farmacológicas en una base de datos unificada.
+    \item Resolver ambigüedades en aquellos principios activos para los que se detecta mas de una vía metabólica principal.
+    \item Desarrollar un algoritmo capaz de identificar posibles interacciones entre dos principios activos a partir de las enzimas implicadas en su metabolismo.
+    \item Implementar un sistema de clasificación del nivel de riesgo de interacción basado en la coincidencia de enzimas metabólicas principales y secundarias.
+    \item Incorporar información complementaria sobre efectos adversos y alternativas terapéuticas mediante la utilización de códigos ATC.
+    \item Desarrollar e implementar una interfaz intuitiva que facilite la consulta y visualización de los resultados obtenidos.
+    \item Validar el correcto funcionamiento mediante diferentes casos de prueba.
 \end{enumerate}
+
+\section{Objetivos de aprendizaje}
+\begin{enumerate}
+    \item Implementación para el desarrollo de aplicaciones de análisis de datos mediante la profundización del manejo del lenguaje de programación Python.
+    \item Adquirir experiencia en el desarrollo de aplicaciones web utilizando el framework Dash.
+    \item Profundizar en el manejo de técnicas de procesamiento, limpieza y transformación de datos biomédicos mediante Pandas.
+    \item Comprender la estructura y el funcionamiento de bases de datos farmacológicas como DrugBank, SIDER y CIMA.
+    \item Aplicar principios de ingeniería del software para desarrollar una aplicación modular, mantenible y escalable.
+\end{enumerate}
+
+
 
 
 
