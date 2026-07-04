@@ -16,7 +16,7 @@ En él se concentra toda la funcionalidad necesaria para realizar el análisis f
 implicadas en el metabolismo de cada principio activo, el cálculo del nivel de riesgo de interacción, la descripción textual de las 
 interacciones, la obtención de posibles alternativas terapéuticas mediante los códigos ATC y la preparación de los datos utilizados 
 para representar los efectos adversos.
-\paragraph{Extracción de datos.}Las funciones que se utilizan para parsear los datos de DrugBank, SIDER y CIMA se encuentran incluidas en el documento \texttt{Funciones\_BBDD.py}. 
+\paragraph{Extracción de datos.}Las funciones que se utilizan para parsear los datos de DrugBank \cite{drugbank}, SIDER \cite{sider} y CIMA \cite{cima} se encuentran incluidas en el documento \texttt{Funciones\_BBDD.py}. 
 Con ellas se crean los ficheros CSV que son cargados al iniciar la aplicación y permiten realizar consultas de forma rápida sin necesidad de volver a 
 procesar las bases de datos originales. El archivo \texttt{DDI\_sea.csv} contiene la información relativa a principios activos, enzimas, 
 acciones farmacológicas y códigos ATC, mientras que \texttt{efectos\_adversos.csv} almacena los efectos adversos asociados a cada código ATC 

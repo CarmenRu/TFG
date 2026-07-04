@@ -1,7 +1,76 @@
 \apendice{Especificación de Requisitos}
 
-Si procede.
+\section{Introducción}
+En el apéndice actual se detallarán los requisitos funcionales y no funcionales considerados durante el desarrollo de InteraDD, 
+derivados de los objetivos planteados en el capítulo 2 de la memoria del proyecto. Además se describirán también los principales casos de uso y los 
+prototipos de la interfaz implementada.
 
+\section{Requisitos}
+\subsection*{Requisitos funcionales}
+En la Tabla \ref{tab:funcionales} se recogen los principales requisitos funcionales definidos para InteraDD. Estos requisitos describen las funcionalidades que la aplicación debe proporcionar al usuario para cumplir los objetivos planteados en el proyecto.
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{c X}
+\toprule
+\textbf{Código} & \textbf{Descripción} \\
+\midrule
+RF-01 & Permitir al usuario seleccionar dos principios activos para realizar el análisis de interacción farmacológica. \\
+
+RF-02 & Detectar el nivel de interacción farmacológica entre los principios activos seleccionados mediante el análisis de las enzimas del sistema CYP450. \\
+
+RF-03 & Mostrar el nivel de riesgo de la interacción clasificándolo como \textit{Low}, \textit{Medium} o \textit{High}. \\
+
+RF-04 & Mostrar una explicación del mecanismo farmacocinético responsable de la interacción detectada. \\
+
+RF-05 & Permitir consultar las enzimas metabólicas principales asociadas a cada principio activo. \\
+
+RF-06 & Mostrar el papel desempeñado por cada principio activo sobre las enzimas compartidas (sustrato, inhibidor o inductor), cuando dicha información esté disponible. \\
+
+RF-07 & Representar gráficamente los efectos adversos asociados a los principios activos consultados. \\
+
+RF-08 & Proponer alternativas terapéuticas compatibles cuando la interacción detectada sea de riesgo medio o alto. \\
+
+RF-09 & Informar al usuario cuando no exista información suficiente para realizar alguna de las consultas solicitadas. \\
+
+RF-10 & Mantener visibles los resultados obtenidos hasta que el usuario realice una nueva búsqueda. \\
+\bottomrule
+\end{tabularx}
+\caption{Requisitos funcionales de InteraDD.}
+\label{tab:funcionales}
+\end{table}
+
+\subsection*{Requisitos no funcionales}
+La Tabla \ref{tab:no funcionales} muestra los requisitos no funcionales considerados durante el desarrollo de InteraDD. Estos requisitos establecen las características de calidad que debe cumplir el sistema, como la usabilidad, el rendimiento, la mantenibilidad, la compatibilidad y la fiabilidad, garantizando un funcionamiento adecuado de la herramienta desarrollada.
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{c X}
+\toprule
+\textbf{Código} & \textbf{Descripción} \\
+\midrule
+RNF-01 & La aplicación deberá presentar una interfaz web intuitiva y de fácil utilización para el personal sanitario. \\
+
+RNF-02 & El sistema deberá ejecutarse desde un navegador web sin requerir la instalación de software adicional por parte del usuario. \\
+
+RNF-03 & La aplicación deberá proporcionar una respuesta en un tiempo razonable para consultas habituales. \\
+
+RNF-04 & La arquitectura del sistema deberá permitir la incorporación de nuevos principios activos, enzimas y bases de datos sin modificar significativamente la lógica del algoritmo. \\
+
+RNF-05 & El código fuente deberá estar organizado de forma modular para facilitar su mantenimiento y evolución. \\
+
+RNF-06 & La información mostrada deberá proceder de fuentes biomédicas reconocidas y actualizadas (DrugBank, CIMA y SIDER). \\
+
+RNF-07 & El sistema deberá garantizar la trazabilidad de los datos utilizados para justificar el nivel de interacción mostrado. \\
+
+RNF-08 & La aplicación deberá ser compatible con los principales navegadores web modernos. \\
+
+RNF-09 & El sistema deberá mostrar mensajes informativos cuando una consulta no pueda resolverse por ausencia de información. \\
+
+RNF-10 & La aplicación deberá permitir su despliegue en plataformas de computación en la nube para facilitar su acceso y evaluación. \\
+\bottomrule
+\end{tabularx}
+\caption{Requisitos no funcionales de InteraDD.}
+\label{tab:no funcionales}
+\end{table}
 
 \section{Diagrama de casos de uso}
 Se presentará un diagrama de casos de uso que represente las funcionalidades principales del sistema y los actores que interactúan con él.

@@ -46,20 +46,24 @@ del nivel de riesgo de interacción en función de las enzimas implicadas en su 
 resultados obtenidos, información sobre los efectos adversos asociados y posibles alternativas terapéuticas basadas en la clasificación 
 ATC.
 
-Para ello se construye una base de conocimiento a partir de 3 bases de datos biomédicas, públicas de referencia: \textbf{DrugBank} \footnote{Drugbank: Base de datos online completa y de acceso libre que contiene información detallada sobre fármacos y sus dianas terapéuticas}, 
-Centro de Información Online de Medicamentos (\textbf{CIMA}) de la Agencia Española de Medicamentos y Productos Sanitarios (AEMPS) y Side Effect Resource (\textbf{SIDER}) \footnote{Side Effect Resource:  Base de datos pública que recopila información sobre medicamentos comercializados y sus reacciones adversas asociadas}.
+Para ello se construye una base de conocimiento a partir de 3 bases de datos biomédicas, públicas de referencia: \textbf{DrugBank} \footnote{Drugbank: Base de datos online de acceso libre que contiene información detallada sobre fármacos y sus dianas terapéuticas}, 
+Centro de Información Online de Medicamentos (\textbf{CIMA}) de la Agencia Española de Medicamentos y Productos Sanitarios (AEMPS) y \textit{Side Effect Resource} (\textbf{SIDER}) \footnote{\textit{Side Effect Resource}:  Base de datos pública que recopila información sobre medicamentos comercializados y sus reacciones adversas asociadas}.
 A partir de estas bases de datos se realiza un proceso previo de extracción, transformación y normalización de la información, generando conjuntos de datos optimizados que permiten realizar consultas de forma eficiente durante la ejecución de la aplicación.
 
 La solución desarrollada ha sido implementada en Python utilizando el framework Dash para la construcción de la interfaz web, mientras que la gestión y el procesamiento de los datos se realizan mediante la biblioteca Pandas. El resultado es una aplicación interactiva que facilita la consulta de información farmacológica de forma sencilla y comprensible, sirviendo como herramienta de apoyo para el estudio de posibles interacciones entre medicamentos.
 
 
 \section{Estructura del documento}
-La memoria del presente proyecto se encuentra estructurada en varios capítulos. Para empezar
+La memoria del presente proyecto se encuentra estructurada en siete capítulos. Para empezar se introduce el contexto del trabajo, la motivación que justifica su realización, la descripción general del proyecto y la organización de la memoria. 
 
-HACERLO AL FINAL CUANDO ESTÉ TODO BIEN ESTRUCTURADO
+En el segundo capítulo se recogen los objetivos del proyecto, distinguendolos en tres; general, específicos y de aprendizaje. 
 
+En el tercer capítulo se muestran los conceptos teóricos necesarios para comprender el trabajo realizado. En él se describen los procesos de metabolismo de los fármacos, las interacciones farmacológicas, el funcionamiento del sistema enzimático CYP450, el sistema de clasificación ATC y el estado del arte de las herramientas existentes para la detección de interacciones entre medicamentos. 
 
+El cuarto capítulo describe la metodología seguida durante el desarrollo del proyecto. Se detallan las bases de datos biomédicas utilizadas, el proceso de extracción, integración y depuración de la información, las técnicas empleadas para resolver las ambigüedades y las herramientas de software utilizadas para la implementación de la aplicación.
 
+En el quinto capítulo se presentan los resultados obtenidos, describiendo el funcionamiento de la herramienta desarrollada, las funcionalidades implementadas y los diferentes casos de prueba empleados.
 
+El sexto capítulo expone la discusión de los resultados, analizando las principales aportaciones del proyecto, sus limitaciones y las implicaciones derivadas de la metodología empleada.
 
-
+Finalmente, el séptimo capítulo recoge las conclusiones alcanzadas, valorando el grado de cumplimiento de los objetivos planteados y proponiendo posibles líneas de trabajo futuro para ampliar las capacidades de la herramienta desarrollada.

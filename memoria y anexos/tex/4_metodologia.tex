@@ -48,7 +48,7 @@ Para acotar el alcance del proyecto se aplicaron de forma secuencial los siguien
 \begin{itemize}
     \item \textbf{Restricción del Perfil Enzimático (Top 6 CYP).} Tras analizar la distribución de frecuencias de las enzimas en DrugBank, se constató que la familia del citocromo P450 concentraba la inmensa mayoría de las rutas metabólicas de fase I. Se acotó el diseño computacional a las seis isoenzimas con mayor impacto y frecuencia de aparición (visible en la tabla \ref{fig:frecuencia_cyp} creada en un notebook auxiliar): CYP3A4, CYP2C9, CYP2D6, CYP1A2, CYP2C19 y CYP3A5. Se incluyó CYP3A5 debido a su estrecha relación con CYP3A4. 
     \item \textbf{Criterio Base de Datos de CIMA.} De estos registros inicialmente extraídos se excluyeron los medicamentos compuestos por más de un principio activo. Esto permitió aislar 25.453 medicamentos monofármaco. De estos, eliminando duplicidades de presentaciones comerciales, se identificaron 2.100 principios activos puros validados para el mercado español.
-    \item \textbf{Filtrado por sustratos:} Cuando en DrugBank se encontraba registrado para un mismo principio activo mas de una enzima por la que se metaboliza el sistema informático se encontraba ante una ambiguedad. Este acontecimiento sucedía en 753 de los principios obtenidos, para la elección de la vía metabólica principal se seleccionaron los que tenían como acción sustrato \footnote{sustrato: que posean como acción sustrato significa que la enzima actúa de manera directa sobre una molécula específica para transformarla químicamente \cite{biolan_health_enzimas}}, lo que redujo el conjunto inicial a tan solo 665 registros.
+    \item \textbf{Filtrado por sustratos:} Cuando en DrugBank se encontraba registrado para un mismo principio activo más de una enzima por la que se metaboliza el sistema informático se encontraba ante una ambigüedad. Este acontecimiento sucedía en 753 de los principios obtenidos, para la elección de la vía metabólica principal se seleccionaron los que tenían como acción sustrato \footnote{sustrato: que posean como acción sustrato significa que la enzima actúa de manera directa sobre una molécula específica para transformarla químicamente \cite{biolan_health_enzimas}}, lo que redujo el conjunto inicial a tan solo 665 registros.
     \item \textbf{Filtrado Ontológico de Efectos Adversos.} Por último, para el procesamiento de SIDER, se aplicó un criterio de exclusión sobre la columna \texttt{meddra\_type}, descartando los términos generales (LLT) quedándonos, de esta manera, únicamente a los Términos Preferidos \footnote{Términos Preferidos: es el nombre oficial, estandarizado y reconocido internacionalmente que se le da a un síntoma o efecto adverso.} (PT, \textit{Preferred Terms}). Esto redujo el conjunto final a 968 compuestos químicos con perfiles de toxicidad normalizados y frecuencias cuantitativas verificadas.
 \end{itemize}
 
@@ -60,10 +60,10 @@ Para acotar el alcance del proyecto se aplicaron de forma secuencial los siguien
 \end{figure}
 
 \subsection{Criterio de resolución de ambiguedades}
-Cuando en DrugBank se encontraban registradas mas de una enzima metabólica simultáneamente pertenecientes a las seleccionadas del citocromo P450 para un solo principio activo el sistema informático se encontraba ante una ambigüedad para determinar el riesgo de interacción asociado. 
-Por tanto, se intentará detectar la vía metabólica principal que sigue cada uno de los 753 principios activos en los que esto sucede.
+Cuando en DrugBank se encontraban registradas más de una enzima metabólica simultáneamente pertenecientes a las seleccionadas del CYP450 para un solo principio activo el sistema informático se encontraba ante una ambigüedad para determinar el riesgo de interacción asociado. 
+Por tanto, se intentó detectar la vía metabólica principal que sigue cada uno de los 753 principios activos en los que esto sucede.
 
-Para ello, primero aplicamos el criterio de selección llamado filtrado por sustratos que como se ha comentado con anterioridad reduce este conjunto de resgitros inicial a 665, después, se seleccionaron de forma programática los códigos ATC coincidentes entre DrugBank y CIMA de esos principios activos, lo que nos reduce aún más el conjunto de datos a 418 registros. Sobre estos se ejecutó un algoritmo de extracción (mediante web scraping) sobre sus respectivas fichas técnicas oficiales. En el presente proyecto primero se descargaron de manera programática cada uno de los pdfs correspondientes a las fichas técnicas (en caso de encontrarse) de cada principio activo problema (en un periodo prolongado de tiempo, evitando de esta manera errores del tipo 429 \footnote{error 429: too many requests, significa que el servidor rechaza temporalmente la conexión por saturación de tráfico (muchas solicitudes en poco tiempo).}). 
+Para ello, primero aplicamos el criterio de selección llamado filtrado por sustratos que como se ha comentado con anterioridad reduce este conjunto de registros inicial a 665, después, se seleccionaron de forma programática los códigos ATC coincidentes entre DrugBank y CIMA de esos principios activos, lo que nos reduce aún más el conjunto de datos a 418 registros. Sobre estos se ejecutó un algoritmo de extracción (mediante web scraping) sobre sus respectivas fichas técnicas oficiales. En el presente proyecto primero se descargaron de manera programática cada uno de los pdfs correspondientes a las fichas técnicas (en caso de encontrarse) de cada principio activo problema (en un periodo prolongado de tiempo, evitando de esta manera errores del tipo 429 \footnote{error 429: too many requests, significa que el servidor rechaza temporalmente la conexión por saturación de tráfico (muchas solicitudes en poco tiempo).}). 
 
 Esta información textual extraída fue procesada mediante modelos de lenguaje vectorizados (NotebookLM y ChatGPT) para determinar cuál de las enzimas registradas ejercía el rol de vía metabólica principal (categorizada como prioridad = 1) frente a las secundarias y su posterior creación de un \textit{dataframe} (df) \footnote{dataframe (df): estructura de datos que los organiza en una tabla bidimensional de filas y columnas, similar a un excel} de esta información con el objetivo de poder incluirlo en la columna \texttt{Prioridad} junto con los datos ya extraídos de DrugBank. Cuando no fue posible encontrar ninguna vía principal se categorizan a todas las presentes en ese principio activo como prioridad = 0.
 
@@ -86,6 +86,27 @@ Durante la fase de adquisición de información también se ha empleado la bibli
 El desarrollo y validación de los distintos módulos se ha llevado a cabo utilizando Jupyter Notebook, que ha permitido realizar pruebas incrementales sobre los algoritmos de extracción, transformación y análisis de datos antes de su integración definitiva en la aplicación. Este entorno ha resultado especialmente útil para explorar los conjuntos de datos, validar los resultados obtenidos y depurar los diferentes procedimientos implementados para la creación del algoritmo y las bases de datos obtenidas.
 
 Como apoyo al proceso de resolución de ambiguedades se han utilizado las herramientas NotebookLM y ChatGPT. NotebookLM se empleó para consultar y sintetizar información contenida en las fichas técnicas de medicamentos, facilitando la identificación de las enzimas metabólicas principales. Por otra parte, ChatGPT se utilizó como herramienta de apoyo para la generación de \textit{dataframes} con la información resultante de NotebookLM.
+
+Como entorno de desarrollo integrado (IDE) se ha empleado Visual Studio Code (VS Code), que ha servido como 
+plataforma principal para la implementación de la aplicación, la organización del código fuente y la integración de 
+las diferentes librerías utilizadas durante el proyecto. Con su uso se ha facilitado el desarrollo modular, la 
+identificación de errores y el mantenimiento del código.
+
+Para el control de versiones y la gestión del código fuente se ha utilizado Git junto con la plataforma GitHub, lo 
+que ha permitido mantener un histórico completo del desarrollo del proyecto, facilitar la organización de las 
+diferentes versiones del código y garantizar la trazabilidad de los cambios realizados durante la implementación. 
+Además, GitHub ha servido como repositorio central del proyecto. 
+
+
+La interfaz web se ha desarrollado mediante el \textit{framework} Dash,con el que ha sido posible implementar una 
+interfaz dinámica capaz de mostrar de manera intuitiva los resultados del 
+algoritmo de detección de interacciones farmacológicas, incluyendo gráficos interactivos, paneles de información y 
+distintos módulos de consulta.
+
+Una vez finalizado el desarrollo, la aplicación fue desplegada mediante la plataforma en la nube Render, que permite 
+publicar aplicaciones desarrolladas con Python de forma sencilla mediante su integración directa con repositorios 
+de GitHub. Esta infraestructura ha posibilitado disponer de una versión funcional accesible a través de un navegador 
+web, facilitando gran parte de la evaluación del proyecto sin necesidad de realizar instalaciones locales.
 
 \subsection{Técnicas de Extracción y Consolidación de Datos}
 Debido a la heterogeneidad y procedencia de las fuentes originales, ha sido necesario aplicar diferentes técnicas de ingeniería de datos para unificar los identificadores de los principios activos y posibilitar la interoperabilidad entre las diferentes fuentes:
