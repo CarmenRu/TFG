@@ -1,12 +1,39 @@
 \apendice{Estudio experimental}
 
-
 \section{Cuaderno de trabajo.}
 
-Se enumerarán los experimentos realizados durante el proyecto, incluyendo tanto los resultados satisfactorios como aquellos que no hayan sido exitosos.
+El desarrollo de InteraDD se realizó de forma iterativa, combinando diferentes fases de adquisición de datos, diseño del algoritmo, validación de resultados y desarrollo de la interfaz web. Durante todo el proyecto se llevaron a cabo numerosos experimentos con el objetivo de seleccionar las fuentes de información más adecuadas y obtener una base de conocimiento consistente para el análisis de interacciones farmacológicas.
+
+En una primera fase se estudió la estructura del fichero XML distribuido por DrugBank y se desarrollaron distintos prototipos para extraer la información relacionada con los principios activos, las enzimas metabólicas, los transportadores y las proteínas diana. Tras diversas pruebas se optó por utilizar la biblioteca \texttt{ElementTree} mediante procesamiento secuencial (\textit{iterparse}), debido a que permitía procesar archivos de gran tamaño con un consumo reducido de memoria.
+
+Posteriormente se evaluó la posibilidad de utilizar la base de datos de la \textit{Food and Drug Administration} (FDA) para obtener las fichas técnicas de los medicamentos. Sin embargo, las pruebas realizadas evidenciaron dificultades para establecer una correspondencia inequívoca entre los principios activos de DrugBank y los documentos disponibles en la FDA, ya que el acceso se realizaba mediante \textit{Application Numbers}, identificadores asociados a expedientes regulatorios que presentaban ambigüedades y no mantenían una relación directa con los principios activos. Además, la documentación recuperada no siempre correspondía a fichas técnicas estructuradas comparables a las empleadas en este trabajo. Como consecuencia, esta aproximación fue descartada y se optó por utilizar la plataforma CIMA, cuyas fichas técnicas resultaban más adecuadas para el proceso de extracción de información.
+
+Una vez construida la base de conocimiento, se realizaron diferentes pruebas sobre el algoritmo de clasificación de interacciones. Inicialmente se evaluó la posibilidad de considerar todas las proteínas asociadas a un principio activo, incluyendo proteínas diana, transportadores y enzimas. No obstante, los resultados mostraron un elevado número de falsos positivos, por lo que finalmente se restringió el análisis a las principales isoenzimas del sistema CYP450, incorporando únicamente la información de proteínas diana cuando no existían enzimas metabólicas registradas para alguno de los medicamentos analizados.
+
+Durante el desarrollo también se llevaron a cabo múltiples pruebas para validar la extracción automática de las enzimas metabólicas principales a partir de las fichas técnicas de CIMA. Debido a la heterogeneidad del lenguaje utilizado en estos documentos, fue necesario combinar procedimientos automáticos con revisiones manuales en aquellos casos en los que existían ambigüedades.
+
+Finalmente, el algoritmo fue evaluado utilizando diferentes combinaciones de principios activos con interacciones conocidas descritas tanto en la literatura científica como en herramientas de referencia, permitiendo comprobar el correcto funcionamiento general de la aplicación y detectar las principales limitaciones relacionadas con la identificación automática del papel de algunos fármacos como sustratos, inhibidores o inductores de determinadas isoenzimas.
 
 \section{Configuración y parametrización de las técnicas.}
-Se detallarán los parámetros utilizados en los experimentos y la justificación de su elección.
+
+El desarrollo del algoritmo no requirió la utilización de modelos de aprendizaje automático ni procesos de entrenamiento, por lo que la parametrización estuvo orientada principalmente a la selección de las fuentes de información y a la definición de las reglas de decisión utilizadas durante la clasificación de las interacciones.
+
+Como fuente principal de información se empleó DrugBank, del que se extrajeron las relaciones entre principios activos y proteínas asociadas. Posteriormente, estas relaciones fueron filtradas para conservar únicamente aquellas correspondientes a las seis isoenzimas del sistema CYP450 consideradas de mayor relevancia clínica: CYP3A4, CYP3A5, CYP2D6, CYP2C9, CYP2C19 y CYP1A2.
+
+Las fichas técnicas descargadas desde CIMA se utilizaron para identificar las enzimas metabólicas principales de aquellos medicamentos que presentaban mas de una vía de metabolización en DrugBank. Para minimizar los errores de interpretación se priorizó siempre la información contenida en las fichas técnicas oficiales, a pesar de tener en cuenta de que esta interpretación podía ser incorrecta debido al uso de las IA para el procesamiento del lenguaje natural.
+
+La clasificación del riesgo de interacción se implementó mediante un algoritmo basado en reglas. Para ello se definieron tres niveles de riesgo (\textit{Low}, \textit{Medium} y \textit{High}) en función  de las enzimas compartidas por ambos principios activos y sus vías de biotransformación principales. Cuando alguno de los medicamentos carecía de información enzimática suficiente, el algoritmo recurría a las proteínas diana como mecanismo complementario para evitar clasificar la interacción como desconocida.
+
+Finalmente, la generación de alternativas terapéuticas se basó en la clasificación ATC de los principios activos, buscando medicamentos pertenecientes al mismo grupo terapéutico que presentasen un menor riesgo de interacción según el algoritmo desarrollado.
 
 \section{Detalle de resultados.}
-Se presentarán los resultados obtenidos mediante tablas, figuras y métricas relevantes.
+
+Las distintas pruebas realizadas durante el desarrollo permitieron verificar el correcto funcionamiento de la mayoría de los módulos implementados en la aplicación.
+
+En primer lugar, se comprobó la correcta extracción e integración de la información procedente de DrugBank, CIMA y SIDER, obteniendo una base de conocimiento estructurada que constituye el núcleo de funcionamiento de InteraDD. Asimismo, se comprobó la correcta identificación de algunas de las principales isoenzimas del sistema CYP450 y la asociación de estas con los correspondientes principios activos. A pesar de que más adelante en la verificación con algunos ejemplos en la aplicación se vieron algunos ejemplos que no coincidian, como el descrito en el capítulo 5 de la memoria, apartado de casos de prueba.
+
+Posteriormente se validó el algoritmo de clasificación utilizando diferentes combinaciones de medicamentos de referencia. En la mayoría de los casos analizados, la clasificación obtenida por InteraDD resultó coherente con la evidencia farmacológica disponible.
+
+También se evaluó el funcionamiento de todas las funcionalidades implementadas en la interfaz desarrollada con Dash, verificando la correcta visualización de las explicaciones de las enzimas metabólicas, la justificación de la interacción detectada, la representación gráfica de los efectos adversos y la obtención de alternativas terapéuticas de manera tanto visual como explicativa.
+
+Los resultados obtenidos durante estas pruebas permitieron identificar como principal limitación del sistema la interpretación automática del papel desempeñado por determinados principios activos sobre las enzimas metabólicas tenidas en cuenta en la base conocimiento generada. Esta limitación afecta principalmente a la diferenciación entre sustratos, inhibidores e inductores cuando la información disponible en las bases de datos presenta ambigüedades o se encuentra descrita mediante texto no estructurado. No obstante, el algoritmo desarrollado constituye una herramienta funcional para la detección preliminar de interacciones farmacológicas y establece una base sólida para futuras mejoras mediante técnicas de procesamiento del lenguaje natural.

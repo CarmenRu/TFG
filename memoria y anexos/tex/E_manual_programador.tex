@@ -1,19 +1,99 @@
-\apendice{Manual del desarrollador / programador / investigador.} % usar el término que mejor se corresponda.
+\apendice{Manual del programador.}
 
 \section{Estructura de directorios}
 
-Descripción de la estructura de carpetas y archivos entregados junto con el proyecto.
+El proyecto se ha organizado siguiendo una estructura modular con el objetivo de facilitar su mantenimiento, 
+comprensión y futura ampliación. Los distintos archivos se distribuyen en directorios independientes separando la 
+aplicación principal y los datos procesados de los recursos gráficos y los diferentes 
+notebooks y documentos utilizados durante el desarrollo.
+
+La estructura general del proyecto se encuentra recogida en la Tabla \ref{tab:estructura}.
+
+\begin{table}[h]
+\centering
+\caption{Estructura general del repositorio del proyecto.}
+\label{tab:estructura_proyecto}
+\begin{tabular}{p{5cm} p{9cm}}
+\toprule
+\textbf{Elemento} & \textbf{Descripción} \\
+\midrule
+\texttt{app.py} & Aplicación principal del proyecto. \\
+
+\texttt{textos.py} & Funciones auxiliares utilizadas por la aplicación principal. \\
+
+\texttt{assets/} & Recursos gráficos empleados por la interfaz de InteraDD. \\
+
+\texttt{DDI\_sea.csv} & Base de datos procesada que contiene la información esencial utilizada por la aplicación. \\
+
+\texttt{Notebooks ejecución BBBDD/} & Notebooks utilizados durante la extracción, desarrollo y validación del proyecto, junto con las funciones empleadas para la extracción y procesamiento de datos. \\
+
+\texttt{efectos\_adversos.csv} & Base de datos procesada que contiene información sobre los efectos adversos asociados a los principios activos. \\
+
+\texttt{requirements.txt} & Archivo que especifica las dependencias necesarias para ejecutar el proyecto. \\
+
+\texttt{README.md} & Documentación general del repositorio e instrucciones de uso. \\
+\bottomrule
+\label{tab:estructura}
+\end{tabular}
+\end{table}
+
+El archivo \texttt{app.py} constituye el punto de entrada de la aplicación donde se usa \texttt{textos.py}, mientras que el directorio \texttt{Notebooks ejecución BBDD} contiene los distintos scripts y \textit{notebooks} desarrollados para la extracción, integración y depuración de la información. Por último, el directorio \texttt{assets} almacena los recursos gráficos necesarios para la interfaz gráfica desarrollada con Dash.
 
 \section{Compilación, instalación y ejecución del proyecto}
 
-En caso necesario, se detallarán los pasos técnicos para compilar, instalar y ejecutar el proyecto.
+El proyecto ha sido desarrollado utilizando Python y puede ejecutarse en cualquier sistema operativo que disponga de una versión compatible del intérprete.
+
+En primer lugar, debe clonarse el repositorio del proyecto utilizando Git o descargarse el código fuente desde GitHub.
+
+Posteriormente, se recomienda crear un entorno virtual e instalar todas las dependencias especificadas en el archivo \texttt{requirements.txt} mediante el gestor de paquetes \texttt{pip}:
+
+\begin{verbatim}
+python -m venv venv
+\end{verbatim}
+
+Una vez creado el entorno virtual, este deberá activarse e instalar las dependencias mediante:
+
+\begin{verbatim}
+pip install -r requirements.txt
+\end{verbatim}
+
+Finalmente, la aplicación puede ejecutarse mediante:
+
+\begin{verbatim}
+python app.py
+\end{verbatim}
+
+Tras la ejecución, Dash inicia un servidor local accesible desde cualquier navegador web a través de la dirección:
+
+\begin{verbatim}
+http://127.0.0.1:8050
+\end{verbatim}
+
+Además de la ejecución local, el proyecto dispone de una versión desplegada en la plataforma Render, lo que permite acceder a la aplicación desde cualquier navegador sin necesidad de realizar instalaciones adicionales.
+
 
 \section{Pruebas del sistema}
-Esta sección puede ser opcional.
 
-Se describirán las pruebas realizadas para validar el correcto funcionamiento del sistema, tales como pruebas unitarias, funcionales o validaciones con usuarios.
+Con el objetivo de garantizar el correcto funcionamiento de la herramienta desarrollada, se realizaron diferentes pruebas durante las distintas fases del proyecto.
 
+En primer lugar, se llevaron a cabo pruebas sobre los módulos encargados de la extracción y procesamiento de la información procedente de DrugBank, CIMA y SIDER, verificando la correcta construcción de las bases de datos utilizadas por la aplicación.
 
-\section{Instrucciones para la modificación o mejora del proyecto.}
+De manera progresiva se iban ejecutando pruebas en la funcionalidad de cada uno de los módulos implementados en \textit{notebooks} complementarios no incluidos finalmente en el repositorio GitHub.
 
-Se proporcionarán indicaciones y recomendaciones para facilitar futuras ampliaciones o mejoras del trabajo realizado.
+Posteriormente, se realizaron pruebas sobre cada una de las funcionalidades implementadas en la interfaz web, comprobando la correcta ejecución del algoritmo de detección de interacciones, la visualización de las explicaciones enzimáticas, la generación de los gráficos de efectos adversos y la obtención de alternativas terapéuticas.
+
+Finalmente, se validó el comportamiento global de la aplicación mediante distintos casos reales de interacción farmacológica explicados a profundidad en el capítulo 5, apartado de casos de prueba de la memoria del proyecto, comprobando que la clasificación obtenida por el algoritmo resultaba coherente con la evidencia disponible en la mayoría de las situaciones analizadas.
+
+Las pruebas realizadas permitieron detectar diversas limitaciones relacionadas principalmente con la identificación automática del papel de determinados principios activos como sustratos, inhibidores o inductores de algunas isoenzimas del sistema CYP450, aspecto que constituye una de las principales líneas de mejora propuestas para trabajos futuros.
+
+\section{Instrucciones para la modificación o mejora del proyecto}
+
+La arquitectura modular utilizada durante el desarrollo facilita la incorporación de nuevas funcionalidades sin necesidad de modificar la estructura principal de la aplicación.
+
+Para ampliar la base de conocimiento, resulta recomendable actualizar periódicamente las bases de datos de DrugBank, CIMA y SIDER, ejecutando nuevamente los scripts de extracción y procesamiento incluidos en el directorio \texttt{Notebooks ejecución BBDD}. Adicionalmente, es necesario incorporar manualmente los documentos PDF correspondientes a las fichas técnicas en NotebookLM para extraer la información relativa a las principales vías de metabolización. Posteriormente, dicha información debe estructurarse mediante ChatGPT para generar los archivos de datos que se integran en la base de datos procesada \texttt{DDI\_sea.csv}. Cabe destacar que los conjuntos de datos originales y procesados no se incluyen en el repositorio de GitHub debido a su elevado tamaño, ya que exceden las limitaciones de almacenamiento impuestas por la plataforma.
+
+Asimismo, una de las principales mejoras previstas consiste en perfeccionar el algoritmo encargado de interpretar el papel desempeñado por cada principio activo sobre las isoenzimas del sistema CYP450. Para ello, se propone incorporar técnicas de procesamiento del lenguaje natural que permitan analizar automáticamente la información textual disponible en fuentes biomédicas como DrugBank o las fichas técnicas oficiales de los medicamentos, incrementando la precisión del sistema al identificar si un fármaco actúa como sustrato, inhibidor o inductor.
+
+La incorporación de nuevas isoenzimas, bases de datos farmacológicas y algoritmos de clasificación también puede realizarse de forma relativamente sencilla gracias a la separación existente entre el procesamiento de los datos y la lógica de la aplicación desarrollada mediante Dash.
+
+Finalmente, el proyecto puede desplegarse en otras plataformas de computación en la nube o migrarse a otros \textit{frameworks} de desarrollo web, como Streamlit, con el objetivo de mejorar su escalabilidad, facilitar su mantenimiento y eliminar las limitaciones de recursos presentes en el entorno de despliegue utilizado durante este trabajo.

@@ -55,11 +55,11 @@ Para acotar el alcance del proyecto se aplicaron de forma secuencial los siguien
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.35\textwidth]{img/frecuencias_cyp.jpeg} 
-    \caption{Resumen frecuencia de aparición de las enzimas seleccionadas en DrugBank}
+    \caption{Resumen frecuencia de aparición de las enzimas seleccionadas según DrugBank}
     \label{fig:frecuencia_cyp}
 \end{figure}
 
-\subsection{Criterio de resolución de ambiguedades}
+\subsection{Criterio de resolución de ambigüedades}
 Cuando en DrugBank se encontraban registradas más de una enzima metabólica simultáneamente pertenecientes a las seleccionadas del CYP450 para un solo principio activo el sistema informático se encontraba ante una ambigüedad para determinar el riesgo de interacción asociado. 
 Por tanto, se intentó detectar la vía metabólica principal que sigue cada uno de los 753 principios activos en los que esto sucede.
 
@@ -85,7 +85,7 @@ Durante la fase de adquisición de información también se ha empleado la bibli
 
 El desarrollo y validación de los distintos módulos se ha llevado a cabo utilizando Jupyter Notebook, que ha permitido realizar pruebas incrementales sobre los algoritmos de extracción, transformación y análisis de datos antes de su integración definitiva en la aplicación. Este entorno ha resultado especialmente útil para explorar los conjuntos de datos, validar los resultados obtenidos y depurar los diferentes procedimientos implementados para la creación del algoritmo y las bases de datos obtenidas.
 
-Como apoyo al proceso de resolución de ambiguedades se han utilizado las herramientas NotebookLM y ChatGPT. NotebookLM se empleó para consultar y sintetizar información contenida en las fichas técnicas de medicamentos, facilitando la identificación de las enzimas metabólicas principales. Por otra parte, ChatGPT se utilizó como herramienta de apoyo para la generación de \textit{dataframes} con la información resultante de NotebookLM.
+Como apoyo al proceso de resolución de ambigüedades se han utilizado las herramientas NotebookLM y ChatGPT. NotebookLM se empleó para consultar y sintetizar información contenida en las fichas técnicas de medicamentos, facilitando la identificación de las enzimas metabólicas principales. Por otra parte, ChatGPT se utilizó como herramienta de apoyo para la generación de \textit{dataframes} con la información resultante de NotebookLM.
 
 Como entorno de desarrollo integrado (IDE) se ha empleado Visual Studio Code (VS Code), que ha servido como 
 plataforma principal para la implementación de la aplicación, la organización del código fuente y la integración de 

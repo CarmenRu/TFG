@@ -1,11 +1,78 @@
 \apendice{Descripción de adquisición y tratamiento de datos}
 
-
 \section{Descripción formal de los datos}
 
-Se describirá el tipo de datos utilizados, su formato, origen, volumen y características principales.
-Tablas, imágenes, señales, secuencias de ADN…
-    
-\section{Descripción clínica de los datos.}
+El funcionamiento de InteraDD se basa en la construcción de una base de conocimiento integrada obtenida a partir de diversas fuentes biomédicas públicas. Durante la fase de adquisición se emplearon principalmente las bases de datos DrugBank, CIMA y SIDER, cada una de ellas especializada en un ámbito concreto de la farmacología.
 
-Descripción y explicaciones clinicas del significado o interpretación de los datos.
+DrugBank constituye la principal fuente de información utilizada durante el desarrollo del algoritmo. A partir de su fichero XML completo se extrajo información relativa a los principios activos, sus identificadores, la clasificación terapéutica ATC, las proteínas diana, enzimas y otros elementos farmacológicos asociados. Para la extracción de esta información se empleó la biblioteca \texttt{ElementTree} mediante procesamiento secuencial (\textit{iterparse}), permitiendo analizar un archivo XML de gran tamaño con un consumo reducido de memoria.
+
+Posteriormente, la información obtenida fue sometida a un proceso de depuración y normalización mediante la biblioteca Pandas. Durante esta fase se eliminaron registros duplicados, se unificó la nomenclatura de los principios activos y se seleccionaron exclusivamente aquellos registros relevantes para el estudio de las interacciones farmacocinéticas. Asimismo, se priorizaron las seis isoenzimas del sistema citocromo P450 con mayor relevancia clínica (CYP3A4, CYP3A5, CYP2D6, CYP2C9, CYP2C19 y CYP1A2), responsables del metabolismo de la mayor parte de los medicamentos utilizados en la práctica clínica.
+
+Como complemento a DrugBank se empleó la plataforma CIMA, desde la que se descargaron automáticamente las fichas técnicas oficiales de los medicamentos autorizados en España. La información contenida en estos documentos permitió completar y validar la identificación de las enzimas metabólicas principales cuando esta no podía obtenerse de forma directa desde DrugBank.
+
+Para la representación de los efectos adversos se utilizó la base de datos SIDER, especializada en la recopilación de reacciones adversas descritas en la documentación oficial de medicamentos. Los datos fueron procesados para calcular una frecuencia media de aparición de cada efecto adverso, información posteriormente utilizada para generar las representaciones gráficas mostradas por la aplicación.
+
+Como resultado del proceso completo de extracción, transformación e integración se generaron dos conjuntos de datos principales, almacenados en formato CSV y utilizados directamente durante la ejecución de InteraDD.
+
+Estos son \texttt{DDI\_sea}, detallado en la Tabla \ref{tab:ddi_csv} y \texttt{efectos\_adversos.csv} presente en la Tabla \ref{tab:ea_csv}.
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Campo} & \textbf{Descripción} \\
+\midrule
+DrugBank\_id & Identificador único del principio activo en DrugBank.\\
+
+Drug\_ATC & Código ATC correspondiente al principio activo según la clasificación Anatomical Therapeutic Chemical.\\
+
+Drug\_name & Nombre normalizado del principio activo empleado durante todas las consultas de la aplicación.\\
+
+Tipo & Tipo de relación farmacológica registrada en DrugBank (\textit{target} y \textit{enzyme}).\\
+
+Gene\_name & Nombre del gen o proteína asociado al mecanismo farmacológico del medicamento.\\
+
+Accion & Papel que desempeña el principio activo sobre la proteína asociada (inhibidor, activador, sustrato, ligando, etc.).\\
+
+Prioridad & Valor numérico utilizado durante el procesamiento para priorizar determinadas enzimas frente a otras cuando existen múltiples registros de ellas asociados al mismo principio activo.\\
+
+\bottomrule
+\end{tabularx}
+\caption{Descripción de las variables contenidas en el fichero \texttt{DDI\_sea.csv}.}
+\label{tab:ddi_csv}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Campo} & \textbf{Descripción} \\
+\midrule
+Drug\_ATC & Código ATC asociado al principio activo.\\
+
+Drug\_name & Nombre del principio activo.\\
+
+Side\_effect & Efecto adverso registrado para el medicamento según la base de datos SIDER identificado como PT (\textit{prefered term}).\\
+
+Freq\_media & Frecuencia media de aparición del efecto adverso obtenida durante el procesamiento de los datos. Este valor es empleado para representar gráficamente la relevancia relativa de cada reacción adversa.\\
+
+\bottomrule
+\end{tabularx}
+\caption{Descripción de las variables contenidas en el fichero \texttt{efectos\_adversos.csv}.}
+\label{tab:ea_csv}
+\end{table}
+
+
+Cabe destacar que los conjuntos de datos descritos en este apartado constituyen la base de conocimiento empleada por InteraDD durante la ejecución del algoritmo. El proceso completo de extracción, filtrado, normalización e integración de la información, así como los criterios utilizados para seleccionar las isoenzimas relevantes y el tratamiento de aquellos principios activos que únicamente presentan proteínas diana (\textit{targets}), se describen detalladamente en el Capítulo 4 correspondiente a la metodología del proyecto.
+
+\section{Descripción clínica de los datos}
+
+Los datos integrados en InteraDD describen diferentes componentes implicados en el comportamiento farmacocinético de los medicamentos. La información principal corresponde a las relaciones existentes entre los principios activos y las proteínas implicadas en su mecanismo de acción y metabolismo, permitiendo caracterizar tanto las enzimas responsables de su biotransformación como el papel que desempeña cada fármaco sobre ellas.
+
+La identificación de las isoenzimas CYP450 constituye el elemento central del algoritmo desarrollado, ya que la inhibición, inducción o utilización compartida de una misma enzima representa uno de los mecanismos más frecuentes responsables de las interacciones farmacológicas clínicamente relevantes. La información obtenida de DrugBank y completada mediante la utilización de las fichas técnicas de CIMA permitió construir una base de conocimiento orientada específicamente al análisis de estas relaciones.
+
+Por otra parte, la clasificación ATC incorporada en los datos proporciona una organización jerárquica internacionalmente aceptada de los medicamentos según su indicación terapéutica, mecanismo de acción y propiedades farmacológicas. Esta información resulta esencial para la generación automática de alternativas terapéuticas, permitiendo identificar principios activos pertenecientes al mismo grupo farmacológico cuando se detectan interacciones potencialmente relevantes.
+
+Finalmente, los datos procedentes de SIDER complementan el análisis farmacológico mediante la incorporación de los efectos adversos descritos para cada principio activo. Aunque esta información no interviene directamente en el cálculo del riesgo de interacción, permite contextualizar clínicamente los medicamentos analizados y ofrecer al usuario una visión más completa de su perfil de seguridad mediante representaciones gráficas de fácil interpretación.
+
+En conjunto, los dos conjuntos de datos generados constituyen la base de conocimiento empleada por InteraDD para realizar el análisis de interacciones farmacológicas, proporcionando tanto la información estructural necesaria para el algoritmo de clasificación como la información clínica complementaria mostrada al usuario durante la consulta.
