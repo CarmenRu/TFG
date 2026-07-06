@@ -1,32 +1,48 @@
 \apendice{Registro de interacciones con sistemas de IA}
+\section{Registro de interacciones con sistemas de Inteligencia Artificial}
 
-\section{Registro de interacciones con sistemas de IA}
+El uso de herramientas de Inteligencia Artificial Generativa durante el desarrollo de este Trabajo Fin de Grado tuvo un carácter exclusivamente asistencial. Estas herramientas se emplearon como apoyo para la resolución de dudas técnicas, la búsqueda de información complementaria, la mejora de la redacción, la generación de recursos gráficos y la automatización de determinadas tareas repetitivas. 
 
-Este anexo tiene como objetivo garantizar la transparencia en el uso de
-herramientas de inteligencia artificial generativa durante la realización
-del Trabajo de Fin de Grado. En él se deberá incluir un registro
-ordenado de los \textit{prompts}, solicitudes, o peticiones formuladas por el estudiante en las interacciones con sistemas de IA que hayan sido más significativas en relación al desarrollo del TFG. Asimismo se incluirán bien las respuestas generadas directamente por los sistemas de IA, o bien se reflejará la importancia que ha tenido esa interacción en el desarrollo del trabajo ( código, texto, enfoque...) de esas interacciones significativas.
+Las herramientas empleadas fueron ChatGPT, NotebookLM y Gemini Pro. A continuación se describen los principales usos realizados.
 
-El propósito de este anexo no es penalizar el uso de inteligencia artificial,
-sino documentarlo de forma clara, permitiendo al tribunal evaluar el alcance,
-la finalidad y el impacto real de dichas herramientas en el proceso de
-aprendizaje y en los resultados obtenidos. El uso de IA debe entenderse como
-una herramienta de apoyo, nunca como un sustituto del razonamiento,
-la toma de decisiones técnicas o la autoría del trabajo.
+\subsection{Uso de NotebookLM}
 
-Para cada interacción relevante con sistemas de IA, se deberá indicar, al
-menos, la siguiente información:
 \begin{itemize}
-    \item Herramienta o modelo de IA utilizado.
-    \item Fecha aproximada de uso.
-    \item Prompt/petición/solicitud/forma de uso realizada por el estudiante.
-    \item Respuesta completa generada por la IA (opcional)
-    \item Uso posterior de dicha respuesta en el TFG (orientación conceptual,
-    mejora de redacción, generación de ideas, apoyo técnico, generación de código, etc.).
+    \item \textbf{Extracción de información a partir de documentación técnica (\textit{abril-mayo 2026}).} Se utilizó durante la fase metodológica (descrita en el Capítulo 4 de la memoria) para analizar las fichas técnicas descargadas de CIMA y extraer la información relativa a la vía metabólica principal de cada principio activo
 \end{itemize}
 
-Este anexo podrá estructurarse en forma de tablas o listados numerados, y
-solo deberá incluir aquellas interacciones que hayan tenido una influencia
-significativa en el desarrollo del trabajo. 
+\subsection{Uso de ChatGPT}
+
+\begin{itemize}
+    \item \textbf{Apoyo documental (\textit{marzo-aril 2026}).} Se utilizó para obtener explicaciones preliminares sobre determinados conceptos técnicos y para localizar documentación adicional. Toda la información finalmente incorporada a la memoria fue contrastada con documentación oficial o bibliografía científica.
+    \item \textbf{Búsqueda de herramientas y recursos complementarios (\textit{marzo-abril de 2026}).} Se utilizó para identificar bibliotecas, aplicaciones y herramientas relacionadas con el ámbito del proyecto. Posteriormente, toda la información obtenida fue contrastada con la documentación y las páginas oficiales de cada recurso con el fin de analizar las características de las soluciones existentes, contextualizar la propuesta desarrollada en este trabajo (InteraDD) y elaborar el apartado correspondiente al estado del arte (Capítulo 3 de la memoria).
+    \item \textbf{Generación de estructuras de datos (\textit{abril-mayo 2026}).} A partir de la información previamente obtenida mediante NotebookLM, ChatGPT se empleó para generar los \textit{DataFrames} iniciales utilizados durante la construcción del conjunto de datos descrito en la metodología de la memoria (Capítulo 4).
+    \item \textbf{Apoyo a la toma de decisiones (\textit{mayo-junio 2026}).} Se utilizó para analizar diferentes alternativas de diseño de la interfaz de usuario, discutir posibles enfoques de implementación y valorar distintas soluciones técnicas durante el desarrollo.
+    \item \textbf{Asistencia técnica (\textit{abril-junio 2026}).} Se utilizó como herramienta de apoyo para la localización de errores de programación, resolución de incidencias complejas y dudas relacionadas con el entorno de desarrollo, incluyendo la compilación de la memoria mediante Visual Studio Code y \LaTeX.
+    \item \textbf{Generación de recursos gráficos (\textit{junio 2026}).} Se empleó para la generación del logotipo de la aplicación y de esquemas ilustrativos utilizados en la explicación de conceptos teóricos.
+    \item \textbf{Revisión de la estructura del documento (\textit{junio-julio 2026}).} Se empleó para revisar la organización de la memoria, detectar redundancias y mejorar la coherencia global del documento.
+\end{itemize}
+
+\subsection{Uso de Gemini Pro}
+
+\begin{itemize}
+    \item \textbf{Revisión lingüística (\textit{junio-julio 2026}).} Se empleó para revisar aspectos relacionados con la claridad, la coherencia, el estilo y ortografía de la memoria y sus anexos.
+    \item \textbf{Apoyo en la gestión bibliográfica (\textit{junio-julio 2026}).} Se utilizó para resolver dudas relacionadas con el formato de las referencias bibliográficas y la aplicación del estilo de citación.
+    \item \textbf{Asistencia en LaTeX (\textit{junio-julio 2026}).} Se empleó para resolver incidencias relacionadas con la elaboración de tablas y otros elementos de formato dentro del documento.
+\end{itemize}
+
+\section{Criterios de uso, validación y verificación}
+
+Las herramientas de inteligencia artificial utilizadas durante el desarrollo de este Trabajo Fin de Grado fueron consideradas exclusivamente como herramientas de apoyo. En consecuencia, todas las propuestas, recomendaciones, fragmentos de código, explicaciones técnicas y sugerencias generadas fueron sometidas a un proceso de revisión crítica antes de su incorporación al proyecto.
+
+Con carácter general, ninguna salida generada por los sistemas de IA fue incorporada directamente al código fuente de la aplicación ni a la memoria sin haber sido previamente revisada, comprendida y validada mediante pruebas funcionales, comprobaciones manuales o contraste con la documentación oficial correspondiente. Del mismo modo, las explicaciones teóricas obtenidas mediante estas herramientas fueron verificadas utilizando bibliografía científica, documentación oficial y las referencias finalmente incluidas en la memoria.
+
+La única excepción a este procedimiento corresponde a la fase metodológica de construcción del conjunto de datos. Debido al elevado volumen de información analizada y a las limitaciones temporales propias del desarrollo del proyecto, se adoptó un criterio específico para la resolución de ambigüedades relacionadas con la identificación de la enzima metabólica principal de determinados principios activos.
+
+En estos casos, NotebookLM se utilizó para analizar las fichas técnicas oficiales procedentes de CIMA y determinar la vía metabólica principal cuando existían múltiples enzimas registradas para un mismo principio activo. Posteriormente, ChatGPT se empleó exclusivamente para transformar dicha información en estructuras tabulares (\textit{DataFrames}) compatibles con el procesamiento realizado por la aplicación.
+
+Esta decisión metodológica se adoptó con el objetivo de mantener un criterio homogéneo en la construcción del conjunto de datos y garantizar la viabilidad temporal del proyecto. La utilización de estas herramientas en esta fase constituye, por tanto, un criterio metodológico explícitamente definido y documentado, siendo ésta la única parte del trabajo cuyos resultados no fueron verificados individualmente mediante una revisión manual completa de cada registro antes de su incorporación al conjunto de datos.
+
+No obstante, sobre el conjunto de datos generado sí se realizaron comprobaciones manuales para garantizar su coherencia con los criterios metodológicos establecidos. En particular, se revisaron los registros en los que aparecían simultáneamente las enzimas CYP3A4 y CYP3A5, eliminándose la referencia a CYP3A5 al considerarse que ambas presentan un elevado grado de similitud funcional y que una proporción importante de la población no expresa CYP3A5 de forma funcional (como se detalla en el Capítulo 3 de la memoria del proyecto. Conceptos teóricos). Asimismo, se eliminaron aquellos registros cuya vía metabólica principal identificada no correspondía a ninguna de las enzimas incluidas en el alcance del proyecto.
 
 

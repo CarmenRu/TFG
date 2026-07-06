@@ -7,7 +7,7 @@ en la que cada uno de los componentes desempeña una función específica dentro
 Esta organización facilita el mantenimiento del código, favorece la reutilización de componentes y permite incorporar nuevas funcionalidades sin modificar el resto del sistema, lo que ayudó a la mejora del algoritmo durante la realización del proyecto.
 
 La arquitectura general puede dividirse en tres módulos principales detallados a continuación;
-\paragraph{Interfaz de usuario.}Está implementada mediante el framework Dash, que permite construir una aplicación web interactiva utilizando 
+\paragraph{Interfaz de usuario.}Está implementada mediante el framework Dash \cite{dash_framework}, que permite construir una aplicación web interactiva utilizando 
 Python.Se encuentra recogida en el documento llamado \texttt{app.py} y es la encargada de mostrar la interfaz gráfica al usuario, recoger 
 los principios activos seleccionados y presentar los resultados obtenidos en forma de texto, tablas y gráficos.
 La interfaz gráfica ofrece estos resultados estructurados en 4 botones principales que se sitúan en la parte izquierda de la pantalla. 
@@ -16,7 +16,7 @@ En él se concentra toda la funcionalidad necesaria para realizar el análisis f
 implicadas en el metabolismo de cada principio activo, el cálculo del nivel de riesgo de interacción, la descripción textual de las 
 interacciones, la obtención de posibles alternativas terapéuticas mediante los códigos ATC y la preparación de los datos utilizados 
 para representar los efectos adversos.
-\paragraph{Extracción de datos.}Las funciones que se utilizan para parsear los datos de DrugBank, SIDER y CIMA se encuentran incluidas en el documento \texttt{Funciones\_BBDD.py}. 
+\paragraph{Extracción de datos.}Las funciones que se utilizan para parsear los datos de DrugBank \cite{drugbank}, SIDER \cite{sider} y CIMA \cite{cima} se encuentran en el documento \texttt{Funciones\_BBDD.py} incluido en la carpeta \texttt{Notebooks ejecucion BBDD}. 
 Con ellas se crean los ficheros CSV que son cargados al iniciar la aplicación y permiten realizar consultas de forma rápida sin necesidad de volver a 
 procesar las bases de datos originales. El archivo \texttt{DDI\_sea.csv} contiene la información relativa a principios activos, enzimas, 
 acciones farmacológicas y códigos ATC, mientras que \texttt{efectos\_adversos.csv} almacena los efectos adversos asociados a cada código ATC 

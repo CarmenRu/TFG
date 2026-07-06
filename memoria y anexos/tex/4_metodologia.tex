@@ -95,8 +95,10 @@ identificación de errores y el mantenimiento del código.
 Para el control de versiones y la gestión del código fuente se ha utilizado Git junto con la plataforma GitHub, lo 
 que ha permitido mantener un histórico completo del desarrollo del proyecto, facilitar la organización de las 
 diferentes versiones del código y garantizar la trazabilidad de los cambios realizados durante la implementación. 
-Además, GitHub ha servido como repositorio central del proyecto. 
-
+Además, GitHub ha servido como repositorio central del proyecto, cuyo código fuente puede consultarse en:
+\begin{center}
+    \texttt{https://github.com/CarmenRu/TFG}
+\end{center}
 
 La interfaz web se ha desarrollado mediante el \textit{framework} Dash,con el que ha sido posible implementar una 
 interfaz dinámica capaz de mostrar de manera intuitiva los resultados del 
@@ -129,13 +131,16 @@ La elección de esta herramienta frente a otras alternativas se fundamentó en s
 \subsection*{Renderización de la visualización: Render}
 Una vez completado el desarrollo local de la interfaz interactiva, se procedió a su despliegue en un entorno de producción a través de 
 la plataforma Render \cite{render}. La selección de esta infraestructura frente a otras alternativas se justificó por su alto grado de 
-automatización y su capacidad de integración continua con repositorios de control de versiones como lo es GitHub. Esto permitió agilizar los tiempos de 
-computación, garantizando la disponibilidad inmediata y estable de la aplicación web de cara a la fase de evaluación y defensa ante el 
-tribunal examinador.
+automatización y su capacidad de integración continua con repositorios de control de versiones como lo es GitHub.
+Esto permitió agilizar el proceso de despliegue, garantizando la disponibilidad inmediata y estable de la aplicación web de cara a la fase de evaluación y defensa ante el tribunal examinador.
+La aplicación desarrollada puede consultarse en:
+\begin{center}
+    \texttt{https://tfg-7z0a.onrender.com/}
+\end{center}
 
 No obstante, la versión gratuita de esta plataforma presenta una limitación crítica: aquellas consultas que exigen un elevado coste 
 computacional no llegan a procesarse de forma efectiva. El servidor interrumpe la visualización de los resultados debido a restricciones 
-en el tiempo máximo de ejecución (timeout).
+en el tiempo máximo de ejecución (\textit{timeout}).
 
 
 

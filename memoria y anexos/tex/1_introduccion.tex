@@ -28,16 +28,13 @@ clínicas basadas en la evidencia.
 
 
 \section{Motivación}
-La mayoría de herramientas comerciales presentan dos limitaciones:
+La mayoría de herramientas comerciales presentan varias limitaciones:
 \begin{itemize}
-    \item No explican el motivo de la interacción.
-    \item No proporcionan alternativas terapéuticas justificadas incluyendo combinaciones consideradas seguras 
-    por la aplicación.
+\item No hacen explícito el proceso de decisión seguido para clasificar la gravedad de la interacción, limitándose a mostrar el resultado junto con una explicación del mecanismo farmacocinético.
+\item No proporcionan alternativas terapéuticas justificadas incluyendo combinaciones consideradas seguras.
+\item No integran de forma conjunta la información sobre posibles efectos adversos de las alternativas propuestas.
 \end{itemize}
-Por este motivo se propone una herramienta con la posibilidad de detectar posibles interacciones entre los 
-principios activos introducidos, explicar el mecanismo implicado, 
-mostrar alternativas farmacológicas e informar sobre posibles efectos adversos asociados.
-
+Por este motivo, se propone una herramienta capaz de detectar posibles interacciones entre los principios activos introducidos, hacer explícito el razonamiento seguido para estimar el nivel de riesgo a partir de las isoenzimas CYP implicadas, proponer alternativas terapéuticas consideradas de bajo riesgo por la aplicación e informar sobre los posibles efectos adversos asociados.
 
 \section{Descripción del proyecto}
 El proyecto consiste en el desarrollo de una herramienta informática orientada al análisis de posibles interacciones farmacológicas 
@@ -46,8 +43,8 @@ del nivel de riesgo de interacción en función de las enzimas implicadas en su 
 resultados obtenidos, información sobre los efectos adversos asociados y posibles alternativas terapéuticas basadas en la clasificación 
 ATC.
 
-Para ello se construye una base de conocimiento a partir de 3 bases de datos biomédicas, públicas de referencia: \textbf{DrugBank} \footnote{Drugbank: Base de datos online de acceso libre que contiene información detallada sobre fármacos y sus dianas terapéuticas}, 
-Centro de Información Online de Medicamentos (\textbf{CIMA}) de la Agencia Española de Medicamentos y Productos Sanitarios (AEMPS) y \textit{Side Effect Resource} (\textbf{SIDER}) \footnote{\textit{Side Effect Resource}:  Base de datos pública que recopila información sobre medicamentos comercializados y sus reacciones adversas asociadas}.
+Para ello se construye una base de conocimiento a partir de 3 bases de datos biomédicas, públicas de referencia: \textbf{DrugBank} \footnote{DrugBank: Base de datos en línea de acceso libre que contiene información detallada sobre fármacos, sus principios activos, mecanismos de acción, dianas terapéuticas e interacciones.}, Centro de Información Online de Medicamentos (\textbf{CIMA})\footnote{CIMA: Plataforma oficial de la Agencia Española de Medicamentos y Productos Sanitarios (AEMPS) que proporciona acceso a la información autorizada de los medicamentos comercializados en España, incluyendo fichas técnicas, prospectos y datos administrativos.} de la Agencia Española de Medicamentos y Productos Sanitarios (AEMPS) y \textit{Side Effect Resource} (\textbf{SIDER}) \footnote{\textit{Side Effect Resource} (SIDER): Base de datos pública que recopila información sobre medicamentos comercializados y las reacciones adversas descritas en su documentación oficial.}
+
 A partir de estas bases de datos se realiza un proceso previo de extracción, transformación y normalización de la información, generando conjuntos de datos optimizados que permiten realizar consultas de forma eficiente durante la ejecución de la aplicación.
 
 La solución desarrollada ha sido implementada en Python utilizando el framework Dash para la construcción de la interfaz web, mientras que la gestión y el procesamiento de los datos se realizan mediante la biblioteca Pandas. El resultado es una aplicación interactiva que facilita la consulta de información farmacológica de forma sencilla y comprensible, sirviendo como herramienta de apoyo para el estudio de posibles interacciones entre medicamentos.
