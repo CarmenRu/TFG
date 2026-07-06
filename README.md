@@ -1,7 +1,7 @@
 # InteraDD
 
 <p align="center">
-  <img src="assets/logo.png" alt="Logo InteraDD" width="220"/>
+  <img src="assets/interaccion.png" alt="Logo InteraDD" width="220"/>
 </p>
 
 <p align="center">
