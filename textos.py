@@ -37,7 +37,7 @@ def principales(df):
     Devolución
     -----------------------------
         enz - Lista de enzimas por las que se metaboliza el principio activo
-        ppal - Lista de enzimas principales por las que se metaboliza el fármaco (prioridad=1)
+        ppal - Lista de enzimas principales por las que se metaboliza (prioridad=1)
     '''
     #df con todas las enzimas por las que se metaboliza (no target)
     df_enzimas = df[df["Tipo"]=="enzyme"]
@@ -60,7 +60,7 @@ def interaccion (ppio_1, ppio_2, DDI):
         DDI - Dataframe que contiene los nombres, ATC, enzimas, target, acciones y prioridad
     Devolucion
     ------------------
-        String con el nivel de riesgo Leve, Medio y Alto
+        dic_resumen - Diccionario que contiene la información necesaria para describir la interacción: principios activos, enzimas, códigos ATC, alternativas, enzimas coincidentes y nivel de riesgo.
     '''
     dic_resumen = {}
     #Comprobamos primero que esté en nuestra BBDD
@@ -196,20 +196,19 @@ def interaccion (ppio_1, ppio_2, DDI):
 
 def opciones_ATC(alternativas_1, alternativas_2, ppio_1, ppio_2, DDI):
     """
-    Busqueda en la base de datos de opciones con el código ATC de los principios activos problema
+    Busca combinaciones de principios activos alternativos que presenten un nivel de interacción bajo.
 
-    Parámetos
-    -------------------------
-        DDI - Dataframe que contiene los nombres, ATC, enzimas, target, acciones y prioridades
-        ATC_1 - Lista con los códigos ATC únicos del ppio_1
-        ATC_2 - Lista con los códigos ATC únicos del ppio_2
-        ppio_1 - El primer principio activo que se quiere comparar con el segundo
-        ppio_2 - El segundo principio activo que se quiere comparar con el primero
-        
+    Parámetros
+    ---------------------
+        alternativas_1 - Lista de alternativas terapéuticas para el primer principio activo.
+        alternativas_2 - Lista de alternativas terapéuticas para el segundo principio activo.
+        ppio_1 - Primer principio activo.
+        ppio_2 - Segundo principio activo.
+        DDI - DataFrame con la información farmacológica integrada.
+
     Devolución
-    ---------------------------
-        #Deberia ser un diccionario HAY QUE CAMBIARLO
-        Lista de tuplas con los dos principios activos de alternativa a cada uno que estan categorizados como interaccion leve
+    ---------------------
+        opciones - Lista de tuplas con las combinaciones de principios activos cuya interacción se clasifica como leve.
     """
     #Inicializo opciones
     opciones = []
@@ -231,23 +230,23 @@ def opciones_ATC(alternativas_1, alternativas_2, ppio_1, ppio_2, DDI):
     #Cambiar opciones
     return opciones  
 
-
-def texto_intro (ppio=None, enzimas=None, principales=None, texto=False, primero=False):
-    '''
-    Texto de introducción de el principio activo concreto (explica las enzimas)
+def texto_intro(ppio=None, enzimas=None, principales=None, texto=False, primero=False):
+    """
+    Genera el texto introductorio asociado a un principio activo o, alternativamente, indica si dispone de enzimas principales.
 
     Parámetros
-    ------------------------
-        ppio - Principio activo que se va a describir
-        enzimas - Lista con las enzimas por las que se metaboliza el ppio activo según la BBDD consultada
-        principales - Lista con las enzimas principales (si las hay) por las que se metaboliza el ppio activo según las FT de CIMA con chat y notebook
-        texto - Booleano, por defecto false
-        primero - Un booleano, por defecto en False que indica si es la primera vez que se ejecuta el texto o no para imprimir la introducción
+    ---------------------
+        ppio - Principio activo que se desea describir.
+        enzimas - Lista de enzimas por las que se metaboliza.
+        principales - Lista de enzimas principales.
+        texto - Si es True devuelve el texto generado. Si es False devuelve únicamente el valor lógico.
+        primero - Indica si se trata de la introducción general de la aplicación.
 
     Devolución
-    ---------------
-        True cuando hay enzima principal, False cuando no y None cuando no es ninguna tenida en cuenta o no se metaboliza por una enzima (según DrugBank)
-    '''
+    ---------------------
+        cadena - Texto descriptivo cuando texto=True.
+        booleano - True si existen enzimas principales, False si no pueden determinarse y None si el principio activo no se metaboliza por ninguna de las enzimas consideradas.
+    """
     #Cuando quiera devolver texto
     cadena = ""
     #Si no hay lista de enzimas se devuelve None
@@ -304,7 +303,8 @@ def calcular_riesgo (ppio_1, ppio_2,coincidentes, intro_1, intro_2, texto=False)
 
     Devolución
     ---------------------------
-        string que contiene "Alta","Media","Leve" dependiendo de cual sea su nivel de riesgo
+        cadena - Texto explicativo del nivel de riesgo cuando texto=True.
+        riesgo - Cadena con el nivel de riesgo ("Alta", "Media" o "Leve") cuando texto=False.
     """
     cadena = ""
     riesgo = None 
@@ -418,7 +418,7 @@ def texto_efectos (lista_ATC, ref, efectos_adversos):
         None
     '''
     
-    #Vemos cuales son los codigos ATC que tienen cada codigo de referencia (5 letras al principio)
+    #Vemos cuales son los codigos ATC que tienen cada codigo de referencia (5 al principio)
     ATCs = [x for x in lista_ATC if str(x).startswith(ref)]
     
     if not ATCs:

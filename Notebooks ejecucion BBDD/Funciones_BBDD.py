@@ -1,19 +1,20 @@
 import xml.etree.ElementTree as ET
 import pandas as pd
-import argparse
 import os
 from pathlib import Path
-# Quedarme solo con los CYP3A4 porque la mayoria de la gente no expresa el 5. BASARME EN UN ARTICULO O ALGO
-#DF principal
+import requests
+import time
+
 def csv_enzimas(xml_file, output_file):
     '''
+    Obtiene información del id, nombre, sinonimos, targets y enzimas de drugbank y se exporta en un csv
 
     Parámetros
     ----------------
-        xml_file -
-        output_file-
+        xml_file - archivo xml con la documentacion de drugbank
+        output_file- nombre del documento donde queremos guardar la información extraída.
 
-    Devolucion
+    Devolución
     ---------------
         None
     '''
@@ -100,14 +101,14 @@ def csv_enzimas(xml_file, output_file):
 #ATC DrugBank
 def csv_ATC_db (xml_file, output_file):
     '''
-    Obtenemos los códigos ATC de DrugBank y lo exportamos a otro csv
+    Obtiene los códigos ATC de DrugBank junto con el id y el nombre del principio activo y se exporta a otro csv
 
     Parámetros
     -------------
-        xml_file -
-        output_file -
+        xml_file - archivo xml con la documentacion de drugbank
+        output_file- nombre del documento donde queremos guardar la información extraída.
 
-    Return
+    Devolución
     ------------
         None
     '''
@@ -143,6 +144,7 @@ def csv_ATC_db (xml_file, output_file):
             
             atc_codes = "|".join(atc_list)
 
+            # Se añade
             rows.append([drug_id, drug_name, atc_codes])
             
 
@@ -158,22 +160,23 @@ def csv_ATC_db (xml_file, output_file):
     # Lo guardamos en un archivo csv para poder trabajar con los datos
     df.to_csv(output_file, index=False)
     
+    #print explicativo
     print(f"Archivo guardado como: {output_file}")
 
-#SIDDER (efectos adversos)
+#SIDER(efectos adversos)
 def csv_sidder(path_se, path_freq, path_names, output_csv, only_pt=True):
     """
     Construye un dataset completo de SIDER uniendo los tres archivos proporcionados
 
-    Parámetros:
+    Parámetros
     ---------------------
         path_se - Ruta a meddra_all_se.tsv
         path_freq - Ruta a meddra_freq.tsv
         path_names - Ruta a drug_names.tsv
         output_csv -  Ruta donde guardar el CSV final
-        only_pt - Si True, filtra solo términos PT
+        only_pt - Si True, filtra solo términos PT (Preferred Terms)
 
-    Devuelve:
+    Devolución
     --------------------
         df_final - pandas.DataFrame
     """
@@ -225,33 +228,63 @@ def csv_sidder(path_se, path_freq, path_names, output_csv, only_pt=True):
         "freq_mean_y"
     ]]
 
-    #7. Eliminamos duplicados y valores nulos solo existentes en la columna de frecuencias (se comprobó en un notebook alternativo)
+    # Eliminamos duplicados y valores nulos solo existentes en la columna de frecuencias (se comprobó en un notebook alternativo)
     df_definitivo = df_definitivo.dropna()
     df_definitivo = df_definitivo.drop_duplicates()
 
     #Guardamos csv
     df_definitivo.to_csv(output_csv, index=False)
 
+    #print explicativo
     print(f"CSV guardado en: {output_csv}")
 
 
 #CIMA
-def get_ns(root: ET.Element) -> str:
-    """Extrae el namespace URI del elemento raíz (ej. '{http://...}')."""
+def get_ns(root: ET.Element):
+    """
+    Extrae el namespace del elemento raíz del documento XML.
+
+    Parámetros
+    ---------------------
+        root - Elemento raíz del árbol XML.
+
+    Devolución
+    ---------------------
+        str - Namespace del documento en formato '{http://...}'. Si el XML no utiliza namespace devuelve una cadena vacía.
+    """
     tag = root.tag
     if tag.startswith("{"):
         return tag.split("}")[0] + "}"
     return ""
-def find_text(element: ET.Element, tag: str, ns: str = "") -> str:
-    """Devuelve el texto de un subelemento o cadena vacía si no existe."""
+def find_text(element: ET.Element, tag: str, ns: str = ""):
+    """
+    Obtiene el texto contenido en un subelemento XML.
+
+    Parámetros
+    ---------------------
+        element - Elemento XML sobre el que realizar la búsqueda.
+        tag - Nombre de la etiqueta a localizar.
+        ns - Namespace utilizado por el documento XML.
+
+    Devolución
+    ---------------------
+        str - Texto contenido en la etiqueta indicada. Si la etiqueta no existe devuelve una cadena vacía.
+    """
     child = element.find(f"{ns}{tag}")
     if child is not None and child.text:
         return child.text.strip()
     return ""
-def cargar_principios_activos(carpeta: Path) -> dict:
+def cargar_principios_activos(carpeta: Path):
     """
-    Devuelve dict {cod_principio_activo (str): nombre_pa (str)}.
-    La clave es el codigoprincipioactivo (p.ej. '160'), NO el nroprincipioactivo.
+    Carga el diccionario de principios activos proporcionado por CIMA.
+
+    Parámetros
+    ---------------------
+        carpeta - Ruta donde se encuentran los archivos XML de CIMA.
+
+    Devolución
+    ---------------------
+        dict - Diccionario. clave: código del principio activo, valor: nombre correspondiente.
     """
     ruta = carpeta / "DICCIONARIO_PRINCIPIOS_ACTIVOS.xml"
     tree = ET.parse(ruta)
@@ -261,15 +294,23 @@ def cargar_principios_activos(carpeta: Path) -> dict:
     mapping = {}
     for pa in root.findall(f"{ns}principiosactivos"):
         # El campo que aparece en Prescripcion.xml es cod_principio_activo,
-        # que coincide con nroprincipioactivo (entero), NO con codigoprincipioactivo.
+        # que coincide con nroprincipioactivo (entero)..
         nro = find_text(pa, "nroprincipioactivo", ns)
         nombre = find_text(pa, "principioactivo", ns)
         if nro:
             mapping[nro] = nombre
     return mapping
-def cargar_formas_farmaceuticas(carpeta: Path) -> dict:
+def cargar_formas_farmaceuticas(carpeta: Path):
     """
-    Devuelve dict {codigoformafarmaceutica (str): nombre_forma (str)}.
+    Carga el diccionario de formas farmacéuticas de CIMA.
+
+    Parámetros
+    ---------------------
+        carpeta - Ruta donde se encuentran los archivos XML de CIMA.
+
+    Devolución
+    ---------------------
+        dict - Diccionario que relaciona el código de la forma farmacéutica con su descripción.
     """
     ruta = carpeta / "DICCIONARIO_FORMA_FARMACEUTICA.xml"
     tree = ET.parse(ruta)
@@ -283,9 +324,17 @@ def cargar_formas_farmaceuticas(carpeta: Path) -> dict:
         if cod:
             mapping[cod] = nombre
     return mapping
-def cargar_situaciones_registro(carpeta: Path) -> dict:
+def cargar_situaciones_registro(carpeta: Path):
     """
-    Devuelve dict {codigosituacionregistro (str): descripcion (str)}.
+    Carga el diccionario de situaciones de registro de CIMA.
+
+    Parámetros
+    ---------------------
+        carpeta - Ruta donde se encuentran los archivos XML de CIMA.
+
+    Devolución
+    ---------------------
+        dict - Diccionario que relaciona el código de situación de registro con su descripción.
     """
     ruta = carpeta / "DICCIONARIO_SITUACION_REGISTRO.xml"
     tree = ET.parse(ruta)
@@ -301,29 +350,38 @@ def cargar_situaciones_registro(carpeta: Path) -> dict:
     return mapping
 def parsear_prescripcion(carpeta: Path) -> pd.DataFrame:
     """
-    Lee Prescripcion.xml y los diccionarios auxiliares y devuelve un DataFrame
-    con las 6 columnas requeridas.
+    Procesa el archivo Prescripcion.xml de CIMA y construye un DataFrame con la información relevante de cada medicamento.
+
+    Parámetros
+    ---------------------
+        carpeta - Ruta donde se encuentran los archivos XML de CIMA.
+
+    Devolución
+    ---------------------
+        df - pandas.DataFrame con el nombre del medicamento, numero de registro, principios activos, codigos atc, forma farmaceutica y situacion de registro.
     """
-    # -- Diccionarios --------------------------------------------------------
+    # Diccionarios necesarios
     print("Cargando diccionarios…")
     pa_dict   = cargar_principios_activos(carpeta)
     ff_dict   = cargar_formas_farmaceuticas(carpeta)
     sit_dict  = cargar_situaciones_registro(carpeta)
 
-    # -- Fichero principal ---------------------------------------------------
+    # Fichero principal
     ruta_main = carpeta / "Prescripcion.xml"
     print(f"Parseando {ruta_main} (puede tardar unos segundos)…")
 
-    # Usamos iterparse para no cargar 190 MB enteros en memoria de golpe
+    # Usamos iterparse de nuevo
     registros = []
-    ns_uri = None   # se detecta en el primer elemento
+    # se detecta en el primer elemento
+    ns_uri = None   
 
     context = ET.iterparse(str(ruta_main), events=("start", "end"))
 
-    current = None   # dict del medicamento en curso
+    # diccionario del medicamento en curso
+    current = None   
 
     for event, elem in context:
-        # Detectar namespace en el primer elemento raíz
+        # Detectamos namespace en el primer elemento raíz
         if ns_uri is None and event == "start":
             tag = elem.tag
             ns_uri = tag.split("}")[0] + "}" if tag.startswith("{") else ""
@@ -334,20 +392,23 @@ def parsear_prescripcion(carpeta: Path) -> pd.DataFrame:
             current = {
                 "nombre_medicamento": "",
                 "numero_registro": "",
-                "principios_activos_raw": [],   # lista de (cod, dosis, unidad)
-                "atc_raw": [],                  # lista de cod_atc
+                "principios_activos_raw": [],  
+                "atc_raw": [],                 
                 "forma_farmaceutica_cod": "",
                 "situacion_registro_cod": "",
             }
 
         if event == "end" and current is not None:
 
+            #nombre del medicamento
             if tag_local == "des_nomco":
                 current["nombre_medicamento"] = (elem.text or "").strip()
 
+            #numero de resgistro
             elif tag_local == "nro_definitivo":
                 current["numero_registro"] = (elem.text or "").strip()
 
+            #situacion del registro
             elif tag_local == "cod_sitreg":
                 current["situacion_registro_cod"] = (elem.text or "").strip()
 
@@ -360,7 +421,7 @@ def parsear_prescripcion(carpeta: Path) -> pd.DataFrame:
             elif tag_local == "cod_principio_activo":
                 current["principios_activos_raw"].append((elem.text or "").strip())
 
-            # ATC: puede haber varios <atc><cod_atc>…
+            # codigos ATC, que pueden ser varios
             elif tag_local == "cod_atc":
                 val = (elem.text or "").strip()
                 if val and val not in current["atc_raw"]:
@@ -385,6 +446,7 @@ def parsear_prescripcion(carpeta: Path) -> pd.DataFrame:
                 sit_cod = current["situacion_registro_cod"]
                 situacion_registro = sit_dict.get(sit_cod, sit_cod)
 
+                #Añadimos 
                 registros.append({
                     "nombre_medicamento": current["nombre_medicamento"],
                     "numero_registro":    current["numero_registro"],
@@ -398,6 +460,7 @@ def parsear_prescripcion(carpeta: Path) -> pd.DataFrame:
                 elem.clear()   # liberar memoria
 
     print(f"Registros procesados: {len(registros):,}")
+    #Lo convertimos a df
     df = pd.DataFrame(registros, columns=[
         "nombre_medicamento",
         "numero_registro",
@@ -406,10 +469,22 @@ def parsear_prescripcion(carpeta: Path) -> pd.DataFrame:
         "forma_farmaceutica",
         "situacion_registro",
     ])
+    #lo devolvemos
     return df
-def csv_CIMA(carpeta,
-                    salida=None):
 
+def csv_CIMA(carpeta, salida=None):
+    """
+    Genera un DataFrame con la información obtenida de CIMA y, opcionalmente, la guarda en un archivo CSV.
+
+    Parámetros
+    ---------------------
+        carpeta - Ruta donde se encuentran los archivos XML de CIMA.
+        salida - Ruta donde guardar el CSV generado. Si es None, únicamente devuelve el DataFrame.
+
+    Devolución
+    ---------------------
+        df - pandas.DataFrame con la información procesada de CIMA.
+    """
     carpeta = Path(carpeta)
 
     df = parsear_prescripcion(carpeta)
@@ -425,18 +500,38 @@ def csv_CIMA(carpeta,
     
 #Separacion de bloques de medicamentos
 def dividir_df(df, tamano):
-    return [
-        df[i:i+tamano]
+    """
+    Divide un DataFrame en varios bloques de tamaño fijo.
+
+    Parámetros
+    ---------------------
+        df - DataFrame que se desea dividir.
+        tamano - Número máximo de filas por bloque.
+
+    Devolución
+    ---------------------
+        list - Lista de DataFrames con el tamaño especificado.
+    """
+    return [ df[i:i+tamano]
         for i in range(0, len(df), tamano)
     ]
 
 #PDFs
-def pdfs (carpeta, csv):
-    import os
-    import requests
-    import pandas as pd
-    import time
+def pdfs(carpeta, csv):
+    """
+    Descarga automáticamente las fichas técnicas en formato PDF de los medicamentos disponibles en CIMA.
 
+    Para cada medicamento se intenta descargar la ficha técnica correspondiente a su número de registro. En caso de no existir, se prueban otros registros asociados al mismo principio activo.
+
+    Parámetros
+    ---------------------
+        carpeta - Nombre de la carpeta donde se almacenarán los PDF descargados.
+        csv - Ruta al archivo CSV que contiene los medicamentos y sus números de registro.
+
+    Devolución
+    ---------------------
+        None
+    """
     df = pd.read_csv(csv)
     
     # Carpeta destino
