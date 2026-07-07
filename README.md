@@ -14,11 +14,11 @@
 
 **InteraDD** es una herramienta web desarrollada como Trabajo Fin de Grado en Ingeniería de la Salud de la Universidad de Burgos.
 
-La aplicación permite detectar e interpretar **interacciones farmacológicas (Drug-Drug Interactions, DDI)** mediante el análisis de las enzimas del sistema **Citocromo P450 (CYP450)** implicadas en el metabolismo de los principios activos.
+La aplicación permite detectar e interpretar **interacciones farmacológicas (Drug-Drug Interactions, DDI)** mediante el análisis de las enzimas del sistema **Citocromo P450 (CYP450)** implicadas en el metabolismo de los principios activos. Solo se han tenido en cuenta las enzimas CYP2D6, CYP3A4, CYP3A5, CYP2C19, CYP2C9, CYP1A2.
 
 A diferencia de muchos comprobadores de interacciones, InteraDD no solo identifica el nivel de riesgo y explica el mecanismo farmacológico responsable, sino que también muestra los efectos adversos asociados y propone alternativas terapéuticas compatibles cuando existen.
 
-La información utilizada procede de las bases de datos **DrugBank**, **CIMA (AEMPS)** y **SIDER**, integradas mediante un proceso previo de extracción, limpieza y normalización de datos.
+La información utilizada procede de las bases de datos **DrugBank**, **CIMA (AEMPS)** y **SIDER**, integradas mediante un proceso previo de extracción, limpieza y normalización de datos. Dado que la información de estas bases de datos se encuentra en inglés, tanto los principios activos introducidos en la aplicación como las explicaciones y resultados mostrados se presentan también en este idioma.
 
 ---
 
@@ -44,6 +44,8 @@ La información utilizada procede de las bases de datos **DrugBank**, **CIMA (AE
 - Dash Bootstrap Components
 - Plotly
 - Pandas
+- Requests
+- ElementTree (xml.etree.ElementTree)
 
 ---
 
@@ -72,7 +74,7 @@ TFG/
 ├── .gitignore
 │
 ├── assets/                     # Carpeta con el logo de la aplicación
-│   └── logo.png
+│   └── interaccion.png
 │
 ├── Notebooks ejecucion BBDD/   # Scripts de extracción, limpieza y transformación.
 │   ├── Ejecucion_BBDD.ipynb     
@@ -134,7 +136,7 @@ La aplicación estará disponible en la dirección que se muestra en la terminal
 http://127.0.0.1:8050/
 ```
 
-También se dispone de una plataforma con la aplicación ya renderizada, con lo que no sería necesaria la instalación localmente. Se encuentra en la siguiente dirección:
+También se dispone de una plataforma con la aplicación ya renderizada, con lo que no sería necesaria la instalación localmente. Se encuentra en la siguiente dirección, sin embargo, presenta ciertas limitaciones de tiempo de ejecución y, por tanto, se recomienda la instalación local para el acceso a todos los resultados:
 ```
 https://tfg-7z0a.onrender.com/
 ```
@@ -169,10 +171,10 @@ Estos archivos únicamente son necesarios para regenerar la base de datos. Para 
 
 Este proyecto constituye una **prueba de concepto** y presenta algunas limitaciones:
 
-- Solo analiza interacciones farmacocinéticas mediadas por enzimas CYP450.
+- Solo analiza interacciones farmacocinéticas mediadas por enzimas seleccionadas del sistema CYP450.
 - La calidad de los resultados depende de la información disponible en las bases de datos utilizadas.
 - Las alternativas terapéuticas se proponen a partir de la clasificación ATC y del algoritmo desarrollado.
-- La herramienta no sustituye el criterio de un profesional sanitario y no debe emplearse como sistema de apoyo a la decisión clínica.
+- La herramienta no sustituye el criterio de un profesional sanitario.
 
 ---
 
@@ -215,4 +217,4 @@ Curso académico **2025-2026**
 
 Este software ha sido desarrollado con fines académicos.
 
-La información proporcionada por la aplicación no debe utilizarse como sustituto del criterio clínico ni de la consulta a fuentes oficiales para la toma de decisiones sanitarias. Dado que se trata de una prueba incial de concepto y muestra limitaciones.
+La información proporcionada por la aplicación no debe utilizarse como sustituto del criterio clínico, ni de la consulta a fuentes oficiales para la toma de decisiones sanitarias, dado que se trata de una prueba incial de concepto y muestra limitaciones.
