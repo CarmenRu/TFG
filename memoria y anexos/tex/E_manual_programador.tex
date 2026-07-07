@@ -41,32 +41,103 @@ El archivo \texttt{app.py} constituye el punto de entrada de la aplicación dond
 
 \section{Compilación, instalación y ejecución del proyecto}
 
-El proyecto ha sido desarrollado utilizando Python y puede ejecutarse en cualquier sistema operativo que disponga de una versión compatible del intérprete.
+En este apartado se especifican los requisitos mínimos necesarios para ejecutar InteraDD, tanto en un entorno local como mediante el despliegue realizado en la plataforma Render. Asimismo, se describe el procedimiento de instalación y ejecución de la aplicación en ambos entornos.
 
-En primer lugar, debe clonarse el repositorio del proyecto utilizando Git o descargarse el código fuente desde GitHub.
+\subsection*{Requisitos hardware}
 
-Posteriormente, se recomienda crear un entorno virtual e instalar todas las dependencias especificadas en el archivo \texttt{requirements.txt} mediante el gestor de paquetes \texttt{pip}:
+\begin{itemize}
+    \item \textbf{Procesador:} procesador de doble núcleo o superior.
+    \item \textbf{Memoria RAM:} al menos 4 GB.
+    \item \textbf{Espacio en disco:} se recomienda disponer de un mínimo de 500 MB de espacio libre.
+    \item \textbf{Conexión a Internet:} necesaria para la instalación de dependencias y para acceder a la versión desplegada de la aplicación.
+\end{itemize}
+
+\subsection*{Requisitos software}
+
+Para utilizar la aplicación desplegada únicamente es necesario disponer de:
+
+\begin{itemize}
+    \item \textbf{Sistema operativo:} cualquier sistema operativo compatible con un navegador web moderno.
+    \item \textbf{Navegador web:} Google Chrome, Mozilla Firefox, Microsoft Edge o cualquier otro navegador actualizado.
+\end{itemize}
+
+En caso de ejecutar la aplicación de forma local, también será necesario disponer de:
+
+\begin{itemize}
+    \item \textbf{Python:} versión 3.11 o superior.
+    \item \textbf{Git:} recomendado para clonar el repositorio del proyecto.
+    \item \textbf{Dependencias del proyecto:} todas las librerías especificadas en el archivo \texttt{requirements.txt}:
+    \begin{itemize}
+        \item \texttt{dash}
+        \item \texttt{dash-bootstrap-components} (versión 1.6.0 o superior)
+        \item \texttt{pandas}
+        \item \texttt{plotly}
+        \item \texttt{gunicorn}
+    \end{itemize}
+    \item De forma opcional se puede descargar Anaconda o miniconda para el manejo de los entornos virtuales, lo que se recomienda.
+\end{itemize}
+
+\subsection*{Instalación y puesta en marcha}
+Con el fin de facilitar su ejecución local y garantizar la reproducibilidad del proyecto, se pone a disposición el repositorio de GitHub que contiene el código fuente, la documentación y el resto de los recursos necesarios para su instalación y puesta en funcionamiento:
+\begin{center}
+\texttt{https://github.com/CarmenRu/TFG}
+\end{center}
+
+Dado que el desarrollo del proyecto se realizó utilizando \textit{Anaconda}, se recomienda instalar previamente \textit{Anaconda} (o, de forma equivalente, \textit{Miniconda}) para garantizar la compatibilidad del entorno de ejecución.
+
+Una vez instalado, deben seguirse los siguientes pasos.
+
+\begin{enumerate}
+    \item Clonar el repositorio del proyecto:
 
 \begin{verbatim}
-python -m venv venv
+git clone https://github.com/CarmenRu/TFG
 \end{verbatim}
 
-Una vez creado el entorno virtual, este deberá activarse e instalar las dependencias mediante:
+    \item Acceder al directorio del proyecto:
+
+\begin{verbatim}
+cd TFG
+\end{verbatim}
+
+    \item Crear un entorno virtual con Conda utilizando Python 3.11:
+
+\begin{verbatim}
+conda create -n interadd python=3.11
+\end{verbatim}
+
+    \item Activar el entorno:
+
+\begin{verbatim}
+conda activate interadd
+\end{verbatim}
+
+    \item Instalar las dependencias del proyecto:
 
 \begin{verbatim}
 pip install -r requirements.txt
 \end{verbatim}
 
-Finalmente, la aplicación puede ejecutarse mediante:
+    Aunque el entorno se crea con Conda, las dependencias del proyecto se instalan mediante \texttt{pip}, ya que todas ellas se encuentran especificadas en el archivo \texttt{requirements.txt}.
+
+    \item Ejecutar la aplicación:
 
 \begin{verbatim}
 python app.py
 \end{verbatim}
 
-Tras la ejecución, Dash inicia un servidor local accesible mediante la dirección mostrada en la terminal, que normalmente será:
+    \item Abrir en el navegador la dirección mostrada en la terminal, que normalmente será:
+
+\begin{center}
+\texttt{http://127.0.0.1:8050/}
+\end{center}
+
+\end{enumerate}
+
+Una vez finalizada la utilización de la aplicación, el entorno puede desactivarse mediante el comando:
 
 \begin{verbatim}
-http://127.0.0.1:8050
+conda deactivate
 \end{verbatim}
 
 Además de la ejecución local, el proyecto dispone de una versión desplegada en la plataforma Render, lo que permite acceder a la aplicación desde cualquier navegador sin necesidad de realizar instalaciones adicionales.
@@ -74,6 +145,7 @@ La aplicación puede consultarse en la siguiente dirección:
 \begin{center}
 \texttt{https://tfg-7z0a.onrender.com/}
 \end{center}
+No obstante, se recomienda ejecutar InteraDD de forma local. La versión desplegada en Render presenta limitaciones propias del servicio gratuito, como tiempos de inactividad cuando la aplicación no ha sido utilizada durante un periodo prolongado o restricciones en el tiempo de ejecución.
 
 \section{Pruebas del sistema}
 

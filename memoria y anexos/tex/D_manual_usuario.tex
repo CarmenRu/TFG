@@ -2,7 +2,7 @@
 
 \section{Requisitos software y hardware para ejecutar el proyecto}
 
-En este apartado se describen los requisitos mínimos necesarios para ejecutar InteraDD, tanto de forma local como mediante el despliegue realizado en la plataforma Render \cite{render}.
+En este apartado se describen los requisitos mínimos necesarios para ejecutar InteraDD en la plataforma Render \cite{render}.
 
 \subsection*{Requisitos hardware}
 
@@ -10,7 +10,7 @@ En este apartado se describen los requisitos mínimos necesarios para ejecutar I
     \item \textbf{Procesador:} procesador de doble núcleo o superior.
     \item \textbf{Memoria RAM:} al menos 4 GB.
     \item \textbf{Espacio en disco:} se recomienda disponer de un mínimo de 500 MB de espacio libre.
-    \item \textbf{Conexión a Internet:} necesaria para la instalación de dependencias y para acceder a la versión desplegada de la aplicación.
+    \item \textbf{Conexión a Internet:} necesaria para acceder a la versión desplegada de la aplicación.
 \end{itemize}
 
 \subsection*{Requisitos software}
@@ -22,20 +22,6 @@ Para utilizar la aplicación desplegada únicamente es necesario disponer de:
     \item \textbf{Navegador web:} Google Chrome, Mozilla Firefox, Microsoft Edge o cualquier otro navegador actualizado.
 \end{itemize}
 
-En caso de ejecutar la aplicación de forma local, también será necesario disponer de:
-
-\begin{itemize}
-    \item \textbf{Python:} versión 3.11 o superior.
-    \item \textbf{Git:} recomendado para clonar el repositorio del proyecto.
-    \item \textbf{Dependencias del proyecto:} todas las librerías especificadas en el archivo \texttt{requirements.txt}, entre las que destacan:
-    \begin{itemize}
-        \item \texttt{dash}
-        \item \texttt{dash-bootstrap-components} (versión 1.6.0 o superior)
-        \item \texttt{pandas}
-    \end{itemize}
-    \item De forma opcional se puede descargar Anaconda o miniconda para el manejo de los entornos virtuales, lo que se recomienda.
-\end{itemize}
-
 \section{Instalación y puesta en marcha}
 
 La aplicación puede utilizarse directamente desde la versión desplegada en Render accediendo a la siguiente dirección:
@@ -44,68 +30,9 @@ La aplicación puede utilizarse directamente desde la versión desplegada en Ren
 \texttt{https://tfg-7z0a.onrender.com/}
 \end{center}
 
-No obstante, se recomienda ejecutar InteraDD de forma local. La versión desplegada en Render presenta limitaciones propias del servicio gratuito, como tiempos de inactividad cuando la aplicación no ha sido utilizada durante un periodo prolongado o restricciones en el tiempo de ejecución.
-Con el fin de facilitar su ejecución local y garantizar la reproducibilidad del proyecto, se pone a disposición el repositorio de GitHub que contiene el código fuente, la documentación y el resto de los recursos necesarios para su instalación y puesta en funcionamiento:
-\begin{center}
-\texttt{https://github.com/CarmenRu/TFG}
-\end{center}
+No obstante, se recomienda ejecutar InteraDD de forma local. La versión desplegada en Render presenta las limitaciones inherentes al servicio gratuito utilizado, entre las que se incluyen periodos de inactividad tras un tiempo prolongado sin uso y restricciones en el tiempo máximo de ejecución de las peticiones. Como consecuencia, determinadas funcionalidades que requieren un mayor tiempo de procesamiento, como ocurre en la mayoría de las ejecuciones del botón \textit{Search for drug alternatives}, pueden no llegar a mostrar los resultados.
 
-Dado que el desarrollo del proyecto se realizó utilizando \textit{Anaconda}, se recomienda instalar previamente \textit{Anaconda} (o, de forma equivalente, \textit{Miniconda}) para garantizar la compatibilidad del entorno de ejecución.
-
-Una vez instalado, deben seguirse los siguientes pasos.
-
-\begin{enumerate}
-    \item Clonar el repositorio del proyecto:
-
-\begin{verbatim}
-git clone https://github.com/CarmenRu/TFG
-\end{verbatim}
-
-    \item Acceder al directorio del proyecto:
-
-\begin{verbatim}
-cd TFG
-\end{verbatim}
-
-    \item Crear un entorno virtual con Conda utilizando Python 3.11:
-
-\begin{verbatim}
-conda create -n interadd python=3.11
-\end{verbatim}
-
-    \item Activar el entorno:
-
-\begin{verbatim}
-conda activate interadd
-\end{verbatim}
-
-    \item Instalar las dependencias del proyecto:
-
-\begin{verbatim}
-pip install -r requirements.txt
-\end{verbatim}
-
-    Aunque el entorno se crea con Conda, las dependencias del proyecto se instalan mediante \texttt{pip}, ya que todas ellas se encuentran especificadas en el archivo \texttt{requirements.txt}.
-
-    \item Ejecutar la aplicación:
-
-\begin{verbatim}
-python app.py
-\end{verbatim}
-
-    \item Abrir en el navegador la dirección mostrada en la terminal, que normalmente será:
-
-\begin{center}
-\texttt{http://127.0.0.1:8050/}
-\end{center}
-
-\end{enumerate}
-
-Una vez finalizada la utilización de la aplicación, el entorno puede desactivarse mediante el comando:
-
-\begin{verbatim}
-conda deactivate
-\end{verbatim}
+Con el fin de facilitar la ejecución local y garantizar la reproducibilidad del proyecto, el repositorio de GitHub, que contiene el código fuente, la documentación y el resto de los recursos necesarios para su compilación, instalación y ejecución, se encuentra en el Apéndice E, \textit{Manual del programador}. Concretamente en el apartado \textit{Compilación, instalación y ejecución del proyecto} se detallan tanto los requisitos previos como el procedimiento necesario para instalar y ejecutar la aplicación.
 
 \section{Manual de usuario}
 

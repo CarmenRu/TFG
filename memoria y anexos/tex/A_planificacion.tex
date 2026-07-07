@@ -1,54 +1,99 @@
 \apendice{Plan de Proyecto}
 
 \section{Introducción}
-Uno de los principales problemas asociados a la polimedicación son las interacciones farmacológicas que pueden derivarse de la administración simultánea de varios medicamentos. Por esta razón, la identificación precoz de dichas interacciones resulta fundamental para mejorar la seguridad del paciente y facilitar la toma de decisiones clínicas.
 
-La mayoría de las herramientas disponibles para comprobar la viabilidad de las alternativas terapéuticas propuestas requieren introducir nuevamente cada fármaco de forma individual y presentan una gran cantidad de información, lo que dificulta su interpretación. Por ello, uno de los principales objetivos de este trabajo fue simplificar la visualización de los resultados, permitiendo acceder de un solo vistazo a la información más relevante.
+En este apéndice se describe la planificación seguida durante el desarrollo del Trabajo Fin de Grado, incluyendo la metodología 
+empleada para la organización del proyecto, la planificación temporal, la estimación de los costes asociados a los recursos 
+utilizados durante su realización y la viabilidad legal del proyecto.
 
-En este contexto, el presente proyecto tiene como objetivo desarrollar una herramienta capaz de evaluar el nivel de interacción entre dos principios activos. Además de indicar el grado de interacción, la herramienta explica las enzimas implicadas y el motivo por el que se consideran relevantes, determina qué principio activo tendría mayor influencia en función de los mecanismos de acción asociados a las enzimas implicadas, muestra los efectos adversos asociados a cada compuesto y propone alternativas terapéuticas que el algoritmo considera seguras.
+Para el desarrollo de InteraDD se adoptó una metodología ágil basada en Scrum, organizando el trabajo en diferentes sprints 
+con una duración variable en función de las reuniones programadas con las tutoras. Cada sprint se centró en la implementación 
+de un conjunto concreto de funcionalidades, lo que permitió desarrollar la aplicación de forma incremental y validar progresivamente 
+los resultados obtenidos. Este enfoque facilitó la incorporación de mejoras y la resolución de incidencias conforme avanzaba el 
+desarrollo, adaptando el proyecto a las necesidades detectadas durante su implementación.
 
-Los anexos que se presentan a continuación contienen la documentación complementaria del proyecto, incluyendo el funcionamiento y uso de la herramienta, así como la planificación y el diseño desarrollados durante su implementación.
+Como herramienta de control de versiones se utilizó Git junto con GitHub, donde se alojó el código fuente del proyecto y se registró 
+la evolución del desarrollo mediante commits. Asimismo, GitHub se empleó para la planificación y el seguimiento del trabajo, 
+organizando las tareas correspondientes a cada sprint y permitiendo controlar el estado de las funcionalidades previstas. 
+Además, se utilizó GitHub Projects para gestionar el estado de los issues asociados a cada milestone, registrando si se encontraban 
+en \textit{backlog}, \textit{in progress} o \textit{done}.
+
+Los apartados siguientes describen con mayor detalle la metodología de desarrollo seguida, la planificación temporal del proyecto, 
+la estimación de los recursos económicos necesarios para su realización y la viabilidad legal del proyecto.
 
 \section{Metodología de Ingeniería del Software}
-En el desarrollo de este Trabajo Fin de Grado se ha seguido una metodología de desarrollo ágil e incremental, adaptada a las características del proyecto
+En el desarrollo del proyecto se adoptó una metodología ágil basada en Scrum, adaptada a las necesidades y características específicas del Trabajo Fin de Grado. Scrum es un marco de trabajo orientado a la gestión de proyectos mediante ciclos de desarrollo iterativos e incrementales denominados \textit{sprints}, cuya duración habitual oscila entre una y cuatro semanas. En cada \textit{sprint} se planifica un conjunto de tareas o \textit{issues} que deben completarse antes de iniciar el siguiente ciclo de desarrollo.
 
-A diferencia de las metodologías tradicionales, como el modelo en cascada, el enfoque seguido ha facilitado realizar modificaciones durante el desarrollo conforme se identificaban nuevas necesidades o se detectaban posibles mejoras en el algoritmo de análisis de interacciones farmacológicas.
+En este proyecto, la duración de los \textit{sprints} estuvo condicionada por la planificación de las tutorías. Como norma general, en cada reunión con las tutoras se revisaban los objetivos alcanzados durante el \textit{sprint} anterior, se evaluaba el progreso realizado y se definían las tareas correspondientes al siguiente periodo de trabajo.
 
-El proyecto en líneas generales se estructuró de la siguiente manera:
+La utilización de esta metodología permitió desarrollar la aplicación de forma incremental, facilitando la incorporación de nuevas funcionalidades, la adaptación a los cambios surgidos durante el desarrollo y la mejora continua del algoritmo de análisis de interacciones farmacológicas.
 
-\subsection*{Análisis de requisitos.} 
-En esta primera fase del proyecto se definieron los objetivos generales que debía conseguir, además de las funcionalidades que la herramienta debería ofrecer. Entre ellas destacan:
+Con el fin de facilitar la comprensión del proceso de desarrollo, este puede dividirse en las siguientes etapas:
+
+\subsection*{Planteamiento inicial y revisión bibliográfica}
+
+La primera fase del proyecto estuvo orientada a la definición de los objetivos generales y de las funcionalidades que debía ofrecer la aplicación. Entre los requisitos funcionales establecidos destacan los siguientes:
+
 \begin{itemize}
-    \item Consulta de interacciones entre dos principios activos (indicando su nivel concreto, basándonos en 3 etiquetas preestablecidas).
-    \item Explicación de la razón por la que se considera interacción.
-    \item Visualización de las enzimas implicadas.
+    \item Consulta de interacciones entre dos principios activos.
+    \item Explicación del motivo por el que una combinación de fármacos se considera una interacción.
+    \item Visualización de las enzimas implicadas en la interacción.
     \item Identificación del principio activo con mayor influencia sobre la interacción detectada.
     \item Presentación de los efectos adversos asociados.
-    \item Propuesta automática de alternativas terapéuticas seguras.
+    \item Propuesta de alternativas terapéuticas.
 \end{itemize}
-Asimismo, se estudiaron las principales fuentes de información farmacológica disponibles y se seleccionaron aquellas que aportaban información suficiente para el desarrollo del algoritmo.
 
-\subsection*{Diseño}
-En la siguiente fase se definió la arquitectura general de la aplicación, estableciendo de esta manera los distintos módulos que la componen y la relación entre ellos.
+Asimismo, se realizó un estudio de las principales fuentes de información farmacológica disponibles con el objetivo de seleccionar aquellas que proporcionaban la información necesaria para el desarrollo del algoritmo y la construcción de la base de datos.
 
-Se diseñó la estructura de la base de datos utilizada para almacenar la información farmacológica y se estableció el flujo de trabajo seguido por el algoritmo para generar las recomendaciones terapéuticas.
+\textbf{Sprints asociados}: Esta etapa fue previa al inicio de la planificación mediante \textit{sprints}, por lo que no tiene ningún \textit{sprint} asociado.
 
-También se diseñó la interfaz gráfica priorizando la simplicidad y la facilidad de interpretación de los resultados obtenidos.
+\subsection*{Elaboración de la base de datos}
 
-\subsection*{Implementación}
-La fase de implementación comprendió el desarrollo progresivo de todos los componentes de la aplicación.
+Durante esta etapa se definieron, junto con las tutoras, los criterios necesarios para el diseño de la base de datos y del algoritmo de análisis. Entre las principales decisiones adoptadas destacan:
 
-En primer lugar, se desarrolló el módulo encargado de obtener la información farmacológica necesaria para el análisis. Posteriormente se implementó el algoritmo responsable de evaluar las posibles interacciones y generar las recomendaciones correspondientes.
+\begin{itemize}
+    \item Limitar la información a las enzimas del sistema CYP con mayor relevancia clínica.
+    \item Establecer un criterio de prioridad para los principios activos que presentan más de una vía metabólica principal.
+    \item Definir el procedimiento para la propuesta de alternativas terapéuticas consideradas seguras por la aplicación.
+\end{itemize}
 
-Finalmente, se desarrolló la interfaz de usuario, integrando todos los módulos desarrollados previamente.
+Asimismo, se diseñó la arquitectura general del sistema, estableciendo los distintos módulos que componen la aplicación y las relaciones existentes entre ellos. También se definió la estructura de la base de datos utilizada para almacenar la información farmacológica y el flujo de trabajo seguido por el algoritmo para generar las recomendaciones terapéuticas.
 
-Todo el código fuente fue versionado mediante Git y almacenado en un repositorio de GitHub, lo que permitió mantener un control de versiones adecuado durante el desarrollo.
+Finalmente, se diseñó la interfaz gráfica de usuario, priorizando la simplicidad, la claridad y la facilidad de interpretación de los resultados obtenidos.
 
-\subsection*{Periodo de prueba}
-Una vez implementadas las funcionalidades principales se realizaron diferentes pruebas utilizando casos reales de interacción farmacológica.
+\textbf{Sprints asociados}: Sprint 0, Semana 2, Semana 3 y Semana 4.
 
-Estas pruebas permitieron verificar el correcto funcionamiento del algoritmo, comprobar la coherencia de las recomendaciones generadas y detectar posibles errores que fueron corregidos de forma iterativa.
+\subsection*{Desarrollo del algoritmo}
 
+La fase de implementación comprendió el desarrollo progresivo de los diferentes componentes que integran la aplicación.
+
+En primer lugar, se implementó el módulo encargado de obtener y procesar la información farmacológica procedente de las distintas fuentes de datos. Posteriormente, se desarrolló el algoritmo responsable de detectar las posibles interacciones farmacológicas, determinar su mecanismo de acción y generar las recomendaciones terapéuticas correspondientes.
+
+\textbf{Sprints asociados}: Semana 5 y Semana 6.
+
+\subsection*{Visualización, prueba y mejoras}
+
+Una vez implementadas las funcionalidades principales, se realizaron diferentes pruebas utilizando casos reales de interacción farmacológica con el objetivo de verificar el correcto funcionamiento del algoritmo.
+
+Estas pruebas permitieron comprobar la coherencia de las recomendaciones generadas, validar los resultados obtenidos y detectar posibles errores, que fueron corregidos de forma iterativa conforme avanzaba el desarrollo.
+
+Posteriormente, se integró la interfaz gráfica con los distintos módulos implementados, obteniendo una aplicación completamente funcional.
+
+Durante todo el desarrollo, el código fuente fue gestionado mediante Git y almacenado en un repositorio de GitHub, lo que permitió mantener un adecuado control de versiones y facilitar el seguimiento de la evolución del proyecto.
+
+\textbf{Sprints asociados}: Semana 7, Semana 8 y Semana 9.
+
+\subsection*{Redacción de la memoria}
+
+De forma paralela a las últimas fases del desarrollo se descargaron los documentos y extensiones necesarias para la elaboración de la memoria del Trabajo Fin de Grado. Durante esta etapa se incorporaron las distintas secciones del documento y se realizaron revisiones periódicas junto con las tutoras, introduciendo las modificaciones necesarias para mejorar tanto el contenido como su presentación.
+
+\textbf{Sprints asociados}: Semana 8, Semana 9 y \textit{Milestone} final.
+
+\subsection*{Anexos y revisión final}
+
+La fase final del proyecto estuvo dedicada a la elaboración de los anexos y a la revisión completa tanto de la memoria como de la aplicación desarrollada. Se incorporaron las últimas correcciones propuestas por las tutoras y se llevó a cabo una validación final de la interfaz y del funcionamiento general del sistema antes de la entrega del proyecto.
+
+\textbf{Sprints asociados}: \textit{Milestone} final.
 
 \section{Planificación temporal}
 El desarrollo del proyecto se llevó a cabo de forma progresiva durante el segundo cuatrimestre del curso académico, organizando el trabajo en diferentes fases. Primero un planteamiento inicial de los objetivos y revisión bibliográfica. Luego se esperó una semana a la aprobación del proyecto por parte del tribunal del TFG. A continuación, se elaboró la base de datos. Seguidamente el desarrollo del algoritmo.
@@ -63,36 +108,61 @@ Se puede observar la planificación temporal del proyecto de una manera más cla
     \label{fig:gantt}
 \end{figure}
 
-\subsection{Planificación económica}
-Al ser un proyecto desarrollado con fines académicos no ha supuesto costes directos de licencias ni contratación.
+La duración de cada sprint junto con los issues cerrados en cada uno se puede ver en la Tabla \ref{tab:milestones}.
+\begin{table}[htbp]
+\centering
+\caption{Planificación Temporal del Proyecto por Sprints y Etapas}
+\label{tab:milestones}
+\begin{tabular}{l c p{6cm} p{4.5cm} }
+\toprule
+\textbf{Sprints} & \textbf{Fecha} & \textbf{Issues cerrados} & \textbf{Etapa} \\ 
+\midrule
+- & - & - & Planteamiento inicial y revisión bibliográfica \\
+Sprint 0 & 14/04-27/04 & Base de datos de SIDDER, Tipo de fármaco & Elaboración de la base de datos \\ 
+Semana 2 & 27/04-30/04 & Códigos ATC, SuperCYP, Inclusión de mas enzimas & Elaboración de la base de datos \\
+Semana 3 & 30/04-05/05 & - & Elaboración de la base de datos \\
+Semana 4 & 05/05-13/05 & Separar los códigos ATC en el csv FDA\_ATC\_N, Prioridad en enzimas & Elaboración de la base de datos \\
+Semana 5 & 13/05-24/05 & Unión csv's & Desarrollo del algoritmo \\ 
+Semana 6 & 24/05-29/05 & Descargas para la memoria de TFG, Diagrama de flujo, Prueba diagrama de flujo & Desarrollo del algoritmo \\ 
+Semana 7 & 29/05-18/06 & Dash.plotly, Prueba con dash.plotly, Casos límite, Comienzo memoria, Notebooks de ejecución BBDD, Limpiar y documentar funciones & Visualización, prueba y mejoras \\
+Semana 8 & 18/06-24/06 & Mejora visualización & Visualización, prueba y mejoras / Redacción de la memoria \\ 
+Semana 9 & 24/06-30/06 & Mejora interfaz, Mejora redacción & Visualización, prueba y mejoras / Redacción de la memoria \\ 
+Milestone final & 30/06-06/07 & Anexos, Memoria, Streamlit & Redacción de la memoria / Anexos y revisión final \\ 
+\bottomrule
+\end{tabular}
+\end{table}
 
-\subsection*{Costes de personal}
-El principal coste corresponde en este caso al tiempo invertido en el desarrollo del proyecto: extracción de los datos, desarrollo del algoritmo y pruebas y mejoras en el mismo.
-Teniendo en cuenta que un ingeniero junior puede cobrar aproximadamente de 15 a 20 euros la hora y, además, que el proyecto se ha desarrollado en 4 meses (16 semanas), una aproximación de costes humanos podría ser la recogida en la tabla \ref{tab:humanos}.
+\section{Planificación económica}
+Al ser un proyecto desarrollado con fines académicos no ha supuesto costes directos de licencia. Sin embargo, en el siguiente apartado se hará una estimación de los costes personales y de recursos software y hardware que el proyecto ha podido suponer.
+
+\subsection*{Costes personales}
+El principal coste corresponde en este caso al tiempo invertido en el desarrollo del proyecto: búsqueda de material necesario, extracción de los datos, desarrollo del algoritmo y pruebas y mejoras en el mismo.
+Teniendo en cuenta que un ingeniero junior puede cobrar aproximadamente de 12 a 16 euros la hora y, además, que el proyecto se ha desarrollado en 4 meses (16 semanas), una aproximación de costes humanos podría ser la recogida en la tabla \ref{tab:humanos}.
 
 \begin{table}[htbp]
 \centering
-\caption{Estimación de los costes de personal.}
+\caption{Estimación de los costes personales.}
 \label{tab:humanos}
 \begin{tabular}{lr}
 \toprule
-\textbf{Tiempo} & \textbf{Coste} \\
+\textbf{Concepto} & \textbf{Coste} \\
 \midrule
-1 hora & 15 € \\
-1 día (8 h) & 120 € \\
-1 semana (5 días) & 600 € \\
-16 semanas & 9.600 € \\
+Sueldo bruto mensual & 2.080 € \\
+IRPF (15\%) & 312 € \\
+Seguridad social trabajador (7\%) & 145,6 € \\
+Sueldo neto mensual & 1.622,4  € \\
+Coste total (4 meses) & 6.489,6 € \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 
 \subsection*{Recursos software y hardware}
-En el proyecto se han utilizado herramientas de libre distribución que se encuentran recogidas en la tabla \ref{tab:software}.
+En el proyecto se han utilizado herramientas de libre distribución que se encuentran recogidas en la tabla \ref{tab:software}. 
 
 \begin{table}[htbp]
 \centering
-\caption{Estimación de los costes de reecursos software y hardware.}
+\caption{Estimación de los costes de recursos software.}
 \label{tab:software}
 \begin{tabular}{lr}
 \toprule
@@ -108,6 +178,37 @@ Librerías utilizadas & 0 € \\
 \end{tabular}
 \end{table}
 
-Por último, como recurso hardware utilizado se encuentra únicamente el ordenador personal.
+Por último, como recurso hardware utilizado se encuentra únicamente el ordenador personal, que ha sido utilizado en los 5 años de carrera. Sus costes estimados se encuentran en la Tabla \ref{tab:hardware}
+\begin{table}[htbp]
+\centering
+\caption{Estimación de los costes hardware.}
+\label{tab:hardware}
+\begin{tabular}{lr}
+\toprule
+\textbf{Concepto} & \textbf{Coste} \\
+\midrule
+Coste del ordenador & 649,00 € \\
+Coste mensual (5 años) & 10,82 € \\
+Coste total en proyecto & 43,27 € \\
 
-Por tanto, como coste total aproximado teniendo en cuenta todos los apartados calculados se estiman 9.600€.
+\bottomrule
+\end{tabular}
+\end{table}
+
+Por tanto, como coste total aproximado teniendo en cuenta todos los apartados calculados se estiman \textbf{6.532,87 €}.
+
+\section{Viabilidad legal}
+
+El desarrollo del presente Trabajo Fin de Grado se ha realizado respetando la normativa vigente en materia de propiedad intelectual, protección de datos y licencias del software utilizado.
+
+En primer lugar, la aplicación se ha desarrollado empleando herramientas y librerías de software libre, como Python y las bibliotecas necesarias para la implementación de la interfaz y del algoritmo de análisis. Todas ellas se distribuyen bajo licencias que permiten su utilización, modificación y distribución para fines académicos, respetando las condiciones establecidas por sus correspondientes autores.
+
+El código fuente desarrollado durante el proyecto es de elaboración propia y se encuentra alojado en el repositorio público de GitHub 
+
+(\texttt{https://github.com/CarmenRu/TFG}), lo que facilita su consulta y garantiza la trazabilidad del desarrollo mediante el historial de versiones.
+
+En relación con la protección de datos, la aplicación no almacena ni procesa datos personales de pacientes o usuarios, ya que únicamente realiza el análisis de principios activos introducidos por el usuario. Por este motivo, durante el desarrollo del proyecto no ha sido necesario tratar información de carácter personal, evitando así la aplicación de medidas específicas relacionadas con el tratamiento de datos personales.
+
+Por otra parte, la información farmacológica utilizada para construir la base de conocimiento procede de fuentes públicas y de acceso abierto, empleadas exclusivamente con fines académicos. En todo momento se han citado las fuentes consultadas en la memoria del trabajo, respetando los derechos de propiedad intelectual correspondientes.
+
+Finalmente, la herramienta desarrollada tiene un propósito exclusivamente académico y de apoyo a la consulta de información farmacológica. En ningún caso pretende sustituir el criterio clínico de los profesionales sanitarios ni constituir una herramienta de diagnóstico o prescripción médica, por lo que los resultados obtenidos deben interpretarse únicamente como una ayuda para la toma de decisiones.

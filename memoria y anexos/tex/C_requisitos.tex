@@ -10,29 +10,60 @@ prototipos de la interfaz implementada.
 En la Tabla \ref{tab:funcionales} se recogen los principales requisitos funcionales definidos para InteraDD. Estos requisitos describen las funcionalidades que la aplicación debe proporcionar al usuario para cumplir los objetivos planteados en el proyecto.
 \begin{table}[ht]
 \centering
-\begin{tabularx}{\textwidth}{c X}
+\small
+\begin{tabularx}{\textwidth}{c p{4.5cm} X}
 \toprule
-\textbf{Código} & \textbf{Descripción} \\
+\textbf{Código} & \textbf{Título} & \textbf{Descripción} \\
 \midrule
-RF-01 & Permitir al usuario seleccionar dos principios activos para realizar el análisis de interacción farmacológica. \\
 
-RF-02 & Detectar el nivel de interacción farmacológica entre los principios activos seleccionados mediante el análisis de las enzimas del sistema CYP450. \\
+RF-01 & Consulta de interacciones farmacológicas &
+Permitir al usuario consultar las posibles interacciones entre dos principios activos. \\
 
-RF-03 & Mostrar el nivel de riesgo de la interacción clasificándolo como \textit{Low}, \textit{Medium} o \textit{High}. \\
+RF-01.1 & Selección de principios activos &
+Permitir al usuario seleccionar dos principios activos para realizar el análisis de interacción farmacológica. \\
 
-RF-04 & Mostrar una explicación del mecanismo farmacocinético responsable de la interacción detectada. \\
+RF-01.2 & Detección del nivel de interacción &
+Detectar el nivel de interacción farmacológica entre los principios activos seleccionados mediante el análisis de las enzimas del sistema CYP450. \\
 
-RF-05 & Permitir consultar las enzimas metabólicas principales asociadas a cada principio activo. \\
+RF-01.3 & Clasificación del riesgo &
+Mostrar el nivel de riesgo de la interacción clasificándolo como \textit{Low}, \textit{Medium} o \textit{High}. \\
 
-RF-06 & Mostrar el papel desempeñado por cada principio activo sobre las enzimas compartidas (sustrato, inhibidor o inductor), cuando dicha información esté disponible. \\
+RF-01.4 & Explicación de la interacción &
+Mostrar una explicación del mecanismo farmacocinético responsable de la interacción detectada. \\
 
-RF-07 & Representar gráficamente los efectos adversos asociados a los principios activos consultados. \\
+\midrule
 
-RF-08 & Proponer alternativas terapéuticas compatibles cuando la interacción detectada sea de riesgo medio o alto. \\
+RF-02 & Consulta de información farmacológica &
+Permitir al usuario obtener información complementaria sobre los principios activos implicados. \\
 
-RF-09 & Informar al usuario cuando no exista información suficiente para realizar alguna de las consultas solicitadas. \\
+RF-02.1 & Consulta de enzimas &
+Permitir consultar las enzimas metabólicas principales asociadas a cada principio activo. \\
 
-RF-10 & Mantener visibles los resultados obtenidos hasta que el usuario realice una nueva búsqueda. \\
+RF-02.2 & Consulta del mecanismo de acción &
+Mostrar el papel desempeñado por cada principio activo sobre las enzimas compartidas (sustrato, inhibidor o inductor), cuando dicha información esté disponible. \\
+
+RF-02.3 & Visualización de efectos adversos &
+Representar gráficamente los efectos adversos asociados a los principios activos consultados. \\
+
+\midrule
+
+RF-03 & Recomendación terapéutica &
+Generar recomendaciones para apoyar la toma de decisiones clínicas. \\
+
+RF-03.1 & Alternativas terapéuticas &
+Proponer alternativas terapéuticas compatibles cuando la interacción detectada sea de riesgo medio o alto. \\
+
+\midrule
+
+RF-04 & Gestión de resultados &
+Gestionar la presentación de la información obtenida durante la consulta. \\
+
+RF-04.1 & Información insuficiente &
+Informar al usuario cuando no exista información suficiente para realizar alguna de las consultas solicitadas. \\
+
+RF-04.2 & Persistencia de resultados &
+Mantener visibles los resultados obtenidos hasta que el usuario realice una nueva búsqueda. \\
+
 \bottomrule
 \end{tabularx}
 \caption{Requisitos funcionales de InteraDD.}
@@ -40,36 +71,62 @@ RF-10 & Mantener visibles los resultados obtenidos hasta que el usuario realice 
 \end{table}
 
 \subsection*{Requisitos no funcionales}
-La Tabla \ref{tab:no funcionales} muestra los requisitos no funcionales considerados durante el desarrollo de InteraDD. Estos requisitos establecen las características de calidad que debe cumplir el sistema, como la usabilidad, el rendimiento, la mantenibilidad, la compatibilidad y la fiabilidad, garantizando un funcionamiento adecuado de la herramienta desarrollada.
+La Tabla \ref{tab:nofuncionales} muestra los requisitos no funcionales considerados durante el desarrollo de InteraDD. Estos requisitos establecen las características de calidad que debe cumplir el sistema, como la usabilidad, el rendimiento, la mantenibilidad, la compatibilidad y la fiabilidad, garantizando un funcionamiento adecuado de la herramienta desarrollada.
 \begin{table}[ht]
 \centering
-\begin{tabularx}{\textwidth}{c X}
+\small
+\begin{tabularx}{\textwidth}{c p{4.5cm} X}
 \toprule
-\textbf{Código} & \textbf{Descripción} \\
+\textbf{Código} & \textbf{Título} & \textbf{Descripción} \\
 \midrule
-RNF-01 & La aplicación deberá presentar una interfaz web intuitiva y de fácil utilización para el personal sanitario. \\
 
-RNF-02 & El sistema deberá ejecutarse desde un navegador web sin requerir la instalación de software adicional por parte del usuario. \\
+RNF-01 & Usabilidad &
+La aplicación deberá ofrecer una experiencia de uso adecuada para el personal sanitario. \\
 
-RNF-03 & La aplicación deberá proporcionar una respuesta en un tiempo razonable para consultas habituales. \\
+RNF-01.1 & Interfaz intuitiva &
+La aplicación deberá presentar una interfaz web intuitiva y de fácil utilización para el personal sanitario. \\
 
-RNF-04 & La arquitectura del sistema deberá permitir la incorporación de nuevos principios activos, enzimas y bases de datos sin modificar significativamente la lógica del algoritmo. \\
+RNF-01.2 & Gestión de errores &
+El sistema deberá mostrar mensajes informativos cuando una consulta no pueda resolverse por ausencia de información. \\
 
-RNF-05 & El código fuente deberá estar organizado de forma modular para facilitar su mantenimiento y evolución. \\
+\midrule
 
-RNF-06 & La información mostrada deberá proceder de fuentes biomédicas reconocidas y actualizadas (DrugBank, CIMA y SIDER). \\
+RNF-02 & Rendimiento y compatibilidad &
+La aplicación deberá ejecutarse de forma eficiente y ser accesible desde diferentes plataformas. \\
 
-RNF-07 & El sistema deberá garantizar la trazabilidad de los datos utilizados para justificar el nivel de interacción mostrado. \\
+RNF-02.1 & Ejecución web &
+El sistema deberá ejecutarse desde un navegador web sin requerir la instalación de software adicional por parte del usuario. \\
 
-RNF-08 & La aplicación deberá ser compatible con los principales navegadores web modernos. \\
+RNF-02.2 & Tiempo de respuesta &
+La aplicación deberá proporcionar una respuesta en un tiempo razonable para consultas habituales. \\
 
-RNF-09 & El sistema deberá mostrar mensajes informativos cuando una consulta no pueda resolverse por ausencia de información. \\
+RNF-02.3 & Compatibilidad &
+La aplicación deberá ser compatible con los principales navegadores web modernos. \\
 
-RNF-10 & La aplicación deberá permitir su despliegue en plataformas de computación en la nube para facilitar su acceso y evaluación. \\
+RNF-02.4 & Despliegue &
+La aplicación deberá permitir su despliegue en plataformas de computación en la nube para facilitar su acceso y evaluación. \\
+
+\midrule
+
+RNF-03 & Calidad del software &
+La arquitectura deberá facilitar el mantenimiento, la evolución y la fiabilidad del sistema. \\
+
+RNF-03.1 & Escalabilidad &
+La arquitectura del sistema deberá permitir la incorporación de nuevos principios activos, enzimas y bases de datos sin modificar significativamente la lógica del algoritmo. \\
+
+RNF-03.2 & Mantenibilidad &
+El código fuente deberá estar organizado de forma modular para facilitar su mantenimiento y evolución. \\
+
+RNF-03.3 & Calidad de los datos &
+La información mostrada deberá proceder de fuentes biomédicas reconocidas y actualizadas (DrugBank, CIMA y SIDER). \\
+
+RNF-03.4 & Trazabilidad &
+El sistema deberá garantizar la trazabilidad de los datos utilizados para justificar el nivel de interacción mostrado. \\
+
 \bottomrule
 \end{tabularx}
 \caption{Requisitos no funcionales de InteraDD.}
-\label{tab:no funcionales}
+\label{tab:nofuncionales}
 \end{table}
 
 \section{Diagrama de casos de uso}
@@ -79,7 +136,7 @@ y consultando de esta manera su nivel de interacción, las explicaciones pertine
 alternativas terapéuticas.
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.45\textwidth]{img/casos uso.png} 
+    \includegraphics[width=0.8\textwidth]{img/casos uso.png} 
     \caption{Diagrama de casos de uso para InteraDD. Elaboración propia.}
     \label{fig:casos}
 \end{figure}
@@ -95,7 +152,7 @@ Se encuentran recogidos en las siguientes tablas \ref{tab:CU1} \ref{tab:CU2} \re
 		\textbf{CU-1} & \textbf{Buscar interacción farmacológica}\\
 		\toprule
 		\textbf{Autor} & Profesional sanitario\\
-		\textbf{RF asociados} & RF-01, RF-02, RF-03 y RF-10\\
+		\textbf{RF asociados} & RF-01.1, RF-01.2, RF-01.3 y RF-04.2\\
 		\textbf{Descripción} & Permite al usuario analizar la posible interacción farmacológica entre dos principios activos seleccionados.\\
 		\textbf{Precondición} & El usuario ha seleccionado dos principios activos disponibles en la aplicación.\\
 		\textbf{Acciones} &
@@ -121,7 +178,7 @@ Se encuentran recogidos en las siguientes tablas \ref{tab:CU1} \ref{tab:CU2} \re
 		\textbf{CU-2} & \textbf{Consultar explicación de enzimas}\\
 		\toprule
 		\textbf{Autor} & Profesional sanitario\\
-		\textbf{RF asociados} & RF-05, RF-06\\
+		\textbf{RF asociados} & RF-02.1, RF-02.2\\
 		\textbf{Descripción} & Permite visualizar las enzimas CYP450 implicadas en el metabolismo de los principios activos seleccionados.\\
 		\textbf{Precondición} & Se ha realizado previamente una búsqueda de interacción.\\
 		\textbf{Acciones} &
@@ -144,7 +201,7 @@ Se encuentran recogidos en las siguientes tablas \ref{tab:CU1} \ref{tab:CU2} \re
 		\textbf{CU-3} & \textbf{Consultar explicación de la interacción}\\
 		\toprule
 		\textbf{Autor} & Profesional sanitario.\\
-		\textbf{RF asociados} & RF-04\\
+		\textbf{RF asociados} & RF-01.4\\
 		\textbf{Descripción} & Permite conocer el mecanismo biológico responsable de la interacción detectada.\\
 		\textbf{Precondición} & Se ha realizado previamente una búsqueda de interacción.\\
 		\textbf{Acciones} &
@@ -167,7 +224,7 @@ Se encuentran recogidos en las siguientes tablas \ref{tab:CU1} \ref{tab:CU2} \re
 		\textbf{CU-4} & \textbf{Consultar efectos adversos}\\
 		\toprule
 		\textbf{Autor} & Profesional sanitario\\
-		\textbf{RF asociados} & RF-07\\
+		\textbf{RF asociados} & RF-02.3\\
 		\textbf{Descripción} & Permite visualizar los efectos adversos asociados a los principios activos seleccionados mediante un gráfico interactivo.\\
 		\textbf{Precondición} & Se ha realizado previamente una búsqueda de interacción.\\
 		\textbf{Acciones} &
@@ -190,7 +247,7 @@ Se encuentran recogidos en las siguientes tablas \ref{tab:CU1} \ref{tab:CU2} \re
 		\textbf{CU-5} & \textbf{Buscar alternativas terapéuticas}\\
 		\toprule
 		\textbf{Autor} & Profesional sanitario\\
-		\textbf{RF asociados} & RF-08\\
+		\textbf{RF asociados} & RF-03.1\\
 		\textbf{Descripción} & Permite consultar principios activos alternativos pertenecientes al mismo grupo ATC y con menor riesgo de interacción.\\
 		\textbf{Precondición} & Se ha realizado previamente una búsqueda de interacción.\\
 		\textbf{Acciones} &
